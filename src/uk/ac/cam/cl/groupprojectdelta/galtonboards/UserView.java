@@ -6,6 +6,7 @@ public class UserView {
     private float y;
     private float zoom;
     private int displayWidth;
+    private int displayHeight;
 
     public void setX(float x) {
         this.x = x;
@@ -26,8 +27,6 @@ public class UserView {
     public void setDisplayHeight(int displayHeight) {
         this.displayHeight = displayHeight;
     }
-
-    private int displayHeight;
 
     public float getX() {
         return x;
