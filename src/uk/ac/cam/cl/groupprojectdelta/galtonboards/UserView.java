@@ -49,7 +49,6 @@ public class UserView {
         return displayHeight;
     }
 
-
     public UserView(float x, float y, float zoom, int displayWidth, int displayHeight) {
         this.x = x;
         this.y = y;
@@ -58,4 +57,16 @@ public class UserView {
         this.displayHeight = displayHeight;
     }
 
+    public void moveView(float deltaX, float deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+
+    public float getWorldX(int pixelX) {
+        return x + (pixelX - displayWidth / 2) / zoom;
+    }
+
+    public float getWorldY(int pixelY) {
+        return y + (pixelY - displayHeight / 2) / zoom;
+    }
 }
