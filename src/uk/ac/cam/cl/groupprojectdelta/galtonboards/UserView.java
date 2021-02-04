@@ -4,9 +4,11 @@ public class UserView {
 
     private float x;
     private float y;
-    private float zoom;
+    private float scale;
     private int displayWidth;
     private int displayHeight;
+    private float displayHalfWidth;
+    private float displayHalfHeight;
 
     public void setX(float x) {
         this.x = x;
@@ -16,8 +18,8 @@ public class UserView {
         this.y = y;
     }
 
-    public void setZoom(float zoom) {
-        this.zoom = zoom;
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
     public void setDisplayWidth(int displayWidth) {
@@ -36,8 +38,8 @@ public class UserView {
         return y;
     }
 
-    public float getZoom() {
-        return zoom;
+    public float getScale() {
+        return scale;
     }
 
     public int getDisplayWidth() {
@@ -48,12 +50,14 @@ public class UserView {
         return displayHeight;
     }
 
-    public UserView(float x, float y, float zoom, int displayWidth, int displayHeight) {
+    public UserView(float x, float y, float scale, int displayWidth, int displayHeight) {
         this.x = x;
         this.y = y;
-        this.zoom = zoom;
+        this.scale = scale;
         this.displayWidth = displayWidth;
         this.displayHeight = displayHeight;
+        this.displayHalfWidth = (float)displayWidth / 2.0f;
+        this.displayHalfHeight = (float)displayHeight / 2.0f;
     }
 
     public void moveView(float deltaX, float deltaY) {
@@ -62,10 +66,10 @@ public class UserView {
     }
 
     public float getWorldX(int pixelX) {
-        return x + (pixelX - displayWidth / 2) / zoom;
+        return x + (pixelX - displayHalfWidth) * scale;
     }
 
     public float getWorldY(int pixelY) {
-        return y + (pixelY - displayHeight / 2) / zoom;
+        return y + (pixelY - displayHalfHeight) * scale;
     }
 }
