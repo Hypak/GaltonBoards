@@ -47,7 +47,7 @@ public class Bucket {
         this.output = null;
         this.width = width;
         this.tag = null;
-        setOutputPosition();
+        //setOutputPosition();
     }
 
     /*

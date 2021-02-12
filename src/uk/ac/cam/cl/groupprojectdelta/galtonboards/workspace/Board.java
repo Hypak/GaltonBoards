@@ -1,12 +1,13 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board {
+public class Board implements Drawable {
 
     static float unitDistance = 1f;
     static float bucketDepth = 5f;
@@ -231,5 +232,52 @@ public class Board {
      */
     public Vector2f getDimensions() {
         return dimensions;
+    }
+
+    @Override
+    public float[] getMesh(float time) {
+        float[] points;
+        Vector2f bound = new Vector2f();
+
+        Vector2f dimensions = new Vector2f(0.2f); // todo
+        worldPos.add(dimensions, bound);
+
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+
+        float z = 6;
+
+        // Face 1
+        points = new float[]{
+                worldPos.x, worldPos.y, z,
+                bound.x, worldPos.y, z,
+                bound.x, bound.y, z,
+
+                // Face 2
+                worldPos.x, worldPos.y, z,
+                worldPos.x, bound.y, z,
+                bound.x, bound.y, z
+        };
+
+        // todo: add meshes from pegs and balls
+
+        return points;
+    }
+
+    @Override
+    public float[] getUV() {
+        float[] UVs = new float[]{
+                // face 1
+                0,0,
+                1,0,
+                1,1,
+                // face 2
+                0,0,
+                0,1,
+                1,1
+        };
+        return UVs;
     }
 }
