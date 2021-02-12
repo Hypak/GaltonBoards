@@ -8,7 +8,7 @@ public class UserView {
     private Vector2f position;
     private float scale;
     private Vector2i displaySize;
-    private Vector2f displayHalfSize;
+    private final Vector2f displayHalfSize;
 
     public UserView(Vector2f position, float scale, Vector2i displaySize) {
         this.position = position;
