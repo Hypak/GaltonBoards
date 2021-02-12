@@ -3,7 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-public class Peg {
+public class Peg implements LogicalLocation {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
