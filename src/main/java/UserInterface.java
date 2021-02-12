@@ -18,6 +18,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UserInterface {
 
+  UserInterface(int width, int height) {
+    this.width = width;
+    this.height = height;
+  }
+
   void addComponent(Object component) {
     if (!started) {
       try {
@@ -68,10 +73,9 @@ public class UserInterface {
     // Configure GLFW
     glfwDefaultWindowHints(); // optional, the current window hints are already the default
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
     // Create the window
-    window = glfwCreateWindow(400, 400, "Galton Boards!", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Galton Boards!", NULL, NULL);
     if ( window == NULL )
       throw new RuntimeException("Failed to create the GLFW window");
 
@@ -83,8 +87,8 @@ public class UserInterface {
             DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
             DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
             glfwGetCursorPos(window, x, y);
-            float mouseX = (float) x.get() / 400.0f;
-            float mouseY = (float) y.get() / 400.0f;
+            float mouseX = (float) x.get() / (float) width;
+            float mouseY = (float) y.get() / (float) height;
             for (Clickable clickable : clickables) {
               if (clickable.inside(mouseX, mouseY)) {
                 clickable.onClick();
@@ -126,5 +130,8 @@ public class UserInterface {
   private final Vector<Drawable> drawables = new Vector<>();
   private long window;
   private boolean started = false;
+
+  private final int height;
+  private final int width;
 
 }

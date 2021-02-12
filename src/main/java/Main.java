@@ -1,6 +1,3 @@
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 class TestButton extends ClickableDrawableRectangle {
 
   TestButton(float posX, float posY, float sizeX, float sizeY) {
@@ -27,10 +24,10 @@ class TestButton extends ClickableDrawableRectangle {
 
 public class Main {
   public static void main(String[] args) {
-    UserInterface UI = new UserInterface();
+    UserInterface UI = new UserInterface(800, 400);
     UI.addComponent(new TestButton(0.1f, 0.1f, 0.3f, 0.3f));
     UI.addComponent(new TestButton(0.6f, 0.6f, 0.3f, 0.3f));
+    UI.addComponent(3);
     UI.start();
   }
-
 }
