@@ -280,4 +280,9 @@ public class Board implements Drawable {
         };
         return UVs;
     }
+
+    public boolean isOpen() {
+        // This should return false if the board's buckets have been closed by the user.
+        return true;
+    }
 }

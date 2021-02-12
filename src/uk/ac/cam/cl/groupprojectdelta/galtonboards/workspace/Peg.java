@@ -3,6 +3,9 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Peg implements LogicalLocation {
 
     // The position of this peg in the board's grid
@@ -14,6 +17,10 @@ public class Peg implements LogicalLocation {
 
     // The board that this peg is on
     private Board board;
+
+    private Set<Ball> ballsAtPeg;
+
+    String logLocType = "peg"; // logical location type
 
     /*
     =====================================================================
@@ -43,6 +50,7 @@ public class Peg implements LogicalLocation {
         this.gridPos = new Vector2i(row,rowInd);
         this.probability = probability;
         this.board = board;
+        this.ballsAtPeg = new HashSet<>();
         setPosition();
     }
 
@@ -139,6 +147,11 @@ public class Peg implements LogicalLocation {
         return worldPos;
     }
 
+    @Override
+    public Set<Ball> balls() {
+        return ballsAtPeg;
+    }
+
     /**
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.
@@ -161,5 +174,18 @@ public class Peg implements LogicalLocation {
         }
         // This peg is not on the last row so don't return a valid bucket
         return -1;
+    }
+
+    public Bucket getLeftBucket() {
+        return board.getBucket(getLeftBucketIndex());
+    }
+
+    public Bucket getRightBucket() {
+        return board.getBucket(getRightBucketIndex());
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
     }
 }

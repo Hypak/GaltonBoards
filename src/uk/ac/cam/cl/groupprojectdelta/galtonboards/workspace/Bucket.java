@@ -2,6 +2,10 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Bucket implements LogicalLocation {
 
     // The index of the first implicit board column that feeds into this bucket
@@ -19,6 +23,10 @@ public class Bucket implements LogicalLocation {
 
     // Tag that gets given to any ball collected by this bucket
     private String tag;
+
+    private Set<Ball> ballsInBucket; // need this for visualisation
+
+    String logLocType = "bucket"; // logical location type
 
     /*
     =====================================================================
@@ -48,6 +56,7 @@ public class Bucket implements LogicalLocation {
         this.width = width;
         this.tag = null;
         //setOutputPosition();
+        this.ballsInBucket = new HashSet<>();
     }
 
     /*
@@ -134,9 +143,18 @@ public class Bucket implements LogicalLocation {
         return new Vector2f(xPos, yPos);
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
     @Override
     public Vector2f getWorldPos() {
         // Needed so it can implement the LogicalLocation interface
         return getTopWorldPos(0);
+    }
+
+    @Override
+    public Set<Ball> balls() {
+        return ballsInBucket;
     }
 }
