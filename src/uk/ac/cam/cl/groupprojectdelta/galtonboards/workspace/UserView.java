@@ -8,7 +8,7 @@ public class UserView {
     private Vector2f position;
     private float scale;
     private Vector2i displaySize;
-    private final Vector2f displayHalfSize;
+    private Vector2f displayHalfSize;
 
     public UserView(Vector2f position, float scale, Vector2i displaySize) {
         this.position = position;
@@ -31,6 +31,7 @@ public class UserView {
 
     public void setDisplaySize(Vector2i displaySize) {
         this.displaySize = displaySize;
+        this.displayHalfSize = new Vector2f(displaySize.x / 2.0f, displaySize.y / 2.0f);
     }
 
     public void setScale(float scale) {
