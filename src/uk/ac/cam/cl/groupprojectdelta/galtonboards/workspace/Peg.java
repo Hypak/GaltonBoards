@@ -2,8 +2,10 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
 
-public class Peg {
+public class Peg implements CanvasSelectable {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
@@ -14,6 +16,8 @@ public class Peg {
 
     // The board that this peg is on
     private Board board;
+
+    private final float RADIUS = 0.4f;
 
     /*
     =====================================================================
@@ -161,5 +165,20 @@ public class Peg {
         }
         // This peg is not on the last row so don't return a valid bucket
         return -1;
+    }
+
+    @Override
+    public boolean containsPoint(Vector2f point) {
+        return getWorldPos().distance(point) < RADIUS;
+    }
+
+    @Override
+    public boolean intersectsRegion(Vector2f from, Vector2f to) {
+        Vector2f topleft = getWorldPos().sub(new Vector2f(RADIUS, RADIUS));
+        Vector2f bottomright = getWorldPos().add(new Vector2f(RADIUS, RADIUS));
+        return from.x < bottomright.x
+            && from.y < bottomright.y
+            && to.x > topleft.x
+            && to.y > topleft.y;
     }
 }
