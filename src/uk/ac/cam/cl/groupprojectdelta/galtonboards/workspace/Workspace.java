@@ -9,13 +9,13 @@ public class Workspace implements Drawable {
 
   @Override
   public List<Float> getMesh(float time) {
-    // TODO
-    return null;
+    // TODO: add balls
+    return configuration.getMesh(time);
   }
 
   @Override
   public List<Float> getUV() {
-    // TODO
-    return null;
+    // TODO: add balls
+    return configuration.getUV();
   }
 }

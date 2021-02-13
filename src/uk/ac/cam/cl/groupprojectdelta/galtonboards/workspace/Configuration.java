@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,13 +24,20 @@ public class Configuration implements Drawable {
 
   @Override
   public List<Float> getMesh(float time) {
-    // TODO
-    return null;
+    List<Float> mesh = new ArrayList<>();
+    for (Board board : boards) {
+      mesh.addAll(board.getMesh(time));
+    }
+    return mesh;
   }
 
   @Override
   public List<Float> getUV() {
     // TODO
-    return null;
+    List<Float> uv = new ArrayList<>();
+    for (Board board : boards) {
+      uv.addAll(board.getUV());
+    }
+    return uv;
   }
 }
