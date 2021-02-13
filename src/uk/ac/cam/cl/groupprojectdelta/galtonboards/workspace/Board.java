@@ -238,9 +238,15 @@ public class Board implements Drawable {
     @Override
     public List<Float> getMesh(float time) {
         List<Float> points = new ArrayList<>();
-        Vector2f bound = new Vector2f();
+        Vector2f lowBound = new Vector2f();
+        Vector2f highBound = new Vector2f();
+        Vector2f halfDimensions = new Vector2f();
+        getDimensions().mul(0.5f, halfDimensions);
 
-        worldPos.add(dimensions, bound);
+
+        worldPos.add(halfDimensions, highBound);
+        worldPos.sub(halfDimensions, lowBound);
+
 
         //  +----+
         //  |1 / |
@@ -251,14 +257,14 @@ public class Board implements Drawable {
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
-                worldPos.x, worldPos.y, z,
-                bound.x, worldPos.y, z,
-                bound.x, bound.y, z,
+                lowBound.x, lowBound.y, z,
+                highBound.x, lowBound.y, z,
+                highBound.x, highBound.y, z,
 
                 // Face 2
-                worldPos.x, worldPos.y, z,
-                worldPos.x, bound.y, z,
-                bound.x, bound.y, z
+                lowBound.x, lowBound.y, z,
+                lowBound.x, highBound.y, z,
+                highBound.x, highBound.y, z
         ));
 
         // todo: add meshes from pegs and balls
