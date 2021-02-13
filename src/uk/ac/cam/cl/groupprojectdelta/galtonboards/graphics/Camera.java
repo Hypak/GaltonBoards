@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 public class Camera {
 
@@ -13,6 +14,10 @@ public class Camera {
 
   public void setPosition(Vector3f position) {
     r = position;
+  }
+
+  public Vector3f getPosition() {
+    return r;
   }
 
   public Matrix4f viewMatrix() {
@@ -31,4 +36,6 @@ public class Camera {
             up
     );
   }
+
+
 }

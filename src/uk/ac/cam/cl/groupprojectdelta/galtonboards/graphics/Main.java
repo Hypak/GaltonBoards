@@ -6,6 +6,7 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 
@@ -35,6 +36,7 @@ public class Main {
   private int uvBuffer;
 
   private Camera camera = new Camera();
+  private UserInput userInput;
 
   private int mvpShaderLocation;
 
@@ -62,6 +64,10 @@ public class Main {
   }
 
   private void init() throws IOException {
+
+    camera.setPosition(new Vector3f(0, 0, -15));
+
+
     // Setup an error callback. The default implementation
     // will print the error message in System.err.
     GLFWErrorCallback.createPrint(System.err).set();
@@ -79,6 +85,7 @@ public class Main {
     // todo: default window dimensions
     window = glfwCreateWindow(1000, 1000, "Galton Boards", NULL, NULL);
     if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
+    userInput = new UserInput(window, camera);
 
     // Setup a key callback. It will be called every time a key is pressed, repeated or released.
     glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -116,7 +123,7 @@ public class Main {
 
     try {
       programID = LoadShaders(
-              "resources/shaders/VertexShader.glsl",
+              "resources/shaders/vertexShader.glsl",
               "resources/shaders/fragmentShader.glsl"
       );
     } catch (IOException e) {
@@ -156,6 +163,7 @@ public class Main {
       lastTime = currentTime;
       currentTime = (float) glfwGetTime();
       deltaTime = (currentTime - lastTime);
+      userInput.update(deltaTime);
 
       int[] windowWidth = new int[1];
       int[] windowHeight = new int[1];
