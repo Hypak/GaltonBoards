@@ -41,7 +41,7 @@ public class Main {
   private int mvpShaderLocation;
 
   // todo: use encapsulating simulation class rather than board
-  private Board b = new Board();
+  private Board b = new Board(5);
 
   float currentTime;
 
