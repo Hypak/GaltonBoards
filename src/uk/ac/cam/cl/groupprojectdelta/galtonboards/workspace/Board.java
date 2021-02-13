@@ -25,6 +25,12 @@ public class Board implements Drawable {
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
 
+    // Variables and states for editing bucket layouts
+    private List<Float> columnBoundaries;
+    private boolean updatingBucketLayout = false;
+    private Bucket beingEdited;
+    private List<Bucket> oldBuckets;
+
     //TODO - Be able to update the boards (change peg probabilites, add new rows, change buckets, update bucket tags)
     //TODO - Generate default boards (e.g Gaussian, uniform, poisson etc)
 
@@ -113,21 +119,25 @@ public class Board implements Drawable {
 
     /**
      * Set the dimensions of this board upon instantiation and whenever peg layout changes.
+     * Also updates the column boundaries.
      */
     private void setDimensions() {
         float width = (isoGridWidth + 1) * unitDistance;
-        float height = ((isoGridWidth * (float) Math.sqrt(3) / 2) + bucketDepth + 2) * unitDistance;
+        float height = ((isoGridWidth * (float) Math.sqrt(3) / 2) + bucketDepth + 3) * unitDistance;
         this.dimensions = new Vector2f(width, height);
+        setColumnBoundaries();
     }
 
     /**
      * Update the position of the board when moving it to a new location.
+     * Also updates the column boundaries.
      * @param newWorldPos : Vector2f - The new position of the board.
      */
     public void updateBoardPosition(Vector2f newWorldPos) {
         this.worldPos = new Vector2f(newWorldPos);
         setPegPositions();
         setBucketOutputPositions();
+        setColumnBoundaries();
     }
 
     /**
@@ -148,12 +158,282 @@ public class Board implements Drawable {
         }
     }
 
-    public void addRow() {
-
+    /**
+     * Whenever the board is moved or it's shape changed, update the x-coordinates for the column boundaries
+     * (used for dragging buckets in the UI).
+     */
+    private void setColumnBoundaries() {
+        columnBoundaries = new ArrayList<>();
+        for (int i = 0; i < isoGridWidth + 2; i++) {
+            float xPos = i * unitDistance + worldPos.x - dimensions.x / 2f;
+            columnBoundaries.add(xPos);
+        }
     }
 
-    public void removeRow() {
+    /**
+     * Helper method for addRow() and removeRow() for repositioning the board after a dimension change.
+     * @param oldDimensions : Vector2f - The old board dimensions.
+     */
+    private void updateYPos(Vector2f oldDimensions) {
+        setDimensions();
+        float deltaHeight = (dimensions.y - oldDimensions.y) / 2f;
+        float newYPos = worldPos.y - deltaHeight;
+        updateBoardPosition(new Vector2f(worldPos.x, newYPos));
+    }
 
+    /*
+    =====================================================================
+                                UI METHODS
+    =====================================================================
+     */
+
+    /**
+     * Add a new row of pegs when editing the board. This method should be called from the UI "plus" button.
+     */
+    public void addRow() {
+        Vector2f oldDimensions = new Vector2f(dimensions);
+        this.isoGridWidth ++;
+
+        // Add the new row of pegs
+        for (int i = pegs.size(); i < pegs.size() + isoGridWidth; i++) {
+            pegs.add(new Peg(0.5f, i, this));
+        }
+
+        // Add a new unit bucket
+        bucketWidths.add(1);
+        buckets.add(new Bucket(1, isoGridWidth, this));
+
+        // Update the boards position so that the ball input point remains constant
+        updateYPos(oldDimensions);
+    }
+
+    /**
+     * Remove a row of pegs when editing the board. This method should be called from the UI "minus" button.
+     */
+    public void removeRow() {
+        // Only attempt to remove row if there is actually a row to remove
+        if(isoGridWidth < 1) {
+            System.err.println("No row to remove.");
+            return;
+        }
+
+        Vector2f oldDimensions = new Vector2f(dimensions);
+        this.isoGridWidth --;
+
+        // Remove the bottom row of pegs
+        for (int i = 0; i < isoGridWidth + 1; i++) {
+            pegs.remove(pegs.size() - 1);
+        }
+
+        // If the rightmost bucket has a width > 1, reduce its size, else delete it
+        int oldWidth = bucketWidths.get(bucketWidths.size() - 1);
+        if(oldWidth > 1) {
+            // Reduce the width of the last bucket by 1
+            int newWidth = oldWidth - 1;
+            bucketWidths.set(bucketWidths.size() - 1, newWidth);
+            buckets.get(buckets.size() - 1).setWidth(newWidth);
+        }
+        else {
+            // Delete the last bucket
+            bucketWidths.remove(bucketWidths.size() - 1);
+            buckets.get(buckets.size() - 1).destroy();
+            buckets.remove(buckets.size() - 1);
+        }
+
+        // Update the boards position so that the ball input point remains constant
+        updateYPos(oldDimensions);
+    }
+
+    /**
+     * Get the position of the addRow() button.
+     * @return The coordinates of the centre of the addRow() button.
+     */
+    public Vector2f getPlusButtonPos() {
+        float xPos = worldPos.x - 2f * unitDistance;
+        float yPos = worldPos.y + dimensions.y / 2f - (1 + isoGridWidth * (float) Math.sqrt(3) / 2f + 1) * unitDistance;
+        return new Vector2f(xPos, yPos);
+    }
+
+    /**
+     * Get the position of the removeRow() button.
+     * @return The coordinates of the centre of the removeRow() button.
+     */
+    public Vector2f getMinusButtonPos() {
+        float xPos = worldPos.x + 2f * unitDistance;
+        float yPos = worldPos.y + dimensions.y / 2f - (1 + isoGridWidth * (float) Math.sqrt(3) / 2f + 1) * unitDistance;
+        return new Vector2f(xPos, yPos);
+    }
+
+    /**
+     * Signal that the board's bucket layout is being changed, save the old layout in case changes cancelled.
+     */
+    public void startDraggingBucket(Bucket bucket) {
+        if (!updatingBucketLayout) {
+            updatingBucketLayout = true;
+            beingEdited = bucket;
+            oldBuckets = new ArrayList<>(buckets);
+        }
+    }
+
+    /**
+     * Cancel the changing of the bucket layout (e.g. by right clicking when dragging. Restore old layout.
+     */
+    public void cancelDraggingBucket() {
+        if (updatingBucketLayout) {
+            updatingBucketLayout = false;
+            beingEdited = null;
+            buckets = new ArrayList<>(oldBuckets);
+        }
+    }
+
+    /**
+     * Confirm the change of the bucket layout (e.g. by letting go of LMB when dragging).
+     */
+    public void confirmDraggingBucket() {
+        if (updatingBucketLayout) {
+            updatingBucketLayout = false;
+            beingEdited = null;
+        }
+    }
+
+    /**
+     * Get the neighbouring column boundaries for the left edge of the bucket being edited.
+     * @return The world positions of the column boundaries (or infinity if edge can't be extended).
+     */
+    public Vector2f getNeighbouringLeftSideBoundaries() {
+        if (updatingBucketLayout) {
+            int start = beingEdited.getStartColumn();
+            int leftInd = start - 1;
+            int rightInd = start + 1;
+            float leftPos;
+            float rightPos;
+            if (leftInd < 0) {
+                leftPos = Float.NEGATIVE_INFINITY;
+            }
+            else {
+                leftPos = columnBoundaries.get(leftInd);
+            }
+            if (beingEdited.getWidth() == 1) {
+                rightPos = Float.POSITIVE_INFINITY;
+            }
+            else {
+                rightPos = columnBoundaries.get(rightInd);
+            }
+            return new Vector2f(leftPos, rightPos);
+        }
+        // The board is not aware that bucket layout is being changed
+        System.err.println("No bucket has been selected.");
+        return null;
+    }
+
+    /**
+     * Get the neighbouring column boundaries for the right edge of the bucket being edited.
+     * @return The world positions of the column boundaries (or infinity if edge can't be extended).
+     */
+    public Vector2f getNeighbouringRightSideBoundaries() {
+        if (updatingBucketLayout) {
+            int last = beingEdited.getStartColumn() + beingEdited.getWidth() - 1;
+            int leftInd = last;
+            int rightInd = last + 2;
+            float leftPos;
+            float rightPos;
+            if (beingEdited.getWidth() == 1) {
+                leftPos = Float.NEGATIVE_INFINITY;
+            }
+            else {
+                leftPos = columnBoundaries.get(leftInd);
+            }
+            if (rightInd > columnBoundaries.size()) {
+                rightPos = Float.POSITIVE_INFINITY;
+            }
+            else {
+                rightPos = columnBoundaries.get(rightInd);
+            }
+            return new Vector2f(leftPos, rightPos);
+        }
+        // The board is not aware that bucket layout is being changed
+        System.err.println("No bucket has been selected.");
+        return null;
+    }
+
+    /**
+     * Signal that the boundaries of a bucket have been moved and get new neighbouring column positions.
+     * @param leftEdge : boolean - Has the bucket's left or right edge been extended left?
+     * @return The new neighbouring column positions of the edge being moved.
+     */
+    public Vector2f edgeExtendedLeft(boolean leftEdge) {
+        if(updatingBucketLayout && buckets.indexOf(beingEdited) > 0) {
+            if (leftEdge) {
+                // if left edge has been stretched left, increase bucket width, decrement startColumn, and reduce bucket to the left
+                beingEdited.setWidth(beingEdited.getWidth() + 1);
+                beingEdited.setStartColumn(beingEdited.getStartColumn() - 1);
+                Bucket leftBucket = buckets.get(buckets.indexOf(beingEdited) - 1);
+                if (leftBucket.getWidth() > 1) {
+                    // Reduce width of bucket to the left
+                    leftBucket.setWidth(leftBucket.getWidth() - 1);
+                }
+                else {
+                    // Delete bucket to the left as was of unit width
+                    leftBucket.destroy();
+                    buckets.remove(buckets.indexOf(beingEdited) - 1);
+                }
+            }
+            else {
+                // if right edge has been stretched left, decrement width and spawn new unit bucket to the right
+                beingEdited.setWidth(beingEdited.getWidth() - 1);
+                Bucket newBucket = new Bucket(1, beingEdited.getStartColumn() + beingEdited.getWidth(), this);
+                buckets.add(buckets.indexOf(beingEdited) + 1, newBucket);
+            }
+            return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
+        }
+        // The board isn't aware of the layout being changed, or invalid bucket being extended left
+        System.err.println("Error extending bucket edge left.");
+        return null;
+    }
+
+    /**
+     * Signal that the boundaries of a bucket have been moved and get new neighbouring column positions.
+     * @param leftEdge : boolean - Has the bucket's left or right edge been extended right?
+     * @return The new neighbouring column positions of the edge being moved.
+     */
+    public Vector2f edgeExtendedRight(boolean leftEdge) {
+        if(updatingBucketLayout && buckets.indexOf(beingEdited) > 0) {
+            if (leftEdge) {
+                // if left edge has been stretched right, decrease bucket width, increment startColumn, and spawn new unit bucket to the left
+                beingEdited.setWidth(beingEdited.getWidth() - 1);
+                beingEdited.setStartColumn(beingEdited.getStartColumn() + 1);
+                Bucket newBucket = new Bucket(1, beingEdited.getStartColumn() - 1, this);
+                buckets.add(buckets.indexOf(beingEdited), newBucket);
+            }
+            else {
+                // if right edge has been stretched right, increase width and reduce bucket to the right
+                beingEdited.setWidth(beingEdited.getWidth() - 1);
+
+                Bucket rightBucket = buckets.get(buckets.indexOf(beingEdited) + 1);
+                if (rightBucket.getWidth() > 1) {
+                    // Reduce width of bucket to the right and increase its start column
+                    rightBucket.setWidth(rightBucket.getWidth() - 1);
+                    rightBucket.setStartColumn(rightBucket.getStartColumn() + 1);
+                }
+                else {
+                    // Delete bucket to the right as was of unit width
+                    rightBucket.destroy();
+                    buckets.remove(buckets.indexOf(beingEdited) + 1);
+                }
+            }
+            return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
+        }
+        // The board isn't aware of the layout being changed, or invalid bucket being extended right
+        System.err.println("Error extending bucket edge right.");
+        return null;
+    }
+
+    /**
+     * Getter to determine whether the bucket layout is being updated.
+     * @return updatingBucketLayout.
+     */
+    public boolean isUpdatingBucketLayout() {
+        return updatingBucketLayout;
     }
 
     /*

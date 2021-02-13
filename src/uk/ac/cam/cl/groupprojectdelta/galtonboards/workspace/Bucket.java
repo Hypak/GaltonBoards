@@ -83,6 +83,29 @@ public class Bucket implements LogicalLocation {
         this.tag = tag;
     }
 
+    /**
+     * Set the width of the bucket.
+     * @param newWidth : int - The new width of this bucket.
+     */
+    public void setWidth(int newWidth) {
+        this.width = newWidth;
+    }
+
+    /**
+     * Set the width of the bucket.
+     * @param newStartColumn : int - The new start column for this bucket.
+     */
+    public void setStartColumn(int newStartColumn) {
+        this.startColumn = newStartColumn;
+    }
+
+    /**
+     * Called whenever a bucket is deleted to make sure there are no funky bugs.
+     */
+    public void destroy() {
+        // Handle deleting this bucket cleanly (e.g. handle the output connection from this bucket)
+    }
+
     /*
     =====================================================================
                             PUBLIC GETTERS
@@ -119,6 +142,14 @@ public class Bucket implements LogicalLocation {
      */
     public int getWidth() {
         return width;
+    }
+
+    /**
+     * Getter for the startColumn.
+     * @return The leftmost column that feeds into this bucket.
+     */
+    public int getStartColumn() {
+        return startColumn;
     }
 
     /**
