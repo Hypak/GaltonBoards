@@ -2,11 +2,17 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-public class Peg implements CanvasSelectable, LogicalLocation {
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class Peg implements CanvasSelectable, LogicalLocation, Drawable {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
@@ -19,6 +25,10 @@ public class Peg implements CanvasSelectable, LogicalLocation {
     private Board board;
 
     private final float RADIUS = 0.4f;
+
+    private Set<Ball> ballsAtPeg;
+
+    String logLocType = "peg"; // logical location type
 
     /*
     =====================================================================
@@ -48,6 +58,7 @@ public class Peg implements CanvasSelectable, LogicalLocation {
         this.gridPos = new Vector2i(row,rowInd);
         this.probability = probability;
         this.board = board;
+        this.ballsAtPeg = new HashSet<>();
         setPosition();
     }
 
@@ -144,6 +155,11 @@ public class Peg implements CanvasSelectable, LogicalLocation {
         return worldPos;
     }
 
+    @Override
+    public Set<Ball> balls() {
+        return ballsAtPeg;
+    }
+
     /**
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.
@@ -183,5 +199,28 @@ public class Peg implements CanvasSelectable, LogicalLocation {
             && from.y < bottomright.y
             && to.x > topleft.x
             && to.y > topleft.y;
+    }
+
+    public Bucket getLeftBucket() {
+        return board.getBucket(getLeftBucketIndex());
+    }
+
+    public Bucket getRightBucket() {
+        return board.getBucket(getRightBucketIndex());
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        return null;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        return null;
     }
 }

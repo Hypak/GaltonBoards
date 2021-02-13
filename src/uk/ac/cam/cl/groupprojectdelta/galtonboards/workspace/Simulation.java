@@ -26,6 +26,6 @@ public class Simulation {
     }
 
     public void spawnBallAtRoot() {
-        //spawnBall(rootBoard.getRootPeg());
+        spawnBall(rootBoard.getRootPeg());
     }
 }
