@@ -7,8 +7,8 @@ import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 public class Configuration implements Drawable {
-  private Board startBoard = new Board();
-  private Collection<Board> boards = new LinkedList<>();
+  private Board startBoard = new Board(5);
+  private final Collection<Board> boards = new LinkedList<>();
 
   public Configuration() {
     boards.add(startBoard);

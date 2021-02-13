@@ -7,6 +7,10 @@ public class Workspace implements Drawable {
   private final Configuration configuration = new Configuration();;
   private final Simulation simulation = new Simulation(configuration.getStartBoard());
 
+  public Configuration getConfiguration() {
+    return configuration;
+  }
+
   @Override
   public List<Float> getMesh(float time) {
     // TODO: add balls
