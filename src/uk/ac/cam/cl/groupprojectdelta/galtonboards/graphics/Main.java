@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
@@ -8,6 +9,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -40,8 +43,7 @@ public class Main {
 
   private int mvpShaderLocation;
 
-  // todo: use encapsulating simulation class rather than board
-  private Board b = new Board(5);
+  private Workspace workspace = new Workspace();
 
   float currentTime;
 
@@ -177,12 +179,12 @@ public class Main {
       vao = glGenVertexArrays();
       glBindVertexArray(vao);
 
-      auxList = b.getMesh(currentTime);
+      auxList = workspace.getMesh(currentTime);
       mesh = new float[auxList.size()];
       for (int i = 0; i < auxList.size(); i++)
         mesh[i] = auxList.get(i);
 
-      auxList = b.getUV();
+      auxList = workspace.getUV();
       UVs = new float[auxList.size()];
       for (int i = 0; i < auxList.size(); i++)
         UVs[i] = auxList.get(i);

@@ -11,15 +11,19 @@ public class Workspace implements Drawable {
   private final Configuration configuration = new Configuration(clickableMap);
   private final Simulation simulation = new Simulation(configuration.getStartBoard());
 
+  public Configuration getConfiguration() {
+    return configuration;
+  }
+
   @Override
   public List<Float> getMesh(float time) {
-    // TODO
-    return null;
+    // TODO: add balls
+    return configuration.getMesh(time);
   }
 
   @Override
   public List<Float> getUV() {
-    // TODO
-    return null;
+    // TODO: add balls
+    return configuration.getUV();
   }
 }
