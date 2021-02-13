@@ -3,6 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -235,11 +236,10 @@ public class Board implements Drawable {
     }
 
     @Override
-    public float[] getMesh(float time) {
-        float[] points;
+    public List<Float> getMesh(float time) {
+        List<Float> points = new ArrayList<>();
         Vector2f bound = new Vector2f();
 
-        Vector2f dimensions = new Vector2f(0.2f); // todo
         worldPos.add(dimensions, bound);
 
         //  +----+
@@ -247,10 +247,10 @@ public class Board implements Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 6;
+        float z = 5;
 
-        // Face 1
-        points = new float[]{
+        points = new ArrayList<>(Arrays.asList(
+                // Face 1
                 worldPos.x, worldPos.y, z,
                 bound.x, worldPos.y, z,
                 bound.x, bound.y, z,
@@ -259,25 +259,28 @@ public class Board implements Drawable {
                 worldPos.x, worldPos.y, z,
                 worldPos.x, bound.y, z,
                 bound.x, bound.y, z
-        };
+        ));
 
         // todo: add meshes from pegs and balls
+        for (Peg peg : pegs) {
+            points.addAll(peg.getMesh(time));
+        }
 
         return points;
     }
 
     @Override
-    public float[] getUV() {
-        float[] UVs = new float[]{
+    public List<Float> getUV() {
+        List<Float> UVs = List.of(
                 // face 1
-                0,0,
-                1,0,
-                1,1,
+                0f,0f,
+                1f,0f,
+                1f,1f,
                 // face 2
-                0,0,
-                0,1,
-                1,1
-        };
+                0f,0f,
+                0f,1f,
+                1f,1f
+        );
         return UVs;
     }
 

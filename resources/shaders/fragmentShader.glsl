@@ -19,9 +19,7 @@ vec3 tonemap(vec3 linearRGB)
 void main() {
     vec3 texVal = vec3(texture( texSampler, UV ));
     float alpha = 1.0f;
-    texVal = vec3(1,0,0);
 
     color = vec4(tonemap(texVal), alpha);
-    color = vec4(1);
     //gl_FragColor = tonemap(C_diff);
 }

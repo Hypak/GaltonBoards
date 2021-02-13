@@ -1,16 +1,20 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 
 import java.io.IOException;
 import java.nio.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -33,8 +37,6 @@ public class Main {
   private Camera camera = new Camera();
 
   private int mvpShaderLocation;
-
-  private Matrix4f projection;
 
   // todo: use encapsulating simulation class rather than board
   private Board b = new Board();
@@ -143,6 +145,11 @@ public class Main {
     Matrix4f MVP = new Matrix4f();
     int vao;
 
+    int[] indexBuffer = new int[]{0, 1, 2, 3, 4, 5};
+
+    List<Float> auxList;
+    float[] mesh, UVs;
+
     while ( !glfwWindowShouldClose(window) ) {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -154,7 +161,7 @@ public class Main {
       int[] windowHeight = new int[1];
       glfwGetWindowSize(window, windowWidth, windowHeight);
       // todo: orthographic rather than perspective
-      projection = new Matrix4f().perspective((float)Math.toRadians(45.0f),
+      Matrix4f projection = new Matrix4f().perspective((float) Math.toRadians(45.0f),
               (float) windowWidth[0] / (float) windowHeight[0],
               0.1f,
               100.0f);
@@ -165,7 +172,15 @@ public class Main {
       vao = glGenVertexArrays();
       glBindVertexArray(vao);
 
-      float[] mesh = b.getMesh(currentTime);
+      auxList = b.getMesh(currentTime);
+      mesh = new float[auxList.size()];
+      for (int i = 0; i < auxList.size(); i++)
+        mesh[i] = auxList.get(i);
+
+      auxList = b.getUV();
+      UVs = new float[auxList.size()];
+      for (int i = 0; i < auxList.size(); i++)
+        UVs[i] = auxList.get(i);
 
       glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
       glBufferData(GL_ARRAY_BUFFER, mesh, GL_STATIC_DRAW);
@@ -173,15 +188,14 @@ public class Main {
       glEnableVertexAttribArray(0);
 
       glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-      glBufferData(GL_ARRAY_BUFFER, b.getUV(), GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, UVs, GL_STATIC_DRAW);
       glVertexAttribPointer(1, 2, GL_FLOAT, false,0, 0);
       glEnableVertexAttribArray(1);
 
-      glDrawElements(
+      glDrawArrays(
               GL_TRIANGLES,
-              mesh.length / 3,
-              GL_UNSIGNED_INT,
-              0
+              0,
+              mesh.length / 3
       );
 
       glfwSwapBuffers(window);

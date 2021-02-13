@@ -1,11 +1,12 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ball {
+public class Ball implements Drawable {
     Vector2f position;
     List<LogicalLocation> logLocs; // all pegs/buckets the ball will encounter on its path
     int logLocI; // current index into logLocs
@@ -74,5 +75,15 @@ public class Ball {
             logLocI += 1;
             moveTowardsNextLoc(f - tripLeft);
         }
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        return null;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        return null;
     }
 }

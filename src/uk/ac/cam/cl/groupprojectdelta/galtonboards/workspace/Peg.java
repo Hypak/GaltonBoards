@@ -2,11 +2,13 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class Peg implements LogicalLocation {
+public class Peg implements LogicalLocation, Drawable {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
@@ -187,5 +189,15 @@ public class Peg implements LogicalLocation {
     @Override
     public Board getBoard() {
         return board;
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        return null;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        return null;
     }
 }
