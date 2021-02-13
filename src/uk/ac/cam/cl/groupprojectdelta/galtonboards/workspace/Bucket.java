@@ -2,7 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 
-public class Bucket {
+public class Bucket implements LogicalLocation {
 
     // The index of the first implicit board column that feeds into this bucket
     private int startColumn;
@@ -132,5 +132,11 @@ public class Bucket {
         float xPos = (x + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
         return new Vector2f(xPos, yPos);
+    }
+
+    @Override
+    public Vector2f getWorldPos() {
+        // Needed so it can implement the LogicalLocation interface
+        return getTopWorldPos(0);
     }
 }

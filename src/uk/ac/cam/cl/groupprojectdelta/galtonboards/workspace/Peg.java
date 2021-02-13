@@ -3,9 +3,10 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
 
-public class Peg implements CanvasSelectable {
+public class Peg implements CanvasSelectable, LogicalLocation {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
