@@ -67,9 +67,9 @@ public class Board implements Drawable {
             bucketWidths = new int[isoGridWidth+1];
             Arrays.fill(bucketWidths,1);
         }
+        setDimensions();
         generatePegs(0.5f);
         generateBuckets(bucketWidths);
-        setDimensions();
     }
 
      /*
