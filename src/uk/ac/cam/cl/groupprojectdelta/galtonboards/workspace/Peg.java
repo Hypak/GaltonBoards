@@ -5,9 +5,7 @@ import org.joml.Vector2i;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
@@ -213,11 +211,46 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     @Override
     public List<Float> getMesh(float time) {
-        return null;
+        List<Float> points = new ArrayList<>();
+        Vector2f bound = new Vector2f();
+
+        Vector2f dimensions = new Vector2f(0.1f, 0.1f);
+        worldPos.add(dimensions, bound);
+
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+
+        float z = 5;
+
+        points = new ArrayList<>(Arrays.asList(
+                // Face 1
+                worldPos.x, worldPos.y, z,
+                bound.x, worldPos.y, z,
+                bound.x, bound.y, z,
+
+                // Face 2
+                worldPos.x, worldPos.y, z,
+                worldPos.x, bound.y, z,
+                bound.x, bound.y, z
+        ));
+
+        return points;
     }
 
     @Override
     public List<Float> getUV() {
-        return null;
+        List<Float> UVs = List.of(
+                // face 1
+                0f,0f,
+                1f,0f,
+                1f,1f,
+                // face 2
+                0f,0f,
+                0f,1f,
+                1f,1f
+        );
+        return UVs;
     }
 }
