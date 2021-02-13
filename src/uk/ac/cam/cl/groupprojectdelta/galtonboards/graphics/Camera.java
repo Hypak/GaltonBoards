@@ -9,7 +9,11 @@ public class Camera {
   private Vector3f r;
 
   public Camera() {
-    r = new Vector3f();
+    Reset();
+  }
+
+  public void Reset() {
+    r = new Vector3f(0, 0, -15);
   }
 
   public void setPosition(Vector3f position) {

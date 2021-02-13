@@ -65,9 +65,6 @@ public class Main {
 
   private void init() throws IOException {
 
-    camera.setPosition(new Vector3f(0, 0, -15));
-
-
     // Setup an error callback. The default implementation
     // will print the error message in System.err.
     GLFWErrorCallback.createPrint(System.err).set();

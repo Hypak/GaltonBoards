@@ -43,6 +43,9 @@ public class UserInput {
             move.mul(speed * deltaT);
             camera.setPosition(camera.getPosition().sub(move));
         }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == 1) {
+            camera.Reset();
+        }
     }
 
 }
