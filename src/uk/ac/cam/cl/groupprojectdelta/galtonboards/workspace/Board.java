@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
+import org.lwjgl.system.CallbackI.V;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
@@ -285,8 +286,12 @@ public class Board implements Drawable, CanvasSelectable {
 
     @Override
     public boolean containsPoint(Vector2f point) {
-        Vector2f topleft = getWorldPos().sub(getDimensions().mul(0.5f));
-        Vector2f bottomright = getWorldPos().add(getDimensions().mul(0.5f));
+        Vector2f topleft = new Vector2f();
+        Vector2f bottomright = new Vector2f();
+        Vector2f halfDimensions = new Vector2f();
+        getDimensions().mul(0.5f, halfDimensions);
+        getWorldPos().sub(halfDimensions, topleft);
+        getWorldPos().add(halfDimensions, bottomright);
         return point.x > topleft.x
             && point.x < bottomright.x
             && point.y > topleft.y
@@ -295,8 +300,12 @@ public class Board implements Drawable, CanvasSelectable {
 
     @Override
     public boolean intersectsRegion(Vector2f from, Vector2f to) {
-        Vector2f topleft = getWorldPos().sub(getDimensions().mul(0.5f));
-        Vector2f bottomright = getWorldPos().add(getDimensions().mul(0.5f));
+        Vector2f topleft = new Vector2f();
+        Vector2f bottomright = new Vector2f();
+        Vector2f halfDimensions = new Vector2f();
+        getDimensions().mul(0.5f, halfDimensions);
+        getWorldPos().sub(halfDimensions, topleft);
+        getWorldPos().add(halfDimensions, bottomright);
         return from.x < bottomright.x
             && from.y < bottomright.y
             && to.x > topleft.x

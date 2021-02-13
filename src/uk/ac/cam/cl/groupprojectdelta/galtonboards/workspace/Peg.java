@@ -175,8 +175,10 @@ public class Peg implements CanvasSelectable, LogicalLocation {
 
     @Override
     public boolean intersectsRegion(Vector2f from, Vector2f to) {
-        Vector2f topleft = getWorldPos().sub(new Vector2f(RADIUS, RADIUS));
-        Vector2f bottomright = getWorldPos().add(new Vector2f(RADIUS, RADIUS));
+        Vector2f topleft = new Vector2f(RADIUS, RADIUS);
+        Vector2f bottomright = new Vector2f(RADIUS, RADIUS);
+        topleft.add(getWorldPos());
+        bottomright.add(getWorldPos());
         return from.x < bottomright.x
             && from.y < bottomright.y
             && to.x > topleft.x
