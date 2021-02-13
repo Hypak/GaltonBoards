@@ -2,17 +2,14 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Peg implements CanvasSelectable, LogicalLocation, Drawable {
+public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;

@@ -1,8 +1,8 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
 import org.joml.Vector2f;
 
-public interface CanvasClickable
+public interface WorkspaceClickable
 {
   public default void press() {};
   public default void release() {};

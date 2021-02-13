@@ -1,17 +1,14 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
-import org.lwjgl.system.CallbackI.V;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasClickable;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas.CanvasSelectable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board implements Drawable, CanvasSelectable {
+public class Board implements Drawable, WorkspaceSelectable {
 
     static float unitDistance = 1f;
     static float bucketDepth = 5f;

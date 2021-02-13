@@ -1,10 +1,9 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.canvas;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
 import org.joml.Vector2f;
 
-public class CanvasMouseHandler {
-  private final MouseHandler mainMouseHandler = new MouseHandler();
-  private MouseHandler currentMouseHandler;
+public class WorkspaceMouseHandler {
+  private ClickableMap currentClickableMap;
 
   private enum State {
     NONE, DOWN1, DOWN2, DRAG, UP1, REGION
@@ -14,7 +13,7 @@ public class CanvasMouseHandler {
   private float lastClickTime;
   private Vector2f dragStart;
   private State state = State.NONE;
-  private CanvasClickable currentClickable;
+  private WorkspaceClickable currentClickable;
   private Vector2f currentPos = new Vector2f();
 
   public void mouseDown(float time) {
@@ -56,10 +55,10 @@ public class CanvasMouseHandler {
         currentClickable.doubleClick();
         break;
       case DRAG:
-        ((CanvasDraggable) currentClickable).endDrag();
+        ((WorkspaceDraggable) currentClickable).endDrag();
         break;
       case REGION:
-        currentMouseHandler.getClickablesInRegion(dragStart, currentPos);
+        currentClickableMap.getClickablesInRegion(dragStart, currentPos);
       case NONE:
       case UP1:
         break;
@@ -70,10 +69,10 @@ public class CanvasMouseHandler {
     switch (state) {
       case DOWN1:
       case DOWN2:
-        if (currentClickable instanceof CanvasDraggable) {
+        if (currentClickable instanceof WorkspaceDraggable) {
           state = State.DRAG;
-          ((CanvasDraggable) currentClickable).startDrag(true);
-          ((CanvasDraggable) currentClickable).moveDrag(pos.sub(currentPos));
+          ((WorkspaceDraggable) currentClickable).startDrag(true);
+          ((WorkspaceDraggable) currentClickable).moveDrag(pos.sub(currentPos));
           break;
         } else if (currentClickable == null) {
           state = State.REGION;
@@ -81,14 +80,14 @@ public class CanvasMouseHandler {
       case NONE:
       case UP1:
         state = State.NONE;
-        setCurrentClickable(getCurrentMouseHandler().getClickableAtPos(pos));
+        setCurrentClickable(getCurrentClickableMap().getClickableAtPos(pos));
       case DRAG:
-        ((CanvasDraggable) currentClickable).moveDrag(pos.sub(currentPos));
+        ((WorkspaceDraggable) currentClickable).moveDrag(pos.sub(currentPos));
     }
     currentPos = pos;
   }
 
-  private void setCurrentClickable(CanvasClickable newClickable) {
+  private void setCurrentClickable(WorkspaceClickable newClickable) {
     if (newClickable != currentClickable) {
       if (currentClickable != null) {
         currentClickable.mouseExit();
@@ -101,17 +100,13 @@ public class CanvasMouseHandler {
   }
 
 
-  public void setCurrentMouseHandler(
-      MouseHandler currentMouseHandler) {
-    this.currentMouseHandler = currentMouseHandler;
+  public void setCurrentClickableMap(
+      ClickableMap currentClickableMap) {
+    this.currentClickableMap = currentClickableMap;
   }
 
-  public MouseHandler getCurrentMouseHandler() {
-    return currentMouseHandler;
-  }
-
-  public MouseHandler getMainMouseHandler() {
-    return mainMouseHandler;
+  public ClickableMap getCurrentClickableMap() {
+    return currentClickableMap;
   }
 
 }
