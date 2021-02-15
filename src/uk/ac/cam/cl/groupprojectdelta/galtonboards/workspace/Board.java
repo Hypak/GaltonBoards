@@ -24,6 +24,7 @@ public class Board implements Drawable {
     // Explicit bucket instances that collect from the grid's implicit output columns
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
+    private List<Column> columns;
 
     // Variables and states for editing bucket layouts
     private List<Float> columnBoundaries;
@@ -105,11 +106,18 @@ public class Board implements Drawable {
     private void generateBuckets(int[] bucketWidths) {
         this.buckets = new ArrayList<>();
         this.bucketWidths = new ArrayList<>();
+        this.columns = new ArrayList<>();
         int sum = 0;
         for (int i : bucketWidths) {
             buckets.add(new Bucket(i, sum,this));
             this.bucketWidths.add(i);
             sum += i;
+        }
+        for (int i=0; i<isoGridWidth+1; i++) {
+            Bucket bucket = getBucket(i);
+            ColumnBottom cb = new ColumnBottom(i, bucket, this);
+            ColumnTop ct = new ColumnTop(i, bucket, this, cb);
+            columns.add(ct);
         }
         // Make sure that the bucket instances cover all column outputs
         if (sum != isoGridWidth + 1) {
@@ -155,6 +163,15 @@ public class Board implements Drawable {
     private void setBucketOutputPositions() {
         for(Bucket b : buckets) {
             b.setOutputPosition();
+        }
+    }
+
+    /**
+     * Recalculate the world position of the columns whenever the board position is moved.
+     */
+    private void setColumnPositions() {
+        for(Column c : columns) {
+            c.setPosition();
         }
     }
 
@@ -489,6 +506,15 @@ public class Board implements Drawable {
         // Above assumption didn't hold, valid bucket index could not be found
         System.err.println(String.format("Bucket collecting from output %d could not be found.", x));
         return null;
+    }
+
+    public Column getColumnTop(int x) {
+        // Input sanitation
+        if(x > isoGridWidth || x < 0) {
+            System.err.println(String.format("%d is an invalid column index.", x));
+            return null;
+        }
+        return columns.get(x);
     }
 
     /**

@@ -156,7 +156,7 @@ public class Peg implements LogicalLocation, Drawable {
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.
      */
-    public int getLeftBucketIndex() {
+    public int getLeftColumnIndex() {
         if (gridPos.x == board.getIsoGridWidth() - 1) {
             return (gridPos.y);
         }
@@ -168,7 +168,7 @@ public class Peg implements LogicalLocation, Drawable {
      * If this peg is on the last row, then return the output column that a right falling ball will go into.
      * @return The output column (implicit bucket) index for output to the right.
      */
-    public int getRightBucketIndex() {
+    public int getRightColumnIndex() {
         if (gridPos.x == board.getIsoGridWidth() - 1) {
             return (gridPos.y + 1);
         }
@@ -176,12 +176,22 @@ public class Peg implements LogicalLocation, Drawable {
         return -1;
     }
 
-    public Bucket getLeftBucket() {
-        return board.getBucket(getLeftBucketIndex());
+    public Column getLeftColumn() {
+        return board.getColumnTop(getLeftColumnIndex());
     }
 
+    public Column getRightColumn() {
+        return board.getColumnTop(getRightColumnIndex());
+    }
+
+    //OBSOLETE
+    public Bucket getLeftBucket() {
+        return board.getBucket(getLeftColumnIndex());
+    }
+
+    //OBSOLETE
     public Bucket getRightBucket() {
-        return board.getBucket(getRightBucketIndex());
+        return board.getBucket(getRightColumnIndex());
     }
 
     @Override
