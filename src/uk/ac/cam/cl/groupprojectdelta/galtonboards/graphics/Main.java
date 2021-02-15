@@ -47,10 +47,22 @@ public class Main {
   public Main() {
     Configuration configuration = workspace.getConfiguration();
     Board board1 = configuration.getStartBoard();
+
+    // Add two more boards (other than default)
     Board board2 = new Board(3);
+    Board board3 = new Board(3);
     board1.getBucket(0).setOutput(board2);
+    board1.getBucket(1).setOutput(board3);
     board2.updateBoardPosition(new Vector2f(3, -15));
+    board3.updateBoardPosition(new Vector2f(-2, -15));
     configuration.addBoard(board2);
+    configuration.addBoard(board3);
+
+    //Merge a couple buckets
+    //board1.startDraggingBucket(board1.getBucket(2));
+    //board1.edgeExtendedRight(false);
+    //board1.edgeExtendedRight(false);
+    //board1.confirmDraggingBucket();
   }
 
   public void run() {
