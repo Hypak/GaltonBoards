@@ -17,7 +17,6 @@ public class Workspace implements Drawable {
 
   @Override
   public List<Float> getMesh(float time) {
-    // TODO: add balls
     List<Float> mesh = configuration.getMesh(time);
     mesh.addAll(simulation.getMesh(time));
     return mesh;
@@ -25,7 +24,6 @@ public class Workspace implements Drawable {
 
   @Override
   public List<Float> getUV() {
-    // TODO: add balls
     List<Float> uv = configuration.getUV();
     uv.addAll(simulation.getUV());
     return uv;
