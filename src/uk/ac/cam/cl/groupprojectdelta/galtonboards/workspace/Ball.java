@@ -12,12 +12,19 @@ public class Ball implements Drawable {
     List<LogicalLocation> logLocs; // all pegs/buckets the ball will encounter on its path
     int logLocI; // current index into logLocs
     Simulation simulation; // Simulation object that contains this ball
+    boolean liquified;
+    String tag = "untagged";
 
     public Ball(LogicalLocation startingPoint, Simulation sim) {
         simulation = sim;
         logLocI = 0;
         position = startingPoint.getWorldPos();
         logLocs = getLogicalPath(startingPoint);
+        liquified = false;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public Vector2f getPosition() {
@@ -26,6 +33,10 @@ public class Ball implements Drawable {
 
     public LogicalLocation getLogLoc() {
         return logLocs.get(logLocI);
+    }
+
+    public boolean isLiquified() {
+        return liquified;
     }
 
     List<LogicalLocation> getLogicalPath(LogicalLocation start) {
