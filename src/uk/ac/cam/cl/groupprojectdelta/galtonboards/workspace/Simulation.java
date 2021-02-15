@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-public class Simulation {
+public class Simulation implements Drawable {
     public float speed = 1f;
     private List<Ball> balls;
     Board rootBoard;
