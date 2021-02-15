@@ -96,6 +96,11 @@ public class Ball implements Drawable {
         }
     }
 
+    public void update(float deltaTime) {
+        moveTowardsNextLoc(deltaTime * simulation.speed);
+        System.out.println(position);
+    }
+
     @Override
     public List<Float> getMesh(float time) {
         List<Float> points = new ArrayList<>();
