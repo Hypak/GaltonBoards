@@ -16,7 +16,14 @@ public class Simulation {
     }
 
     public List<Ball> getBallsAfter(float dt) {
-        // do stuff
+        for (Ball ball : balls) {
+            ball.moveTowardsNextLoc(speed * dt);
+            /* The argument to moveTowardsNextLoc is the fraction of the distance
+               between the previous and the next logical location that the ball
+               should move. So if it's 1, the ball moves from one logical location
+               to the next in one time unit.
+             */
+        }
         return balls;
     }
 

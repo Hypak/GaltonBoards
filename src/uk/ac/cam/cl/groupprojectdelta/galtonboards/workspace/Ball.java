@@ -53,7 +53,7 @@ public class Ball implements Drawable {
         }
     }
 
-    private void moveTowardsNextLoc(float f) {
+    void moveTowardsNextLoc(float f) {
         // f is the fraction of the distance between the current and next logical location to move now.
         if (logLocI == logLocs.size() - 1) return; // already in its final bucket
         LogicalLocation currentLoc = logLocs.get(logLocI);
