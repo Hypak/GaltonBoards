@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards;
 
+import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Camera;
@@ -17,11 +18,9 @@ public class UserInput {
         GLFW.glfwSetScrollCallback(
                 window,
                 (w, xOffset, yOffset) -> {
-                    float oldZ = camera.getPosition().z;
-                    float newZ = (float) (oldZ * Math.exp(yOffset * scrollSpeed));
-                    Vector3f newPos = camera.getPosition();
-                    newPos.z = newZ;
-                    camera.setPosition(newPos);
+                    Matrix3f m = new Matrix3f();
+                    m.m22 = (float)Math.exp(yOffset * scrollSpeed);
+                    camera.getPosition().mul(m);
                 }
         );
     }

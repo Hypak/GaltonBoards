@@ -24,6 +24,7 @@ public class Board implements Drawable, WorkspaceSelectable {
     // Explicit bucket instances that collect from the grid's implicit output columns
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
+    private List<Column> columns;
 
     // Variables and states for editing bucket layouts
     private List<Float> columnBoundaries;
@@ -105,11 +106,18 @@ public class Board implements Drawable, WorkspaceSelectable {
     private void generateBuckets(int[] bucketWidths) {
         this.buckets = new ArrayList<>();
         this.bucketWidths = new ArrayList<>();
+        this.columns = new ArrayList<>();
         int sum = 0;
         for (int i : bucketWidths) {
             buckets.add(new Bucket(i, sum,this));
             this.bucketWidths.add(i);
             sum += i;
+        }
+        for (int i=0; i<isoGridWidth+1; i++) {
+            Bucket bucket = getBucket(i);
+            ColumnBottom cb = new ColumnBottom(i, bucket, this);
+            ColumnTop ct = new ColumnTop(i, bucket, this, cb);
+            columns.add(ct);
         }
         // Make sure that the bucket instances cover all column outputs
         if (sum != isoGridWidth + 1) {
@@ -155,6 +163,15 @@ public class Board implements Drawable, WorkspaceSelectable {
     private void setBucketOutputPositions() {
         for(Bucket b : buckets) {
             b.setOutputPosition();
+        }
+    }
+
+    /**
+     * Recalculate the world position of the columns whenever the board position is moved.
+     */
+    private void setColumnPositions() {
+        for(Column c : columns) {
+            c.setPosition();
         }
     }
 
@@ -491,12 +508,21 @@ public class Board implements Drawable, WorkspaceSelectable {
         return null;
     }
 
+    public Column getColumnTop(int x) {
+        // Input sanitation
+        if(x > isoGridWidth || x < 0) {
+            System.err.println(String.format("%d is an invalid column index.", x));
+            return null;
+        }
+        return columns.get(x);
+    }
+
     /**
      * Getter for worldPos.
      * @return The world coordinates of this board.
      */
     public Vector2f getWorldPos() {
-        return worldPos;
+        return new Vector2f(worldPos);
     }
 
     /**
@@ -512,7 +538,7 @@ public class Board implements Drawable, WorkspaceSelectable {
      * @return The width and height dimensions of this board.
      */
     public Vector2f getDimensions() {
-        return dimensions;
+        return new Vector2f(dimensions);
     }
 
     @Override
@@ -547,9 +573,12 @@ public class Board implements Drawable, WorkspaceSelectable {
                 highBound.x, highBound.y, z
         ));
 
-        // todo: add meshes from pegs and balls
         for (Peg peg : pegs) {
             points.addAll(peg.getMesh(time));
+        }
+
+        for (Bucket bucket : buckets) {
+            points.addAll(bucket.getMesh(time));
         }
 
         return points;
@@ -557,16 +586,26 @@ public class Board implements Drawable, WorkspaceSelectable {
 
     @Override
     public List<Float> getUV() {
-        List<Float> UVs = List.of(
+        final float top = 0.5f;
+        final float bottom = 0.75f;
+        final float left = 0.75f;
+        final float right = 1f;
+
+        List<Float> UVs = new ArrayList<>(Arrays.asList(
                 // face 1
-                0f,0f,
-                1f,0f,
-                1f,1f,
+                top, left,
+                bottom, left,
+                bottom, right,
                 // face 2
-                0f,0f,
-                0f,1f,
-                1f,1f
-        );
+                top, left,
+                top, right,
+                bottom, right
+        ));
+
+        for (Bucket bucket : buckets) {
+            UVs.addAll(bucket.getUV());
+        }
+
         return UVs;
     }
 

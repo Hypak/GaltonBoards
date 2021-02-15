@@ -1,7 +1,7 @@
 import static org.lwjgl.opengl.GL11.*;
 
-abstract class ClickableDrawableRectangle implements Drawable, Clickable{
-  ClickableDrawableRectangle(float posX, float posY, float sizeX, float sizeY) {
+abstract class DrawableRectangle implements Drawable {
+  DrawableRectangle(float posX, float posY, float sizeX, float sizeY) {
     this.posX = posX;
     this.posY = posY;
     this.sizeX = sizeX;

@@ -16,6 +16,10 @@ public class Workspace implements Drawable {
     return configuration;
   }
 
+  public void update(float deltaTime) {
+    simulation.update(deltaTime);
+  }
+
   public void mouseDown(float time) {
     mouseHandler.mouseDown(time);
   }
@@ -30,13 +34,15 @@ public class Workspace implements Drawable {
 
   @Override
   public List<Float> getMesh(float time) {
-    // TODO: add balls
-    return configuration.getMesh(time);
+    List<Float> mesh = configuration.getMesh(time);
+    mesh.addAll(simulation.getMesh(time));
+    return mesh;
   }
 
   @Override
   public List<Float> getUV() {
-    // TODO: add balls
-    return configuration.getUV();
+    List<Float> uv = configuration.getUV();
+    uv.addAll(simulation.getUV());
+    return uv;
   }
 }

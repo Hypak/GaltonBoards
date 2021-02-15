@@ -1,33 +1,40 @@
-class TestButton extends ClickableDrawableRectangle {
+import org.liquidengine.legui.component.*;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.listener.MouseClickEventListener;
 
-  TestButton(float posX, float posY, float sizeX, float sizeY) {
+class TestRectangle extends DrawableRectangle {
+  TestRectangle(float posX, float posY, float sizeX, float sizeY) {
     super(posX, posY, sizeX, sizeY);
     setColor(0.0f, green, blue);
   }
-
-  @Override
-  public void onClick() {
-    // A few random actions for quick testing
-    green = 1.0f - green;
-    blue = 1.0f - blue;
-    setColor(0.0f, green, blue);
-    setPosX(getPosX() * 0.75f + 0.5f * 0.25f);
-    setPosY(getPosY() * 0.75f + 0.5f * 0.25f);
-    setSizeX(getSizeX() * 0.9f);
-    setSizeY(getSizeY() * 0.9f);
-  }
-
   private float green = 0.0f;
   private float blue = 1.0f;
-
 }
 
 public class Main {
   public static void main(String[] args) {
-    UserInterface UI = new UserInterface(800, 400);
-    UI.addComponent(new TestButton(0.1f, 0.1f, 0.3f, 0.3f));
-    UI.addComponent(new TestButton(0.6f, 0.6f, 0.3f, 0.3f));
-    UI.addComponent(3);
+    UserInterface UI = new UserInterface(800, 800);
+
+    // These aren't working right now...
+    UI.addComponent(new TestRectangle(0.4f, 0.4f, 0.1f, 0.1f));
+    UI.addComponent(new TestRectangle(0.2f, 0.6f, 0.1f, 0.1f));
+
+    Panel topPanel = new Panel(0, 0, 800, 200);
+    Panel sidePanel = new Panel(600, 200, 200, 600);
+    topPanel.add(new CheckBox("Galton Boards", 50, 50, 200, 20));
+    topPanel.add(new CheckBox("Galton Boards", 50, 100, 200, 20));
+
+    Button clickMe = new Button("click me", 50, 50, 50, 50);
+    clickMe.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        System.out.println("Galton Boards");
+      }
+    });
+    sidePanel.add(clickMe);
+
+    UI.addComponent(topPanel);
+    UI.addComponent(sidePanel);
+
     UI.start();
   }
 }

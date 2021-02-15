@@ -1,12 +1,17 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.joml.Vector2f;
+import org.lwjgl.opengl.INTELBlackholeRender;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
+import java.util.*;
 
-public class Bucket implements LogicalLocation {
+public class Bucket implements LogicalLocation, Drawable {
 
     // The index of the first implicit board column that feeds into this bucket
     private int startColumn;
@@ -16,7 +21,7 @@ public class Bucket implements LogicalLocation {
     private Board board;
 
     // What this bucket connects to
-    private Object output;
+    private Board output;
 
     // How many consecutive column outputs feed into this bucket
     private int width;
@@ -106,6 +111,14 @@ public class Bucket implements LogicalLocation {
         // Handle deleting this bucket cleanly (e.g. handle the output connection from this bucket)
     }
 
+    /**
+     * Set the output board of the bucket.
+     * @param board : Board - the board balls fall into from this bucket
+     */
+    public void setOutput(Board board) {
+        output = board;
+    }
+
     /*
     =====================================================================
                             PUBLIC GETTERS
@@ -116,7 +129,7 @@ public class Bucket implements LogicalLocation {
      * Getter for the output.
      * @return The object (board?) that this bucket leads to.
      */
-    public Object getOutput() {
+    public Board getOutput() {
         return output;
     }
 
@@ -133,7 +146,7 @@ public class Bucket implements LogicalLocation {
      * @return The world position of this bucket's output (aka where the balls are going to be funnelled to)
      */
     public Vector2f getOutputWorldPos() {
-        return outputWorldPos;
+        return new Vector2f(outputWorldPos);
     }
 
     /**
@@ -174,6 +187,18 @@ public class Bucket implements LogicalLocation {
         return new Vector2f(xPos, yPos);
     }
 
+    public Vector2f getTopLeft() {
+        float xPos = startColumn * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
+    public Vector2f getBottomRight() {
+        float xPos = (startColumn + width)* Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
     public Board getBoard() {
         return board;
     }
@@ -187,5 +212,71 @@ public class Bucket implements LogicalLocation {
     @Override
     public Set<Ball> balls() {
         return ballsInBucket;
+    }
+
+    public Map<String, Integer> liquifiedBallsByTag() {
+        // Returns a map of ball tags to the number of them that are
+        // liquified in a bucket
+        // TODO: set the liquid set to be the union of all columnBottom.balls() for all column bottoms of this bucket:
+        Set<Ball> liquid = null;
+        Map<String, Integer> nByTag = new HashMap<>();
+        for (Ball ball : liquid) {
+            if (nByTag.containsKey(ball.getTag())) {
+                nByTag.put(ball.getTag(), nByTag.get(ball.getTag()) + 1);
+            } else {
+                nByTag.put(ball.getTag(), 1);
+            }
+        }
+        return nByTag;
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        List<Float> points = new ArrayList<>();
+        Vector2f lowBound = getBottomRight();
+        Vector2f highBound = getTopLeft();
+
+
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+
+        float z = 5;
+
+        points = new ArrayList<>(Arrays.asList(
+            // Face 1
+            lowBound.x, lowBound.y, z,
+            highBound.x, lowBound.y, z,
+            highBound.x, highBound.y, z,
+
+            // Face 2
+            lowBound.x, lowBound.y, z,
+            lowBound.x, highBound.y, z,
+            highBound.x, highBound.y, z
+        ));
+
+        return points;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        final float top = 0.5f;
+        final float bottom = 0.75f;
+        final float left = 0.75f;
+        final float right = 1f;
+
+        List<Float> UVs = new ArrayList<>(Arrays.asList(
+            // face 1
+            top, left,
+            bottom, left,
+            bottom, right,
+            // face 2
+            top, left,
+            top, right,
+            bottom, right
+        ));
+
+        return UVs;
     }
 }

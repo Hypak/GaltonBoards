@@ -49,9 +49,23 @@ public class Main {
 
   public Main() {
     Configuration configuration = workspace.getConfiguration();
-    Board board = new Board(2);
-    board.updateBoardPosition(new Vector2f(-3,-3));
-    configuration.addBoard(board);
+    Board board1 = configuration.getStartBoard();
+
+    // Add two more boards (other than default)
+    Board board2 = new Board(3);
+    Board board3 = new Board(3);
+    board1.getBucket(0).setOutput(board2);
+    board1.getBucket(1).setOutput(board3);
+    board2.updateBoardPosition(new Vector2f(3, -15));
+    board3.updateBoardPosition(new Vector2f(-2, -15));
+    configuration.addBoard(board2);
+    configuration.addBoard(board3);
+
+    //Merge a couple buckets
+    //board1.startDraggingBucket(board1.getBucket(2));
+    //board1.edgeExtendedRight(false);
+    //board1.edgeExtendedRight(false);
+    //board1.confirmDraggingBucket();
   }
 
   public void run() {
@@ -73,6 +87,7 @@ public class Main {
   }
 
   private void init() throws IOException {
+
     // Setup an error callback. The default implementation
     // will print the error message in System.err.
     GLFWErrorCallback.createPrint(System.err).set();
@@ -188,6 +203,8 @@ public class Main {
       currentTime = (float) glfwGetTime();
       deltaTime = (currentTime - lastTime);
       userInput.update(deltaTime);
+      workspace.update(deltaTime);
+
 
       int[] windowWidth = new int[1];
       int[] windowHeight = new int[1];

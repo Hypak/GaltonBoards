@@ -1,6 +1,20 @@
+import org.joml.Vector2i;
+import org.liquidengine.legui.DefaultInitializer;
+import org.liquidengine.legui.animation.Animator;
+import org.liquidengine.legui.animation.AnimatorProvider;
+import org.liquidengine.legui.component.Component;
+import org.liquidengine.legui.component.Frame;
+import org.liquidengine.legui.component.Panel;
+import org.liquidengine.legui.event.WindowSizeEvent;
+import org.liquidengine.legui.listener.WindowSizeEventListener;
+import org.liquidengine.legui.system.context.Context;
+import org.liquidengine.legui.system.layout.LayoutManager;
+import org.liquidengine.legui.system.renderer.Renderer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -12,7 +26,6 @@ import java.util.Vector;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -24,9 +37,9 @@ public class UserInterface {
   }
 
   void addComponent(Object component) {
-    if (!started) {
+    if (!running) {
       try {
-        clickables.add((Clickable) component);
+        panels.add((Panel) component);
       } catch (ClassCastException ignored) {}
       try {
         drawables.add((Drawable) component);
@@ -35,21 +48,32 @@ public class UserInterface {
   }
 
   public void start() {
-    started = true;
-
     init();
-    GL.createCapabilities();
-    // Set the clear color
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    running = true;
 
-    // Rendering loop
-    while ( !glfwWindowShouldClose(window) ) {
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      for (Drawable drawable : drawables) {
+    while (running) {
+      assert context != null;
+      context.updateGlfwWindow();
+      Vector2i windowSize = context.getFramebufferSize();
+      glClearColor(0.5f, 1, 0.5f, 0);
+      glViewport(0, 0, windowSize.x, windowSize.y);
+      glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+      LayoutManager.getInstance().layout(frame, context);
+      for (Drawable drawable : drawables) { // TODO fix this
         drawable.draw(window);
       }
-      glfwSwapBuffers(window);
+      renderer.render(frame, context);
+
       glfwPollEvents();
+      glfwSwapBuffers(window);
+
+      animator.runAnimations();
+      initializer.getSystemEventProcessor().processEvents(frame, context);
+      initializer.getGuiEventProcessor().processEvents();
+
+      Component mouseTargetGui = context.getMouseTargetGui();
+      Component focusedGui = context.getFocusedGui();
     }
 
     // Free the window callbacks and destroy the window
@@ -62,42 +86,16 @@ public class UserInterface {
   }
 
   private void init() {
-    // Setup an error callback. The default implementation
-    // will print the error message in System.err.
     GLFWErrorCallback.createPrint(System.err).set();
-
-    // Initialize GLFW. Most GLFW functions will not work before doing this.
     if ( !glfwInit() )
       throw new IllegalStateException("Unable to initialize GLFW");
-
-    // Configure GLFW
     glfwDefaultWindowHints(); // optional, the current window hints are already the default
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 
-    // Create the window
     window = glfwCreateWindow(width, height, "Galton Boards!", NULL, NULL);
     if ( window == NULL )
       throw new RuntimeException("Failed to create the GLFW window");
 
-    // Setup a mouse callback
-    glfwSetMouseButtonCallback(
-        window,
-        (window, button, action, mods) -> {
-          if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) {
-            DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
-            DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
-            glfwGetCursorPos(window, x, y);
-            float mouseX = (float) x.get() / (float) width;
-            float mouseY = (float) y.get() / (float) height;
-            for (Clickable clickable : clickables) {
-              if (clickable.inside(mouseX, mouseY)) {
-                clickable.onClick();
-              }
-            }
-          }
-        });
-
-    // Get the thread stack and push a new frame
     try ( MemoryStack stack = stackPush() ) {
       IntBuffer pWidth = stack.mallocInt(1); // int*
       IntBuffer pHeight = stack.mallocInt(1); // int*
@@ -115,23 +113,46 @@ public class UserInterface {
           (vidmode.width() - pWidth.get(0)) / 2,
           (vidmode.height() - pHeight.get(0)) / 2
       );
-    } // the stack frame is popped automatically
+    }
 
-    // Make the OpenGL context current
     glfwMakeContextCurrent(window);
-    // Enable v-sync
     glfwSwapInterval(1);
-
-    // Make the window visible
+    GL.createCapabilities();
     glfwShowWindow(window);
+
+    frame = new Frame(width, height);
+    for (Panel panel : panels) {
+      panel.setFocusable(false);
+      panel.getListenerMap().addListener(WindowSizeEvent.class, (WindowSizeEventListener) event -> panel.setSize(event.getWidth(), event.getHeight()));
+      frame.getContainer().add(panel);
+    }
+
+    initializer = new DefaultInitializer(window, frame);
+
+    GLFWKeyCallbackI exitOnEscCallback = (w1, key, code, action, mods) -> running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE);
+    GLFWWindowCloseCallbackI glfwWindowCloseCallbackI = w -> running = false;
+    initializer.getCallbackKeeper().getChainKeyCallback().add(exitOnEscCallback);
+    initializer.getCallbackKeeper().getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
+
+    renderer = initializer.getRenderer();
+    animator = AnimatorProvider.getAnimator();
+    renderer.initialize();
+
+    context = initializer.getContext();
   }
 
-  private final Vector<Clickable> clickables = new Vector<>();
   private final Vector<Drawable> drawables = new Vector<>();
+  private final Vector<Panel> panels = new Vector<>();
+
   private long window;
-  private boolean started = false;
+  private boolean running = false;
 
   private final int height;
   private final int width;
 
+  private Context context;
+  private Frame frame;
+  private Renderer renderer;
+  private DefaultInitializer initializer;
+  private Animator animator;
 }

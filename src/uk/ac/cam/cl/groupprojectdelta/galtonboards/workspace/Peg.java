@@ -139,7 +139,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * @return The grid position.
      */
     public Vector2i getGridPos() {
-        return gridPos;
+        return new Vector2i(gridPos);
     }
 
     /**
@@ -147,7 +147,11 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * @return The peg's world position.
      */
     public Vector2f getWorldPos() {
-        return worldPos;
+        Vector2f res = new Vector2f(worldPos);
+        // Quick hack to align the pegs and the balls
+        // TODO: Implement a proper solution to this
+        res.y += 0.4f;
+        return res;
     }
 
     @Override
@@ -159,7 +163,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.
      */
-    public int getLeftBucketIndex() {
+    public int getLeftColumnIndex() {
         if (gridPos.x == board.getIsoGridWidth() - 1) {
             return (gridPos.y);
         }
@@ -171,7 +175,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * If this peg is on the last row, then return the output column that a right falling ball will go into.
      * @return The output column (implicit bucket) index for output to the right.
      */
-    public int getRightBucketIndex() {
+    public int getRightColumnIndex() {
         if (gridPos.x == board.getIsoGridWidth() - 1) {
             return (gridPos.y + 1);
         }
@@ -179,6 +183,15 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         return -1;
     }
 
+    public Column getLeftColumn() {
+        return board.getColumnTop(getLeftColumnIndex());
+    }
+
+    public Column getRightColumn() {
+        return board.getColumnTop(getRightColumnIndex());
+    }
+
+    //OBSOLETE
     @Override
     public boolean containsPoint(Vector2f point) {
         return getWorldPos().distance(point) < RADIUS;
@@ -197,11 +210,12 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
     }
 
     public Bucket getLeftBucket() {
-        return board.getBucket(getLeftBucketIndex());
+        return board.getBucket(getLeftColumnIndex());
     }
 
+    //OBSOLETE
     public Bucket getRightBucket() {
-        return board.getBucket(getRightBucketIndex());
+        return board.getBucket(getRightColumnIndex());
     }
 
     @Override
@@ -211,6 +225,9 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     @Override
     public List<Float> getMesh(float time) {
+
+        // todo: generate just one triangle based on the probability see jamboard
+
         List<Float> points = new ArrayList<>();
         Vector2f bound = new Vector2f();
 
@@ -222,7 +239,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 5;
+        float z = 4;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
@@ -241,15 +258,20 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     @Override
     public List<Float> getUV() {
+        final float top = 0.25f;
+        final float bottom = 0.5f;
+        final float left = 0.75f;
+        final float right = 1f;
+
         List<Float> UVs = List.of(
                 // face 1
-                0f,0f,
-                1f,0f,
-                1f,1f,
+                top,left,
+                bottom,left,
+                bottom,right,
                 // face 2
-                0f,0f,
-                0f,1f,
-                1f,1f
+                top,left,
+                top,right,
+                bottom,right
         );
         return UVs;
     }
