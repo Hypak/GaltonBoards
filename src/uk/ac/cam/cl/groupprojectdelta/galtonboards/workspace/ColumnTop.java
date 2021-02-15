@@ -7,12 +7,11 @@ import java.util.Set;
 public class ColumnTop extends Column implements LogicalLocation {
 
     private Bucket bucket;
-    private Column columnBottom;
+    private ColumnBottom columnBottom;
     private Board board;
     private Vector2f worldPos;
-    private int columnIndex;
 
-    public ColumnTop(int columnIndex, Bucket bucket, Board board, Column columnBottom) {
+    public ColumnTop(int columnIndex, Bucket bucket, Board board, ColumnBottom columnBottom) {
         super(columnIndex, bucket, board);
         this.bucket = bucket;
         this.board = board;
@@ -22,28 +21,18 @@ public class ColumnTop extends Column implements LogicalLocation {
 
     @Override
     public void setPosition() {
-        float xPos = (columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float xPos = (super.columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
         worldPos =  new Vector2f(xPos, yPos);
         columnBottom.setPosition();
     }
 
-    public Column getColumnBottom() {
+    public ColumnBottom getColumnBottom() {
         return columnBottom;
     }
 
     @Override
     public Vector2f getWorldPos() {
         return new Vector2f(worldPos);
-    }
-
-    @Override
-    public Set<Ball> balls() {
-        return null;
-    }
-
-    @Override
-    public Board getBoard() {
-        return board;
     }
 }

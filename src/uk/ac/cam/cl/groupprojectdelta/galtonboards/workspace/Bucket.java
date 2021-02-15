@@ -211,15 +211,11 @@ public class Bucket implements LogicalLocation {
     public Map<String, Integer> liquifiedBallsByTag() {
         // Returns a map of ball tags to the number of them that are
         // liquified in a bucket
-        Set<Ball> liquid = balls();
-        for (Ball ball : liquid) {
-            if (!ball.isLiquified()) {
-                liquid.remove(ball);
-            }
-        }
+        // TODO: set the liquid set to be the union of all columnBottom.balls() for all column bottoms of this bucket:
+        Set<Ball> liquid = null;
         Map<String, Integer> nByTag = new HashMap<>();
         for (Ball ball : liquid) {
-            if (nByTag.keySet().contains(ball.getTag())) {
+            if (nByTag.containsKey(ball.getTag())) {
                 nByTag.put(ball.getTag(), nByTag.get(ball.getTag()) + 1);
             } else {
                 nByTag.put(ball.getTag(), 1);

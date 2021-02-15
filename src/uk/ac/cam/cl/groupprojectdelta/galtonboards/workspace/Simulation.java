@@ -8,7 +8,7 @@ public class Simulation implements Drawable {
     public float speed = 4f;
     private List<Ball> balls;
     Board rootBoard;
-    private final float timeBetweenBalls = 0.001f;
+    private final float timeBetweenBalls = 0.005f;
     private float timeTillNextBall = 0;
 
     public Simulation(Board startingBoard) {

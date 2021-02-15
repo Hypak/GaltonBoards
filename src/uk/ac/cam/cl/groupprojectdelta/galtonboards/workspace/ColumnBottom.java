@@ -13,14 +13,13 @@ public class ColumnBottom extends Column implements LogicalLocation {
 
     public ColumnBottom(int columnIndex, Bucket bucket, Board board) {
         super(columnIndex, bucket, board);
-        this.columnIndex = columnIndex;
         this.bucket = bucket;
         this.board = board;
     }
 
     @Override
     public void setPosition() {
-        float xPos = (columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float xPos = (super.columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
         worldPos =  new Vector2f(xPos, yPos);
     }
@@ -28,15 +27,5 @@ public class ColumnBottom extends Column implements LogicalLocation {
     @Override
     public Vector2f getWorldPos() {
         return new Vector2f(worldPos);
-    }
-
-    @Override
-    public Set<Ball> balls() {
-        return null;
-    }
-
-    @Override
-    public Board getBoard() {
-        return board;
     }
 }

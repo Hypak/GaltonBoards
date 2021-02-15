@@ -12,7 +12,6 @@ public class Ball implements Drawable {
     List<LogicalLocation> logLocs; // all pegs/buckets the ball will encounter on its path
     int logLocI; // current index into logLocs
     Simulation simulation; // Simulation object that contains this ball
-    boolean liquified;
     String tag = "untagged";
 
     public Ball(LogicalLocation startingPoint, Simulation sim) {
@@ -20,7 +19,6 @@ public class Ball implements Drawable {
         logLocI = 0;
         position = startingPoint.getWorldPos();
         logLocs = getLogicalPath(startingPoint);
-        liquified = false;
     }
 
     public String getTag() {
@@ -36,7 +34,8 @@ public class Ball implements Drawable {
     }
 
     public boolean isLiquified() {
-        return liquified;
+        if (logLocs.get(logLocI) instanceof ColumnBottom) return true; // probably not an ideal heuristic
+        return false;
     }
 
     List<LogicalLocation> getLogicalPath(LogicalLocation start) {
@@ -44,18 +43,22 @@ public class Ball implements Drawable {
         locs.add(start);
         int i = 0;
         while (true) {
-            if (locs.get(i) instanceof Bucket) {
-                Bucket b = (Bucket) locs.get(i);
+            //System.out.println(locs.get(i));
+            if (locs.get(i) instanceof ColumnBottom) {
+                ColumnBottom cb = (ColumnBottom) locs.get(i);
                 // System.out.println(b + ", " + b.getWorldPos());
-                if (b.getOutput() == null) { // this is the final bucket
+                if (cb.getBucket().getOutput() == null) { // this is the final bucket
                     return locs; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
                 } else {
-                    locs.add((LogicalLocation)b.getOutput().getRootPeg());
+                    locs.add((LogicalLocation)cb.getBucket().getOutput().getRootPeg());
                 }
+            } else if (locs.get(i) instanceof ColumnTop) {
+                ColumnTop ct = (ColumnTop) locs.get(i);
+                locs.add(ct.getColumnBottom());
             } else if (locs.get(i) instanceof Peg) {
                 Peg p = (Peg) locs.get(i);
                 boolean takeLeft = Math.random() < p.leftProb();
-                boolean pegIsNext = p.getLeftBucketIndex() == -1;
+                boolean pegIsNext = p.getLeftColumnIndex() == -1;
                 if (pegIsNext) {
                     if (takeLeft) {
                         locs.add(p.getLeft());
@@ -64,9 +67,9 @@ public class Ball implements Drawable {
                     }
                 } else { // bucket is next
                     if (takeLeft) {
-                        locs.add(p.getLeftBucket());
+                        locs.add(p.getLeftColumn());
                     } else {
-                        locs.add(p.getRightBucket());
+                        locs.add(p.getRightColumn());
                     }
                 }
             }
