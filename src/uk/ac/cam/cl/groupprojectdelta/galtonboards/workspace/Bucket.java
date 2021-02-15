@@ -182,6 +182,18 @@ public class Bucket implements LogicalLocation {
         return new Vector2f(xPos, yPos);
     }
 
+    public Vector2f getTopLeft() {
+        float xPos = startColumn * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
+    public Vector2f getBottomRight() {
+        float xPos = (startColumn + width)* Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
     public Board getBoard() {
         return board;
     }
