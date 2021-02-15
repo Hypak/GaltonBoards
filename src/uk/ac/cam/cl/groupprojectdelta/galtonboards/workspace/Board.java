@@ -573,9 +573,12 @@ public class Board implements Drawable {
                 highBound.x, highBound.y, z
         ));
 
-        // todo: add meshes from pegs and balls
         for (Peg peg : pegs) {
             points.addAll(peg.getMesh(time));
+        }
+
+        for (Bucket bucket : buckets) {
+            points.addAll(bucket.getMesh(time));
         }
 
         return points;
@@ -599,8 +602,8 @@ public class Board implements Drawable {
                 bottom, right
         ));
 
-        for (Peg peg : pegs) {
-            UVs.addAll(peg.getUV());
+        for (Bucket bucket : buckets) {
+            UVs.addAll(bucket.getUV());
         }
 
         return UVs;

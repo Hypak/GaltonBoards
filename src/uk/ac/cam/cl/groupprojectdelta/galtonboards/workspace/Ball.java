@@ -55,7 +55,7 @@ public class Ball implements Drawable {
             } else if (locs.get(i) instanceof Peg) {
                 Peg p = (Peg) locs.get(i);
                 boolean takeLeft = Math.random() < p.leftProb();
-                boolean pegIsNext = p.getLeftBucketIndex() == -1;
+                boolean pegIsNext = p.getLeftColumnIndex() == -1;
                 if (pegIsNext) {
                     if (takeLeft) {
                         locs.add(p.getLeft());

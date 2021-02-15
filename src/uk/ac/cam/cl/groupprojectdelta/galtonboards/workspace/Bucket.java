@@ -1,11 +1,17 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.INTELBlackholeRender;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
 
-public class Bucket implements LogicalLocation {
+public class Bucket implements LogicalLocation, Drawable {
 
     // The index of the first implicit board column that feeds into this bucket
     private int startColumn;
@@ -226,5 +232,55 @@ public class Bucket implements LogicalLocation {
             }
         }
         return nByTag;
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        List<Float> points = new ArrayList<>();
+        Vector2f lowBound = getBottomRight();
+        Vector2f highBound = getTopLeft();
+
+
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+
+        float z = 5;
+
+        points = new ArrayList<>(Arrays.asList(
+            // Face 1
+            lowBound.x, lowBound.y, z,
+            highBound.x, lowBound.y, z,
+            highBound.x, highBound.y, z,
+
+            // Face 2
+            lowBound.x, lowBound.y, z,
+            lowBound.x, highBound.y, z,
+            highBound.x, highBound.y, z
+        ));
+
+        return points;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        final float top = 0.5f;
+        final float bottom = 0.75f;
+        final float left = 0.75f;
+        final float right = 1f;
+
+        List<Float> UVs = new ArrayList<>(Arrays.asList(
+            // face 1
+            top, left,
+            bottom, left,
+            bottom, right,
+            // face 2
+            top, left,
+            top, right,
+            bottom, right
+        ));
+
+        return UVs;
     }
 }
