@@ -177,7 +177,7 @@ public class Main {
     uvBuffer = glGenBuffers();
     //indexBuffer = glGenBuffers(); todo: potentially add later
 
-    loadTexture("resources/textures/default.png");
+    loadTexture("resources/textures/texture.png");
 
     currentTime = (float) glfwGetTime();
   }
