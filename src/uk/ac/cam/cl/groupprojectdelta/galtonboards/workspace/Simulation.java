@@ -5,10 +5,10 @@ import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 public class Simulation implements Drawable {
-    public float speed = 2f;
+    public float speed = 4f;
     private List<Ball> balls;
     Board rootBoard;
-    private final float timeBetweenBalls = 0.05f;
+    private final float timeBetweenBalls = 0.001f;
     private float timeTillNextBall = 0;
 
     public Simulation(Board startingBoard) {
@@ -17,18 +17,6 @@ public class Simulation implements Drawable {
     }
 
     public List<Ball> getBalls() {
-        return balls;
-    }
-
-    public List<Ball> getBallsAfter(float dt) {
-        for (Ball ball : balls) {
-            ball.moveTowardsNextLoc(speed * dt);
-            /* The argument to moveTowardsNextLoc is the fraction of the distance
-               between the previous and the next logical location that the ball
-               should move. So if it's 1, the ball moves from one logical location
-               to the next in one time unit.
-             */
-        }
         return balls;
     }
 
