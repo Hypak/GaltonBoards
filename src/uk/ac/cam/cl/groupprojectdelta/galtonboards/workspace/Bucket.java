@@ -133,7 +133,7 @@ public class Bucket implements LogicalLocation {
      * @return The world position of this bucket's output (aka where the balls are going to be funnelled to)
      */
     public Vector2f getOutputWorldPos() {
-        return outputWorldPos;
+        return new Vector2f(outputWorldPos);
     }
 
     /**

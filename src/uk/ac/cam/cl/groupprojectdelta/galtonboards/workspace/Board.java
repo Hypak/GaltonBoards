@@ -496,7 +496,7 @@ public class Board implements Drawable {
      * @return The world coordinates of this board.
      */
     public Vector2f getWorldPos() {
-        return worldPos;
+        return new Vector2f(worldPos);
     }
 
     /**
@@ -512,7 +512,7 @@ public class Board implements Drawable {
      * @return The width and height dimensions of this board.
      */
     public Vector2f getDimensions() {
-        return dimensions;
+        return new Vector2f(dimensions);
     }
 
     @Override
