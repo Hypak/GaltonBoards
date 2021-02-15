@@ -14,12 +14,16 @@ public class Workspace implements Drawable {
   @Override
   public List<Float> getMesh(float time) {
     // TODO: add balls
-    return configuration.getMesh(time);
+    List<Float> mesh = configuration.getMesh(time);
+    mesh.addAll(simulation.getMesh(time));
+    return mesh;
   }
 
   @Override
   public List<Float> getUV() {
     // TODO: add balls
-    return configuration.getUV();
+    List<Float> uv = configuration.getUV();
+    uv.addAll(simulation.getUV());
+    return uv;
   }
 }

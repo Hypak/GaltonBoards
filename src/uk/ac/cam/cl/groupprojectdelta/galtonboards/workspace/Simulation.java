@@ -2,8 +2,9 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import java.util.ArrayList;
 import java.util.List;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-public class Simulation {
+public class Simulation implements Drawable {
     public float speed = 1f;
     private List<Ball> balls;
     Board rootBoard;
@@ -40,5 +41,23 @@ public class Simulation {
 
     public Board getRootBoard() {
         return rootBoard;
+    }
+
+    @Override
+    public List<Float> getMesh(float time) {
+        List<Float> mesh = new ArrayList<>();
+        for (Ball ball : balls) {
+            mesh.addAll(ball.getMesh(time));
+        }
+        return mesh;
+    }
+
+    @Override
+    public List<Float> getUV() {
+        List<Float> uv = new ArrayList<>();
+        for (Ball ball : balls) {
+            uv.addAll(ball.getUV());
+        }
+        return uv;
     }
 }
