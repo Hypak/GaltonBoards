@@ -35,10 +35,11 @@ public class Ball implements Drawable {
         while (true) {
             if (locs.get(i) instanceof Bucket) {
                 Bucket b = (Bucket) locs.get(i);
+                // System.out.println(b + ", " + b.getWorldPos());
                 if (b.getOutput() == null) { // this is the final bucket
                     return locs; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
                 } else {
-                    locs.add((LogicalLocation)b.getOutput());
+                    locs.add((LogicalLocation)b.getOutput().getRootPeg());
                 }
             } else if (locs.get(i) instanceof Peg) {
                 Peg p = (Peg) locs.get(i);

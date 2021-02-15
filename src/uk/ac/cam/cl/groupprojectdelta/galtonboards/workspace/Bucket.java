@@ -16,7 +16,7 @@ public class Bucket implements LogicalLocation {
     private Board board;
 
     // What this bucket connects to
-    private Object output;
+    private Board output;
 
     // How many consecutive column outputs feed into this bucket
     private int width;
@@ -106,6 +106,14 @@ public class Bucket implements LogicalLocation {
         // Handle deleting this bucket cleanly (e.g. handle the output connection from this bucket)
     }
 
+    /**
+     * Set the output board of the bucket.
+     * @param board : Board - the board balls fall into from this bucket
+     */
+    public void setOutput(Board board) {
+        output = board;
+    }
+
     /*
     =====================================================================
                             PUBLIC GETTERS
@@ -116,7 +124,7 @@ public class Bucket implements LogicalLocation {
      * Getter for the output.
      * @return The object (board?) that this bucket leads to.
      */
-    public Object getOutput() {
+    public Board getOutput() {
         return output;
     }
 

@@ -588,16 +588,21 @@ public class Board implements Drawable {
         final float left = 0.75f;
         final float right = 1f;
 
-        List<Float> UVs = List.of(
+        List<Float> UVs = new ArrayList<>(Arrays.asList(
                 // face 1
-                top,left,
-                bottom,left,
-                bottom,right,
+                top, left,
+                bottom, left,
+                bottom, right,
                 // face 2
-                top,left,
-                top,right,
-                bottom,right
-        );
+                top, left,
+                top, right,
+                bottom, right
+        ));
+
+        for (Peg peg : pegs) {
+            UVs.addAll(peg.getUV());
+        }
+
         return UVs;
     }
 

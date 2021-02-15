@@ -5,10 +5,10 @@ import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 public class Simulation implements Drawable {
-    public float speed = 1f;
+    public float speed = 2f;
     private List<Ball> balls;
     Board rootBoard;
-    private final float timeBetweenBalls = 4;
+    private final float timeBetweenBalls = 0.05f;
     private float timeTillNextBall = 0;
 
     public Simulation(Board startingBoard) {
