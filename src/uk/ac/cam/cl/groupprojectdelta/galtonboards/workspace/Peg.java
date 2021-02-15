@@ -136,7 +136,7 @@ public class Peg implements LogicalLocation, Drawable {
      * @return The grid position.
      */
     public Vector2i getGridPos() {
-        return gridPos;
+        return new Vector2i(gridPos);
     }
 
     /**
@@ -144,7 +144,7 @@ public class Peg implements LogicalLocation, Drawable {
      * @return The peg's world position.
      */
     public Vector2f getWorldPos() {
-        return worldPos;
+        return new Vector2f(worldPos);
     }
 
     @Override
