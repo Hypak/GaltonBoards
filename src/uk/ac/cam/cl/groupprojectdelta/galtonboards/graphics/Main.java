@@ -1,24 +1,18 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.io.IOException;
 import java.nio.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -137,7 +131,7 @@ public class Main {
     uvBuffer = glGenBuffers();
     //indexBuffer = glGenBuffers(); todo: potentially add later
 
-    loadTexture("resources/textures/default.png");
+    loadTexture("resources/textures/texture.png");
 
     currentTime = (float) glfwGetTime();
   }

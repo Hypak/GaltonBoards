@@ -179,18 +179,21 @@ public class Ball implements Drawable {
 
     @Override
     public List<Float> getUV() {
+        final float top = 0.75f;
+        final float bottom = 1f;
+        final float left = 0.75f;
+        final float right = 1f;
+
         List<Float> UVs = List.of(
                 // face 1
-                0f,0f,
-                1f,0f,
-                1f,1f,
+                top,left,
+                bottom,left,
+                bottom,right,
                 // face 2
-                0f,0f,
-                0f,1f,
-                1f,1f
+                top,left,
+                top,right,
+                bottom,right
         );
         return UVs;
     }
-
-
 }
