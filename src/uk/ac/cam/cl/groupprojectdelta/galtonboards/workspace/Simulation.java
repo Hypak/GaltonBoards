@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation {
@@ -9,6 +10,7 @@ public class Simulation {
 
     public Simulation(Board startingBoard) {
         rootBoard = startingBoard;
+        balls = new ArrayList<>();
     }
 
     public List<Ball> getBalls() {
@@ -34,5 +36,9 @@ public class Simulation {
 
     public void spawnBallAtRoot() {
         spawnBall(rootBoard.getRootPeg());
+    }
+
+    public Board getRootBoard() {
+        return rootBoard;
     }
 }

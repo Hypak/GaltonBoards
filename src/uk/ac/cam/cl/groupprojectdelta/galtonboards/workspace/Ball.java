@@ -19,6 +19,14 @@ public class Ball implements Drawable {
         logLocs = getLogicalPath(startingPoint);
     }
 
+    public Vector2f getPosition() {
+        return position;
+    }
+
+    public LogicalLocation getLogLoc() {
+        return logLocs.get(logLocI);
+    }
+
     List<LogicalLocation> getLogicalPath(LogicalLocation start) {
         List<LogicalLocation> locs = new ArrayList<>();
         locs.add(start);
@@ -53,19 +61,29 @@ public class Ball implements Drawable {
         }
     }
 
+    static Vector2f copyVec(Vector2f v) {
+        return new Vector2f(v.x(), v.y());
+    }
+
     void moveTowardsNextLoc(float f) {
         // f is the fraction of the distance between the current and next logical location to move now.
         if (logLocI == logLocs.size() - 1) return; // already in its final bucket
         LogicalLocation currentLoc = logLocs.get(logLocI);
         LogicalLocation nextLoc = logLocs.get(logLocI + 1);
-        float currentToNextDistance = nextLoc.getWorldPos().sub(currentLoc.getWorldPos()).length();
+        Vector2f toNextLogLoc = new Vector2f(0,0); // IMPORTANT: Vector2f not immutable, need to do all this initialisation and copying
+        nextLoc.getWorldPos().sub(currentLoc.getWorldPos(), toNextLogLoc);
+        float currentToNextDistance = toNextLogLoc.length();
         float distToMove = f * currentToNextDistance; // distance between current and next logical location
-        Vector2f remainingTrip = nextLoc.getWorldPos().sub(position);
+        Vector2f remainingTrip = new Vector2f(0,0);
+        nextLoc.getWorldPos().sub(position, remainingTrip);
         float tripLeft = 1 - remainingTrip.length() / distToMove; // fraction of trip to next logLoc that's left
-        Vector2f dir = remainingTrip.normalize();
-        Vector2f moved = dir.mul(Math.max(tripLeft, f) * currentToNextDistance);
-        position = position.add(moved);
+        Vector2f dir = new Vector2f(0,0);
+        remainingTrip.normalize(dir);
+        Vector2f moved = new Vector2f(0,0);
+        dir.mul(Math.max(tripLeft, f) * currentToNextDistance, moved);
+        position.add(moved);
         if (tripLeft < f) { // then we've reached the next logical location
+            //System.out.println("Ball has reached next logical location: " + nextLoc + ", " + nextLoc.getWorldPos());
             if (nextLoc instanceof Bucket && !nextLoc.getBoard().isOpen()) {
                 return; // we've reached the end of a bucket that's closed
             }
