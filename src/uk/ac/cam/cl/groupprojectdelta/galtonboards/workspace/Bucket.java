@@ -106,6 +106,14 @@ public class Bucket implements LogicalLocation {
         // Handle deleting this bucket cleanly (e.g. handle the output connection from this bucket)
     }
 
+    /**
+     * Set the output board of the bucket.
+     * @param board : Board - the board balls fall into from this bucket
+     */
+    public void setOutput(Board board) {
+        output = board;
+    }
+
     /*
     =====================================================================
                             PUBLIC GETTERS

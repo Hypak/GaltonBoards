@@ -1,11 +1,14 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.io.IOException;
@@ -40,6 +43,15 @@ public class Main {
   private Workspace workspace = new Workspace();
 
   float currentTime;
+
+  public Main() {
+    Configuration configuration = workspace.getConfiguration();
+    Board board1 = configuration.getStartBoard();
+    Board board2 = new Board(3);
+    board1.getBucket(0).setOutput(board2);
+    board2.updateBoardPosition(new Vector2f(3, -15));
+    configuration.addBoard(board2);
+  }
 
   public void run() {
     System.out.println("Galton Boards! Using LWJGL " + Version.getVersion() + "!");
