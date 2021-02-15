@@ -15,14 +15,29 @@ public class WorkspaceMouseHandler {
   private State state = State.NONE;
   private WorkspaceClickable currentClickable;
   private Vector2f currentPos = new Vector2f();
+  private WorkspaceSelectionHandler selectionHandler = new WorkspaceSelectionHandler();
+
+  public WorkspaceMouseHandler(ClickableMap clickableMap) {
+    currentClickableMap = clickableMap;
+  }
 
   public void mouseDown(float time) {
+    System.out.println(state.name());
+    System.out.println(currentClickable);
     switch (state) {
       case NONE:
-        state = State.DOWN1;
         lastClickTime = time;
         dragStart = currentPos;
-        currentClickable.press();
+        if (currentClickable == null) {
+          state = State.REGION;
+        } else {
+          state = State.DOWN1;
+          currentClickable.press();
+          if (currentClickable instanceof WorkspaceSelectable) {
+            selectionHandler.clearSelection();
+            selectionHandler.addToSelection((WorkspaceSelectable) currentClickable);
+          }
+        }
         break;
       case UP1:
         if (time - lastClickTime < DOUBLE_CLICK) {
@@ -44,6 +59,8 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseUp(float time) {
+    System.out.println(state.name());
+    System.out.println(currentClickable);
     switch (state) {
       case DOWN1:
         state = State.UP1;
@@ -58,7 +75,9 @@ public class WorkspaceMouseHandler {
         ((WorkspaceDraggable) currentClickable).endDrag();
         break;
       case REGION:
-        currentClickableMap.getClickablesInRegion(dragStart, currentPos);
+        selectionHandler.clearSelection();
+        selectionHandler.addToSelection(currentClickableMap.getSelectablesInRegion(dragStart, currentPos));
+        state = State.NONE;
       case NONE:
       case UP1:
         break;
@@ -66,6 +85,10 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseMove(Vector2f pos) {
+    System.out.println(state.name());
+    System.out.println(currentClickable);
+    System.out.println(getCurrentClickableMap().getClickableAtPos(pos));
+    System.out.println(pos);
     switch (state) {
       case DOWN1:
       case DOWN2:
@@ -76,13 +99,18 @@ public class WorkspaceMouseHandler {
           break;
         } else if (currentClickable == null) {
           state = State.REGION;
+          break;
         }
       case NONE:
       case UP1:
         state = State.NONE;
         setCurrentClickable(getCurrentClickableMap().getClickableAtPos(pos));
+        break;
       case DRAG:
         ((WorkspaceDraggable) currentClickable).moveDrag(pos.sub(currentPos));
+        break;
+      case REGION:
+        break;
     }
     currentPos = pos;
   }

@@ -578,6 +578,7 @@ public class Board implements Drawable, WorkspaceSelectable {
         getDimensions().mul(0.5f, halfDimensions);
         getWorldPos().sub(halfDimensions, topleft);
         getWorldPos().add(halfDimensions, bottomright);
+        System.out.println(topleft);
         return point.x > topleft.x
             && point.x < bottomright.x
             && point.y > topleft.y

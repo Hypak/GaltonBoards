@@ -1,11 +1,12 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class WorkspaceSelectionHandler {
   private static WorkspaceSelectionHandler selectionHandler;
-  private List<WorkspaceSelectable> currentSelection;
+  private final List<WorkspaceSelectable> currentSelection = new LinkedList<>();
 
   // Singleton Pattern
   public static WorkspaceSelectionHandler getSelectionHandler() {

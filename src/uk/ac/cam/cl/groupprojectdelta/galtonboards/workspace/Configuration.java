@@ -8,7 +8,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 
 public class Configuration implements Drawable {
-  private Board startBoard = new Board();
+  private Board startBoard = new Board(5);
   private final Collection<Board> boards = new LinkedList<>();
   private final ClickableMap clickableMap;
 

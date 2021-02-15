@@ -19,12 +19,12 @@ public class ClickableMap {
     return null;
   }
 
-  public Collection<WorkspaceClickable> getClickablesInRegion(Vector2f from, Vector2f to) {
-    Collection<WorkspaceClickable> result = new LinkedList<>();
+  public Collection<WorkspaceSelectable> getSelectablesInRegion(Vector2f from, Vector2f to) {
+    Collection<WorkspaceSelectable> result = new LinkedList<>();
     for (WorkspaceClickable clickable : clickables) {
       if (clickable instanceof WorkspaceSelectable) {
         if (((WorkspaceSelectable) clickable).intersectsRegion(from, to)) {
-          result.add(clickable);
+          result.add((WorkspaceSelectable) clickable);
         }
       }
     }

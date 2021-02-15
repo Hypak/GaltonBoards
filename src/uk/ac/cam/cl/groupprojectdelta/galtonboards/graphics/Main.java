@@ -47,6 +47,13 @@ public class Main {
 
   float currentTime;
 
+  public Main() {
+    Configuration configuration = workspace.getConfiguration();
+    Board board = new Board(2);
+    board.updateBoardPosition(new Vector2f(-3,-3));
+    configuration.addBoard(board);
+  }
+
   public void run() {
     System.out.println("Galton Boards! Using LWJGL " + Version.getVersion() + "!");
 
@@ -66,7 +73,6 @@ public class Main {
   }
 
   private void init() throws IOException {
-
     // Setup an error callback. The default implementation
     // will print the error message in System.err.
     GLFWErrorCallback.createPrint(System.err).set();
@@ -92,6 +98,25 @@ public class Main {
       if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
         glfwSetWindowShouldClose(window, true);
     });
+
+    //TODO PUT THIS SOMEWEHRE SENSIBLE - MATT
+
+    GLFW.glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+      // todo: actually convert from screen-space to world-space
+      workspace.mouseMove(new Vector2f((float) xpos / 200, (float) ypos / 200));
+    });
+
+    GLFW.glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+          workspace.mouseDown(currentTime);
+        } else if (action == GLFW_RELEASE) {
+          workspace.mouseUp(currentTime);
+        }
+      }
+    });
+
+    //-------------------------------------
 
     // centering window position on screen - requires finer memory control than typical java
     try ( MemoryStack stack = stackPush() ) {
