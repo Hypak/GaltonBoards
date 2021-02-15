@@ -163,6 +163,8 @@ public class Main {
       currentTime = (float) glfwGetTime();
       deltaTime = (currentTime - lastTime);
       userInput.update(deltaTime);
+      workspace.update(deltaTime);
+
 
       int[] windowWidth = new int[1];
       int[] windowHeight = new int[1];

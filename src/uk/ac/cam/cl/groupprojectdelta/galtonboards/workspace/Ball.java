@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Ball implements Drawable {
@@ -95,13 +96,55 @@ public class Ball implements Drawable {
         }
     }
 
+    public void update(float deltaTime) {
+        moveTowardsNextLoc(deltaTime * simulation.speed);
+        System.out.println(position);
+    }
+
     @Override
     public List<Float> getMesh(float time) {
-        return null;
+        List<Float> points = new ArrayList<>();
+        Vector2f bound = new Vector2f();
+
+        Vector2f dimensions = new Vector2f(0.1f, 0.1f);
+        position.add(dimensions, bound);
+
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+
+        float z = 5;
+
+        points = new ArrayList<>(Arrays.asList(
+                // Face 1
+                position.x, position.y, z,
+                bound.x, position.y, z,
+                bound.x, bound.y, z,
+
+                // Face 2
+                position.x, position.y, z,
+                position.x, bound.y, z,
+                bound.x, bound.y, z
+        ));
+
+        return points;
     }
 
     @Override
     public List<Float> getUV() {
-        return null;
+        List<Float> UVs = List.of(
+                // face 1
+                0f,0f,
+                1f,0f,
+                1f,1f,
+                // face 2
+                0f,0f,
+                0f,1f,
+                1f,1f
+        );
+        return UVs;
     }
+
+
 }

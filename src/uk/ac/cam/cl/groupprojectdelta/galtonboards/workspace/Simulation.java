@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-public class Simulation implements Drawable {
+public class Simulation {
     public float speed = 1f;
     private List<Ball> balls;
     Board rootBoard;
+    private final float timeBetweenBalls = 4;
+    private float timeTillNextBall = 0;
 
     public Simulation(Board startingBoard) {
         rootBoard = startingBoard;
@@ -41,6 +43,17 @@ public class Simulation implements Drawable {
 
     public Board getRootBoard() {
         return rootBoard;
+    }
+
+    public void update(float deltaTime) {
+        for (Ball ball : balls) {
+            ball.update(deltaTime);
+        }
+        timeTillNextBall -= deltaTime;
+        while (timeTillNextBall < 0) {
+            spawnBallAtRoot();
+            timeTillNextBall += timeBetweenBalls;
+        }
     }
 
     @Override
