@@ -1,39 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
-import org.liquidengine.legui.DefaultInitializer;
-import org.liquidengine.legui.animation.AnimatorProvider;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Component;
-import org.liquidengine.legui.component.Frame;
-import org.liquidengine.legui.event.CursorEnterEvent;
-import org.liquidengine.legui.listener.CursorEnterEventListener;
-import org.liquidengine.legui.listener.processor.EventProcessorProvider;
-import org.liquidengine.legui.style.border.SimpleLineBorder;
-import org.liquidengine.legui.style.color.ColorConstants;
-import org.liquidengine.legui.system.layout.LayoutManager;
 import org.lwjgl.opengl.GL;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Vector;
-
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UserInterface {
