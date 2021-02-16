@@ -144,11 +144,7 @@ public class Peg implements LogicalLocation, Drawable {
      * @return The peg's world position.
      */
     public Vector2f getWorldPos() {
-        Vector2f res = new Vector2f(worldPos);
-        // Quick hack to align the pegs and the balls
-        // TODO: Implement a proper solution to this
-        res.y += 0.4f;
-        return res;
+        return new Vector2f(worldPos);
     }
 
     @Override
