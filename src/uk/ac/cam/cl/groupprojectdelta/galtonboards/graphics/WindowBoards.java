@@ -46,6 +46,10 @@ class WindowBoards extends Window {
     return workspace.getConfiguration();
   }
 
+  Camera getCamera() {
+    return camera;
+  }
+
   @Override
   void initialize(long window) {
     userInput = new UserInput(window, camera);

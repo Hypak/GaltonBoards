@@ -3,8 +3,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.event.CursorEnterEvent;
-import org.liquidengine.legui.listener.CursorEnterEventListener;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.*;
@@ -344,12 +344,18 @@ public class Main {
     configuration.addBoard(board2);
     configuration.addBoard(board3);
 
-    // Set up Controls window by adding a button
-    Button button = new Button("Galton Boards", 20, 20, 160, 30);
-    SimpleLineBorder border = new SimpleLineBorder(ColorConstants.black(), 1);
-    button.getStyle().setBorder(border);
-    button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) System.out::println);
+    // Set up Controls window by adding a simple button
+    Button button = new Button("Galton Boards", 25, 25, 200, 30);
+    button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener)  System.out::println);
     wc.addComponent(button);
+
+    // Add button to reset view
+    Button buttonReset = new Button("Reset view", 25, 80, 200, 30);
+    buttonReset.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    buttonReset.getListenerMap().addListener(MouseClickEvent.class,
+        (MouseClickEventListener) event -> wb.getCamera().Reset());
+    wc.addComponent(buttonReset);
 
     // Start the interface
     new UserInterface(wb, wc).start();
