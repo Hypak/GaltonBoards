@@ -2,6 +2,11 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.event.CursorEnterEvent;
+import org.liquidengine.legui.listener.CursorEnterEventListener;
+import org.liquidengine.legui.style.border.SimpleLineBorder;
+import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -319,7 +324,35 @@ public class Main {
   }
 
   public static void main(String[] args) {
-    new Main().run();
+    // Create windows
+    WindowControls wc = new WindowControls(250, 500);
+    WindowBoards wb = new WindowBoards(1000, 1000,
+        "resources/shaders/vertexShader.glsl",
+        "resources/shaders/fragmentShader.glsl",
+        "resources/textures/texture.png"
+    );
+
+    // Set up Boards window by adding boards
+    Configuration configuration = wb.getConfiguration();
+    Board board1 = configuration.getStartBoard();
+    Board board2 = new Board(3);
+    Board board3 = new Board(3);
+    board1.getBucket(0).setOutput(board2);
+    board1.getBucket(1).setOutput(board3);
+    board2.updateBoardPosition(new Vector2f(3, -15));
+    board3.updateBoardPosition(new Vector2f(-2, -15));
+    configuration.addBoard(board2);
+    configuration.addBoard(board3);
+
+    // Set up Controls window by adding a button
+    Button button = new Button("Galton Boards", 20, 20, 160, 30);
+    SimpleLineBorder border = new SimpleLineBorder(ColorConstants.black(), 1);
+    button.getStyle().setBorder(border);
+    button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) System.out::println);
+    wc.addComponent(button);
+
+    // Start the interface
+    new UserInterface(wb, wc).start();
   }
 
 }
