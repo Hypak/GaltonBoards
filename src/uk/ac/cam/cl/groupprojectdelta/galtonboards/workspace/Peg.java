@@ -208,7 +208,7 @@ public class Peg implements LogicalLocation, Drawable {
 
         // todo: generate just one triangle based on the probability see jamboard
 
-        List<Float> points = new ArrayList<>();
+        List<Float> points;
         Vector2f bound = new Vector2f();
 
         Vector2f dimensions = new Vector2f(0.1f, 0.1f);
@@ -219,7 +219,7 @@ public class Peg implements LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 4;
+        float z = 0.5f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
@@ -238,8 +238,9 @@ public class Peg implements LogicalLocation, Drawable {
 
     @Override
     public List<Float> getUV() {
-        final float top = 0.25f;
-        final float bottom = 0.5f;
+
+        final float top = 0.5f;
+        final float bottom = 0.75f;
         final float left = 0.75f;
         final float right = 1f;
 

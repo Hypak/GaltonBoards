@@ -242,7 +242,7 @@ public class Bucket implements LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 5;
+        float z = 0.75f;
 
         points = new ArrayList<>(Arrays.asList(
             // Face 1
@@ -261,9 +261,9 @@ public class Bucket implements LogicalLocation, Drawable {
 
     @Override
     public List<Float> getUV() {
-        final float top = 0.5f;
-        final float bottom = 0.75f;
-        final float left = 0.75f;
+        final float top = 0f;
+        final float bottom = 0.5f;
+        final float left = 0.5f;
         final float right = 1f;
 
         List<Float> UVs = new ArrayList<>(Arrays.asList(

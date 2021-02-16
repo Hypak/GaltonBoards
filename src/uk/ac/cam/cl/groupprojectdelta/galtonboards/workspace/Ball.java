@@ -175,7 +175,7 @@ public class Ball implements Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 5;
+        float z = 0.25f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1

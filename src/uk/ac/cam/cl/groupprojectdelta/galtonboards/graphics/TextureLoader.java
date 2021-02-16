@@ -38,7 +38,7 @@ public class TextureLoader {
 
             buf = bufCache.get(path);
             width = widthCache.get(path);
-            height = (data.length / width) / 3;
+            height = (data.length / width) / 4;
 
         } else {
             File imageFile = new File(path);
@@ -48,14 +48,15 @@ public class TextureLoader {
             width = image.getWidth();
             height = image.getHeight();
 
-            data = new byte[width * height * 3];
+            data = new byte[width * height * 4];
 
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    c = new Color(image.getRGB(x, y));
-                    data[3 * (x + y * width)] = (byte) c.getRed();
-                    data[3 * (x + y * width) + 1] = (byte) c.getGreen();
-                    data[3 * (x + y * width) + 2] = (byte) c.getBlue();
+                    c = new Color(image.getRGB(x, y), true);
+                    data[4 * (x + y * width)] = (byte) c.getRed();
+                    data[4 * (x + y * width) + 1] = (byte) c.getGreen();
+                    data[4 * (x + y * width) + 2] = (byte) c.getBlue();
+                    data[4 * (x + y * width) + 3] = (byte) c.getAlpha();
                 }
             }
 
@@ -67,12 +68,13 @@ public class TextureLoader {
     }
 
     private void generateBuffer() {
-        buf = BufferUtils.createByteBuffer(width*height*3);
+        buf = BufferUtils.createByteBuffer(width*height*4);
 
         for (int i = width * height; i > 0 ; i-- ) {
-            buf.put(data[3*i-3]);
-            buf.put(data[3*i-2]);
-            buf.put(data[3*i-1]);
+            buf.put(data[4*i-4]);
+            buf.put(data[4*i-3]);
+            buf.put(data[4*i-2]);
+            buf.put(data[4*i-1]);
         }
 
         buf.flip();

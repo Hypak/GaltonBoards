@@ -559,7 +559,7 @@ public class Board implements Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 5;
+        float z = 1;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
@@ -586,9 +586,9 @@ public class Board implements Drawable {
 
     @Override
     public List<Float> getUV() {
-        final float top = 0.5f;
-        final float bottom = 0.75f;
-        final float left = 0.75f;
+        final float top = 0f;
+        final float bottom = 0.5f;
+        final float left = 0.5f;
         final float right = 1f;
 
         List<Float> UVs = new ArrayList<>(Arrays.asList(
@@ -601,6 +601,10 @@ public class Board implements Drawable {
                 top, right,
                 bottom, right
         ));
+
+        for (Peg peg : pegs) {
+            UVs.addAll(peg.getUV());
+        }
 
         for (Bucket bucket : buckets) {
             UVs.addAll(bucket.getUV());

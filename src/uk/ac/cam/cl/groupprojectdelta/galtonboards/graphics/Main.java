@@ -149,6 +149,11 @@ public class Main {
 
     glUseProgram(programID);
 
+    // enable transparency for wireframe
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
+
     mvpShaderLocation = glGetUniformLocation(programID, "MVP");
 
     vertexBuffer = glGenBuffers();
@@ -181,7 +186,7 @@ public class Main {
       currentTime = (float) glfwGetTime();
       deltaTime = (currentTime - lastTime);
       userInput.update(deltaTime);
-      workspace.update(deltaTime);
+      workspace.update(deltaTime/4);
 
 
       int[] windowWidth = new int[1];
@@ -192,6 +197,15 @@ public class Main {
               (float) windowWidth[0] / (float) windowHeight[0],
               0.1f,
               100.0f);
+      final float size = 20f;
+      /*projection = new Matrix4f().ortho(
+              camera.getPosition().x + size,
+              camera.getPosition().x - size,
+              camera.getPosition().y - size,
+              camera.getPosition().y + size,
+              0.1f,
+              100.0f
+      );*/
       projection.mul(camera.viewMatrix(), MVP);
 
       glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
@@ -296,7 +310,7 @@ public class Main {
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Give the image to OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, tex.getWidth(), tex.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex.buffer());
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, tex.getWidth(), tex.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.buffer());
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
