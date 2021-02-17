@@ -221,12 +221,7 @@ public class Peg implements LogicalLocation, Drawable {
                 // Face 1
                 worldPos.x, worldPos.y, z,
                 bound.x, worldPos.y, z,
-                bound.x, bound.y, z,
-
-                // Face 2
-                worldPos.x, worldPos.y, z,
-                worldPos.x, bound.y, z,
-                bound.x, bound.y, z
+                (bound.x + worldPos.x)/2, bound.y, z
         ));
 
         return points;
@@ -244,10 +239,6 @@ public class Peg implements LogicalLocation, Drawable {
                 // face 1
                 top,left,
                 bottom,left,
-                bottom,right,
-                // face 2
-                top,left,
-                top,right,
                 bottom,right
         );
         return UVs;
