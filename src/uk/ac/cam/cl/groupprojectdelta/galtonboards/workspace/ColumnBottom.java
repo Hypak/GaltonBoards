@@ -18,6 +18,11 @@ public class ColumnBottom extends Column implements LogicalLocation {
     }
 
     @Override
+    public void setBucket(Bucket bucket) {
+        this.bucket = bucket;
+    }
+
+    @Override
     public void setPosition() {
         float xPos = (super.columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;

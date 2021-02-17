@@ -147,11 +147,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * @return The peg's world position.
      */
     public Vector2f getWorldPos() {
-        Vector2f res = new Vector2f(worldPos);
-        // Quick hack to align the pegs and the balls
-        // TODO: Implement a proper solution to this
-        res.y += 0.4f;
-        return res;
+        return new Vector2f(worldPos);
     }
 
     @Override
@@ -228,7 +224,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
         // todo: generate just one triangle based on the probability see jamboard
 
-        List<Float> points = new ArrayList<>();
+        List<Float> points;
         Vector2f bound = new Vector2f();
 
         Vector2f dimensions = new Vector2f(0.1f, 0.1f);
@@ -239,18 +235,13 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 4;
+        float z = 0.5f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
                 worldPos.x, worldPos.y, z,
                 bound.x, worldPos.y, z,
-                bound.x, bound.y, z,
-
-                // Face 2
-                worldPos.x, worldPos.y, z,
-                worldPos.x, bound.y, z,
-                bound.x, bound.y, z
+                (bound.x + worldPos.x)/2, bound.y, z
         ));
 
         return points;
@@ -258,8 +249,9 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     @Override
     public List<Float> getUV() {
-        final float top = 0.25f;
-        final float bottom = 0.5f;
+
+        final float top = 0.5f;
+        final float bottom = 0.75f;
         final float left = 0.75f;
         final float right = 1f;
 
@@ -267,10 +259,6 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
                 // face 1
                 top,left,
                 bottom,left,
-                bottom,right,
-                // face 2
-                top,left,
-                top,right,
                 bottom,right
         );
         return UVs;

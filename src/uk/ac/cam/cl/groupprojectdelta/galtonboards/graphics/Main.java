@@ -3,6 +3,11 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.listener.MouseClickEventListener;
+import org.liquidengine.legui.style.border.SimpleLineBorder;
+import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -171,6 +176,11 @@ public class Main {
 
     glUseProgram(programID);
 
+    // enable transparency for wireframe
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
+
     mvpShaderLocation = glGetUniformLocation(programID, "MVP");
 
     vertexBuffer = glGenBuffers();
@@ -214,6 +224,15 @@ public class Main {
               (float) windowWidth[0] / (float) windowHeight[0],
               0.1f,
               100.0f);
+      final float size = 20f;
+      /*projection = new Matrix4f().ortho(
+              camera.getPosition().x + size,
+              camera.getPosition().x - size,
+              camera.getPosition().y - size,
+              camera.getPosition().y + size,
+              0.1f,
+              100.0f
+      );*/
       projection.mul(camera.viewMatrix(), MVP);
 
       glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
@@ -318,7 +337,7 @@ public class Main {
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Give the image to OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, tex.getWidth(), tex.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex.buffer());
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, tex.getWidth(), tex.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.buffer());
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -327,7 +346,41 @@ public class Main {
   }
 
   public static void main(String[] args) {
-    new Main().run();
+    // Create windows
+    WindowControls wc = new WindowControls(250, 500);
+    WindowBoards wb = new WindowBoards(1000, 1000,
+        "resources/shaders/vertexShader.glsl",
+        "resources/shaders/fragmentShader.glsl",
+        "resources/textures/texture.png"
+    );
+
+    // Set up Boards window by adding boards
+    Configuration configuration = wb.getConfiguration();
+    Board board1 = configuration.getStartBoard();
+    Board board2 = new Board(3);
+    Board board3 = new Board(3);
+    board1.getBucket(0).setOutput(board2);
+    board1.getBucket(1).setOutput(board3);
+    board2.updateBoardPosition(new Vector2f(3, -15));
+    board3.updateBoardPosition(new Vector2f(-2, -15));
+    configuration.addBoard(board2);
+    configuration.addBoard(board3);
+
+    // Set up Controls window by adding a simple button
+    Button button = new Button("Galton Boards", 25, 25, 200, 30);
+    button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener)  System.out::println);
+    wc.addComponent(button);
+
+    // Add button to reset view
+    Button buttonReset = new Button("Reset view", 25, 80, 200, 30);
+    buttonReset.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    buttonReset.getListenerMap().addListener(MouseClickEvent.class,
+        (MouseClickEventListener) event -> wb.getCamera().Reset());
+    wc.addComponent(buttonReset);
+
+    // Start the interface
+    new UserInterface(wb, wc).start();
   }
 
 }

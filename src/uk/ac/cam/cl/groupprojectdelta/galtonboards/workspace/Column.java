@@ -24,7 +24,11 @@ public class Column implements LogicalLocation {
     }
 
     public void setPosition() {
+        return;
+    }
 
+    public void setBucket(Bucket bucket) {
+        return;
     }
 
     @Override
