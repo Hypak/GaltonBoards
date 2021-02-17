@@ -131,7 +131,7 @@ public class Board implements Drawable {
      */
     private void setDimensions() {
         float width = (isoGridWidth + 1) * unitDistance;
-        float height = ((isoGridWidth * (float) Math.sqrt(3) / 2) + bucketDepth + 3) * unitDistance;
+        float height = ((isoGridWidth * (float) Math.sqrt(3) / 2) + bucketDepth + 2) * unitDistance;
         this.dimensions = new Vector2f(width, height);
         setColumnBoundaries();
     }
@@ -145,6 +145,9 @@ public class Board implements Drawable {
         this.worldPos = new Vector2f(newWorldPos);
         setPegPositions();
         setBucketOutputPositions();
+
+        setColumnPositions();
+
         setColumnBoundaries();
     }
 
@@ -220,6 +223,11 @@ public class Board implements Drawable {
         bucketWidths.add(1);
         buckets.add(new Bucket(1, isoGridWidth, this));
 
+        ColumnBottom cb = new ColumnBottom(isoGridWidth, buckets.get(buckets.size() - 1), this);
+        ColumnTop ct = new ColumnTop(isoGridWidth, buckets.get(buckets.size() - 1), this, cb);
+        columns.add(ct);
+
+
         // Update the boards position so that the ball input point remains constant
         updateYPos(oldDimensions);
     }
@@ -256,6 +264,8 @@ public class Board implements Drawable {
             buckets.get(buckets.size() - 1).destroy();
             buckets.remove(buckets.size() - 1);
         }
+
+        columns.remove(columns.size() - 1);
 
         // Update the boards position so that the ball input point remains constant
         updateYPos(oldDimensions);
@@ -394,12 +404,20 @@ public class Board implements Drawable {
                     leftBucket.destroy();
                     buckets.remove(buckets.indexOf(beingEdited) - 1);
                 }
+
+                // Change the bucket for the column to the left
+                getColumnTop(beingEdited.getStartColumn()).setBucket(beingEdited);
+
             }
             else {
                 // if right edge has been stretched left, decrement width and spawn new unit bucket to the right
                 beingEdited.setWidth(beingEdited.getWidth() - 1);
                 Bucket newBucket = new Bucket(1, beingEdited.getStartColumn() + beingEdited.getWidth(), this);
                 buckets.add(buckets.indexOf(beingEdited) + 1, newBucket);
+
+                // Change the bucket for the column to the right
+                getColumnTop(beingEdited.getStartColumn() + beingEdited.getWidth()).setBucket(newBucket);
+
             }
             return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
         }
@@ -421,6 +439,10 @@ public class Board implements Drawable {
                 beingEdited.setStartColumn(beingEdited.getStartColumn() + 1);
                 Bucket newBucket = new Bucket(1, beingEdited.getStartColumn() - 1, this);
                 buckets.add(buckets.indexOf(beingEdited), newBucket);
+
+                // Change the bucket for the column to the left
+                getColumnTop(beingEdited.getStartColumn() - 1).setBucket(newBucket);
+
             }
             else {
                 // if right edge has been stretched right, increase width and reduce bucket to the right
@@ -437,6 +459,10 @@ public class Board implements Drawable {
                     rightBucket.destroy();
                     buckets.remove(buckets.indexOf(beingEdited) + 1);
                 }
+
+                // Change the bucket for the column to the right
+                getColumnTop(beingEdited.getStartColumn() + beingEdited.getWidth() - 1).setBucket(beingEdited);
+
             }
             return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
         }

@@ -20,6 +20,12 @@ public class ColumnTop extends Column implements LogicalLocation {
     }
 
     @Override
+    public void setBucket(Bucket bucket) {
+        this.bucket = bucket;
+        columnBottom.setBucket(bucket);
+    }
+
+    @Override
     public void setPosition() {
         float xPos = (super.columnIndex + 0.5f) * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
