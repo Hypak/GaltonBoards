@@ -3,6 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 import org.joml.Matrix4f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.io.IOException;
@@ -44,6 +45,10 @@ class WindowBoards extends Window {
 
   Configuration getConfiguration() {
     return workspace.getConfiguration();
+  }
+
+  Simulation getSimulation() {
+    return workspace.getSimulation();
   }
 
   Camera getCamera() {

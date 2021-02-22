@@ -11,6 +11,10 @@ public class Workspace implements Drawable {
     return configuration;
   }
 
+  public Simulation getSimulation() {
+    return simulation;
+  }
+
   public void update(float deltaTime) {
     simulation.update(deltaTime);
   }
