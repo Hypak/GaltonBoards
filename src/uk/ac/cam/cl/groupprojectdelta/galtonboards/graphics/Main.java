@@ -3,6 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.liquidengine.legui.component.Button;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
@@ -121,16 +122,22 @@ public class Main {
 
     //TODO PUT THIS SOMEWEHRE SENSIBLE - MATT
 
-    GLFW.glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+    //GLFW.glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
       // todo: actually convert from screen-space to world-space
-      workspace.mouseMove(new Vector2f((float) xpos / 200, (float) ypos / 200));
-    });
+      // so essentially we're going to be generating a ray cast and then solving that as a system of linear
+      // equations along with the boundary condition z = 1. Might be able to take a shortcut (i.e. no need to
+      // matrix inversion, could just linearly scale matrix.
 
-    GLFW.glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+      //workspace.mouseMove(new Vector2f((float) xpos / 200, (float) ypos / 200));
+
+    //});
+
+    glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+      System.out.println("mouse pressed: " + (button == GLFW_MOUSE_BUTTON_RIGHT ? "right" : "something else"));
       if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
           workspace.mouseDown(currentTime);
-        } else if (action == GLFW_RELEASE) {
+        } else { // the only other action is GLFW_RELEASE
           workspace.mouseUp(currentTime);
         }
       }
@@ -190,12 +197,12 @@ public class Main {
     loadTexture("resources/textures/texture.png");
 
     currentTime = (float) glfwGetTime();
-  }
-
-  private void loop() {
 
     final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
     glClearColor(CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
+  }
+
+  private void loop() {
 
     float lastTime, deltaTime;
     Matrix4f MVP = new Matrix4f();
@@ -206,6 +213,13 @@ public class Main {
     List<Float> auxList;
     float[] mesh, UVs;
 
+     // mouse things
+    final DoubleBuffer mouseX = BufferUtils.createDoubleBuffer(1);
+    final DoubleBuffer mouseY = BufferUtils.createDoubleBuffer(1);
+    Vector2f mousePos = new Vector2f();
+    Matrix4f MVPInverse = new Matrix4f();
+    Vector4f mouseRayCast = new Vector4f();
+
     while ( !glfwWindowShouldClose(window) ) {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -214,7 +228,6 @@ public class Main {
       deltaTime = (currentTime - lastTime);
       userInput.update(deltaTime);
       workspace.update(deltaTime);
-
 
       int[] windowWidth = new int[1];
       int[] windowHeight = new int[1];
@@ -236,6 +249,19 @@ public class Main {
       projection.mul(camera.viewMatrix(), MVP);
 
       glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
+
+
+      mouseRayCast.x = (float)mouseX.get(0);
+      mouseRayCast.y = (float)mouseY.get(0);
+      mouseRayCast.z = 1;
+      mouseRayCast.w = 1;
+      MVP.invert(MVPInverse);
+      mouseRayCast.mul(MVPInverse);
+      mouseRayCast.normalize();
+      mousePos.x = mouseRayCast.x;
+      mousePos.y = mouseRayCast.y;
+      workspace.mouseMove(mousePos);
+
 
       vao = glGenVertexArrays();
       glBindVertexArray(vao);
@@ -347,7 +373,6 @@ public class Main {
 
   public static void main(String[] args) {
     // Create windows
-    WindowControls wc = new WindowControls(250, 500);
     WindowBoards wb = new WindowBoards(1000, 1000,
         "resources/shaders/vertexShader.glsl",
         "resources/shaders/fragmentShader.glsl",
@@ -370,17 +395,17 @@ public class Main {
     Button button = new Button("Galton Boards", 25, 25, 200, 30);
     button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
     button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener)  System.out::println);
-    wc.addComponent(button);
+    wb.addComponent(button);
 
     // Add button to reset view
     Button buttonReset = new Button("Reset view", 25, 80, 200, 30);
     buttonReset.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
     buttonReset.getListenerMap().addListener(MouseClickEvent.class,
         (MouseClickEventListener) event -> wb.getCamera().Reset());
-    wc.addComponent(buttonReset);
+    wb.addComponent(buttonReset);
 
     // Start the interface
-    new UserInterface(wb, wc).start();
+    new UserInterface(wb).start();
   }
 
 }

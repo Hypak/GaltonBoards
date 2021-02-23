@@ -7,12 +7,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class UserInterface {
 
   private final Window windowBoards;
-  private final Window windowControls;
-  private boolean running = false;
 
-  UserInterface(Window windowBoards, Window windowControls) {
+  UserInterface(Window windowBoards) {
     this.windowBoards = windowBoards;
-    this.windowControls = windowControls;
   }
 
   /**
@@ -42,34 +39,13 @@ public class UserInterface {
     GL.createCapabilities();
     windowBoards.initialize(windowBoardsID);
 
-    // Initialize window for controls
-    long windowControlsID = glfwCreateWindow(windowControls.getWidth(), windowControls.getHeight(), "Controls", NULL, NULL);
-    if (windowControlsID == NULL) throw new RuntimeException("Failed to create the GLFW window");
-    glfwShowWindow(windowControlsID);
-    glfwMakeContextCurrent(windowControlsID);
-    GL.createCapabilities();
-    windowControls.initialize(windowControlsID);
-
     // Main loop
-    running = true;
-    while (running) {
-      if (glfwWindowShouldClose(windowBoardsID) || glfwWindowShouldClose(windowControlsID)) {
-        running = false;
-        break;
-      }
-
-      glfwMakeContextCurrent(windowBoardsID);
-      GL.getCapabilities();
+    while (!glfwWindowShouldClose(windowBoardsID)) {
       windowBoards.loop(windowBoardsID);
-
-      glfwMakeContextCurrent(windowControlsID);
-      GL.getCapabilities();
-      windowControls.loop(windowControlsID);
     }
 
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
-    windowControls.destroy(windowControlsID);
   }
 
 }

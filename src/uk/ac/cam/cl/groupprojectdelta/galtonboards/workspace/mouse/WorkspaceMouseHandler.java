@@ -128,8 +128,7 @@ public class WorkspaceMouseHandler {
   }
 
 
-  public void setCurrentClickableMap(
-      ClickableMap currentClickableMap) {
+  public void setCurrentClickableMap(ClickableMap currentClickableMap) {
     this.currentClickableMap = currentClickableMap;
   }
 

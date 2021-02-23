@@ -34,6 +34,7 @@ class WindowControls extends Window {
    * Can only be called before starting the main loop
    */
   void addComponent(Component component) {
+    // todo: this should throw an exception instead of failing silently
     if (!initialized) {
       components.add(component);
     }
@@ -56,16 +57,17 @@ class WindowControls extends Window {
     initializer.getRenderer().initialize();
 
     initialized = true;
+
+    glClearColor(CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
   }
 
   @Override
   void loop(long window) {
     // Setup OpenGL and update components
-    glfwSwapInterval(0);
+    //glfwSwapInterval(0);
     initializer.getContext().updateGlfwWindow();
     Vector2i windowSize = initializer.getContext().getWindowSize();
-    glViewport(0, 0, windowSize.x, windowSize.y);
-    glClearColor(CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
+    //glViewport(0, 0, windowSize.x, windowSize.y);
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);

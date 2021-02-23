@@ -1,14 +1,26 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.liquidengine.legui.DefaultInitializer;
+import org.liquidengine.legui.animation.AnimatorProvider;
+import org.liquidengine.legui.component.Component;
+import org.liquidengine.legui.component.Frame;
+import org.liquidengine.legui.input.Mouse;
+import org.liquidengine.legui.listener.processor.EventProcessorProvider;
+import org.liquidengine.legui.style.color.ColorConstants;
+import org.liquidengine.legui.system.layout.LayoutManager;
+import org.lwjgl.BufferUtils;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.io.IOException;
+import java.nio.DoubleBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Vector;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,18 +40,41 @@ class WindowBoards extends Window {
   private int vertexShaderID;
   private int fragmentShaderID;
   private int vertexBuffer, uvBuffer;
+  private int textureID;
 
   private final String textureFilePath;
   private final String vertexShaderPath;
   private final String fragmentShaderPath;
 
-  final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
+  // UI
+  private Frame frame;
+  private DefaultInitializer initializer;
+  private final Vector<Component> components = new Vector<>();
+  private boolean initialized = false;
+
+  // mouse things
+  final DoubleBuffer mouseX = BufferUtils.createDoubleBuffer(1);
+  final DoubleBuffer mouseY = BufferUtils.createDoubleBuffer(1);
+  Vector2f mousePos = new Vector2f();
+
+  static final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
 
   public WindowBoards(int width, int height, String vertexShaderPath, String fragmentShaderPath, String textureFilePath) {
     super(width, height);
     this.vertexShaderPath = vertexShaderPath;
     this.fragmentShaderPath = fragmentShaderPath;
     this.textureFilePath = textureFilePath;
+  }
+
+  /**
+   * Add legui component to the window
+   * Can only be called before starting the main loop
+   */
+  void addComponent(Component component) {
+    // todo: this should throw an exception instead of failing silently
+    if (!initialized) {
+      components.add(component);
+    }
   }
 
   Configuration getConfiguration() {
@@ -71,13 +106,49 @@ class WindowBoards extends Window {
     vertexBuffer = glGenBuffers();
     uvBuffer = glGenBuffers();
 
+    glfwSetMouseButtonCallback(window, (windowID, button, action, mods) -> {
+      System.out.println("mouse pressed: " + (button == GLFW_MOUSE_BUTTON_RIGHT ? "right" : "something else"));
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+          workspace.mouseDown(currentTime);
+        } else { // the only other action is GLFW_RELEASE
+          workspace.mouseUp(currentTime);
+        }
+      }
+    });
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+
+    // enable V-sync
+    glfwSwapInterval(1);
+
     // Load texture
-    loadTexture(textureFilePath);
+    textureID = loadTexture(textureFilePath);
+
+    // Create the UI Frame
+    frame = new Frame(getWidth(), getHeight());
+    frame.getContainer().getStyle().getBackground().setColor(ColorConstants.transparent());
+    frame.getContainer().setFocusable(false);
+    for (Component component : components) {
+      frame.getContainer().add(component);
+    }
+
+    // Create GUI initializer
+    initializer = new DefaultInitializer(window, frame);
+
+    // Initialize renderer
+    initializer.getRenderer().initialize();
+
+    initialized = true;
+
+    glClearColor(CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
   }
 
   @Override
   void loop(long window) {
-    glfwSwapInterval(1);
 
     float lastTime, deltaTime;
     Matrix4f MVP = new Matrix4f();
@@ -85,18 +156,20 @@ class WindowBoards extends Window {
     float[] mesh, UVs;
 
     // Clear window and setup OpenGL
-    glClearColor(CLEAR_COLOUR[0], CLEAR_COLOUR[1], CLEAR_COLOUR[2], CLEAR_COLOUR[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
+
 
     lastTime = currentTime;
     currentTime = (float) glfwGetTime();
     deltaTime = (currentTime - lastTime);
     userInput.update(deltaTime);
     workspace.update(deltaTime);
+
+    // enable transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // use GL shader
+    glUseProgram(programID);
 
     int[] windowWidth = new int[1];
     int[] windowHeight = new int[1];
@@ -105,18 +178,16 @@ class WindowBoards extends Window {
         (float) windowWidth[0] / (float) windowHeight[0],
         0.1f,
         100.0f);
-    final float size = 20f;
-      /*projection = new Matrix4f().ortho(
-              camera.getPosition().x + size,
-              camera.getPosition().x - size,
-              camera.getPosition().y - size,
-              camera.getPosition().y + size,
-              0.1f,
-              100.0f
-      );*/
     projection.mul(camera.viewMatrix(), MVP);
 
     glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
+
+    mousePos = Mouse.getCursorPosition();
+    mousePos.mul(2 / (float)windowWidth[0], 2 / (float)windowHeight[0]);
+    mousePos.sub(1, 1);
+    camera.toWorldSpace(mousePos);
+    System.out.println("mouse is at (" + mousePos.x + ", " + mousePos.y + ")");
+    workspace.mouseMove(mousePos);
 
     int vao = glGenVertexArrays();
     glBindVertexArray(vao);
@@ -141,11 +212,22 @@ class WindowBoards extends Window {
     glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
 
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
     glDrawArrays(
         GL_TRIANGLES,
         0,
         mesh.length / 3
     );
+
+    initializer.getContext().updateGlfwWindow();
+    initializer.getRenderer().render(frame, initializer.getContext());
+
+    // Process events
+    initializer.getSystemEventProcessor().processEvents(frame, initializer.getContext());
+    EventProcessorProvider.getInstance().processEvents();
+    LayoutManager.getInstance().layout(frame);
+    AnimatorProvider.getAnimator().runAnimations();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -153,6 +235,9 @@ class WindowBoards extends Window {
 
   @Override
   void destroy(long window) {
+
+    initializer.getRenderer().destroy();
+
     // Detach and delete shaders
     glDetachShader(programID, vertexShaderID);
     glDetachShader(programID, fragmentShaderID);
@@ -162,6 +247,8 @@ class WindowBoards extends Window {
     glDeleteProgram(programID);
     glfwFreeCallbacks(window);
     glfwDestroyWindow(window);
+
+    glfwTerminate();
   }
 
   /**
@@ -195,7 +282,7 @@ class WindowBoards extends Window {
   /**
    * Load a texture
    *
-   * @param texturePath: shader file name
+   * @param texturePath: texture file name
    * @return texture identifier
    */
   private int loadTexture(String texturePath) {
