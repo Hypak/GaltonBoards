@@ -183,8 +183,8 @@ class WindowBoards extends Window {
     glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
 
     mousePos = Mouse.getCursorPosition();
-    mousePos.mul(2 / (float)windowWidth[0], 2 / (float)windowHeight[0]);
-    mousePos.sub(1, 1);
+    mousePos.mul(1 / (float)windowWidth[0], 1 / (float)windowHeight[0]);
+    mousePos.sub(.5f, .5f);
     camera.toWorldSpace(mousePos);
     System.out.println("mouse is at (" + mousePos.x + ", " + mousePos.y + ")");
     workspace.mouseMove(mousePos);

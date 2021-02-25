@@ -11,6 +11,7 @@ public class Workspace implements Drawable {
   private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(clickableMap);
   private final Configuration configuration = new Configuration(clickableMap);
   private final Simulation simulation = new Simulation(configuration.getStartBoard());
+  private final Cursor cursor = new Cursor();
 
   public Configuration getConfiguration() {
     return configuration;
@@ -30,12 +31,14 @@ public class Workspace implements Drawable {
 
   public void mouseMove(Vector2f pos) {
     mouseHandler.mouseMove(pos);
+    cursor.setPosition(pos);
   }
 
   @Override
   public List<Float> getMesh(float time) {
     List<Float> mesh = configuration.getMesh(time);
     mesh.addAll(simulation.getMesh(time));
+    mesh.addAll(cursor.getMesh(time));
     return mesh;
   }
 
@@ -43,6 +46,7 @@ public class Workspace implements Drawable {
   public List<Float> getUV() {
     List<Float> uv = configuration.getUV();
     uv.addAll(simulation.getUV());
+    uv.addAll(cursor.getUV());
     return uv;
   }
 }
