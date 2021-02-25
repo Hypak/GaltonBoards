@@ -59,7 +59,7 @@ public class UserInterface {
       }
     };
 
-    String[] labels = new String[] {"Binomial", "Uniform", "Geometric"};
+    String[] labels = new String[] {"Binomial", "Uniform", "Geometric", "Gaussian"};
     wc.addComponent(makeSelectBox(128, 16, 96, 192, Arrays.asList(labels), selectEL));
 
 

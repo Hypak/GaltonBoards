@@ -31,6 +31,8 @@ public class Configuration implements Drawable {
         break;
       case "Uniform":
         boards.add(new UniformBoard(0.5f, 0.5f, 10));
+      case "Gaussian":
+        boards.add(new GaussianBoard(0.5f, 5));
       default:
         boards.add(new Board(5));
         boards.add(new Board(3));
