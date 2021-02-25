@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import java.util.Vector;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.liquidengine.legui.DefaultInitializer;
@@ -11,8 +12,21 @@ import org.liquidengine.legui.listener.processor.EventProcessorProvider;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.system.layout.LayoutManager;
 import org.lwjgl.BufferUtils;
+import org.joml.Vector2f;
+import org.liquidengine.legui.DefaultInitializer;
+import org.liquidengine.legui.animation.AnimatorProvider;
+import org.liquidengine.legui.component.Component;
+import org.liquidengine.legui.component.Frame;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.event.MouseClickEvent.MouseClickAction;
+import org.liquidengine.legui.input.Mouse;
+import org.liquidengine.legui.listener.processor.EventProcessorProvider;
+import org.liquidengine.legui.style.color.ColorConstants;
+import org.liquidengine.legui.system.layout.LayoutManager;
+import org.lwjgl.BufferUtils;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.io.IOException;
@@ -52,6 +66,13 @@ class WindowBoards extends Window {
   private final Vector<Component> components = new Vector<>();
   private boolean initialized = false;
 
+  static final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
+  // UI
+  private Frame frame;
+  private DefaultInitializer initializer;
+  private final Vector<Component> components = new Vector<>();
+  private boolean initialized = false;
+
   // mouse things
   final DoubleBuffer mouseX = BufferUtils.createDoubleBuffer(1);
   final DoubleBuffer mouseY = BufferUtils.createDoubleBuffer(1);
@@ -81,6 +102,10 @@ class WindowBoards extends Window {
     return workspace.getConfiguration();
   }
 
+  Simulation getSimulation() {
+    return workspace.getSimulation();
+  }
+
   Camera getCamera() {
     return camera;
   }
@@ -105,17 +130,6 @@ class WindowBoards extends Window {
     // Generate buffers
     vertexBuffer = glGenBuffers();
     uvBuffer = glGenBuffers();
-
-    glfwSetMouseButtonCallback(window, (windowID, button, action, mods) -> {
-      System.out.println("mouse pressed: " + (button == GLFW_MOUSE_BUTTON_RIGHT ? "right" : "something else"));
-      if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (action == GLFW_PRESS) {
-          workspace.mouseDown(currentTime);
-        } else { // the only other action is GLFW_RELEASE
-          workspace.mouseUp(currentTime);
-        }
-      }
-    });
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -149,6 +163,7 @@ class WindowBoards extends Window {
 
   @Override
   void loop(long window) {
+    glfwSwapInterval(1);
 
     float lastTime, deltaTime;
     Matrix4f MVP = new Matrix4f();
@@ -300,5 +315,11 @@ class WindowBoards extends Window {
     return textureID;
   }
 
+  public UserInput getUserInput() {
+    return userInput;
+  }
 
+  public void mouseClickEvent(MouseClickEvent event) {
+    // to be handled in the canvas-clickable branch
+  }
 }

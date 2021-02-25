@@ -60,7 +60,7 @@ public class Bucket implements LogicalLocation, Drawable {
         this.output = null;
         this.width = width;
         this.tag = null;
-        //setOutputPosition();
+        setOutputPosition();
         this.ballsInBucket = new HashSet<>();
     }
 
@@ -187,18 +187,54 @@ public class Bucket implements LogicalLocation, Drawable {
         return new Vector2f(xPos, yPos);
     }
 
+    /**
+     * Calculate the top left position of this bucket so that it can be drawn on the screen.
+     * @return The world coordinates of the top left.
+     */
     public Vector2f getTopLeft() {
+        // TODO - Turn this into a variable if needing optimised - will need to update world pos whenever board sizes are changed
         float xPos = startColumn * Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
         return new Vector2f(xPos, yPos);
     }
 
+    /**
+     * Calculate the bottom right position of this bucket so that it can be drawn on the screen.
+     * @return The world coordinates of the bottom right.
+     */
     public Vector2f getBottomRight() {
+        // TODO - Turn this into a variable if needing optimised - will need to update world pos whenever board sizes are changed
         float xPos = (startColumn + width)* Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
         float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
         return new Vector2f(xPos, yPos);
     }
 
+    /**
+     * Calculate the bottom right position of this bucket's left anchor (anchor's top left is just getTopLeft()).
+     * @return The world coordinates of the bottom right of the anchor.
+     */
+    public Vector2f getLeftAnchorBottomRight() {
+        // TODO - Turn this into a variable if needing optimised - will need to update world pos whenever board sizes are changed
+        float xPos = (startColumn + 0.5f)* Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
+    /**
+     * Calculate the top left position of this bucket's right anchor (anchor's bottom right is just getBottomRight()).
+     * @return The world coordinates of the bottom right of the anchor.
+     */
+    public Vector2f getRightAnchorTopLeft() {
+        // TODO - Turn this into a variable if needing optimised - will need to update world pos whenever board sizes are changed
+        float xPos = (startColumn + width - 0.5f)* Board.unitDistance + board.getWorldPos().x - board.getDimensions().x / 2f;
+        float yPos = (Board.bucketDepth) * Board.unitDistance + board.getWorldPos().y - board.getDimensions().y / 2f;
+        return new Vector2f(xPos, yPos);
+    }
+
+    /**
+     * Getter for the board this bucket is on.
+     * @return The board.
+     */
     public Board getBoard() {
         return board;
     }

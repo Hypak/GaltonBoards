@@ -9,12 +9,16 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMous
 public class Workspace implements Drawable {
   private final ClickableMap clickableMap = new ClickableMap();
   private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(clickableMap);
-  private final Configuration configuration = new Configuration(clickableMap);
-  private final Simulation simulation = new Simulation(configuration.getStartBoard());
+  private final Configuration configuration = Configuration.defaultConfig;
+  private final Simulation simulation = new Simulation(configuration);
   private final Cursor cursor = new Cursor();
 
   public Configuration getConfiguration() {
     return configuration;
+  }
+
+  public Simulation getSimulation() {
+    return simulation;
   }
 
   public void update(float deltaTime) {

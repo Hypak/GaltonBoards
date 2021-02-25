@@ -5,14 +5,30 @@ import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 public class Simulation implements Drawable {
-    public float speed = 1f;
-    private List<Ball> balls;
-    Board rootBoard;
-    private final float timeBetweenBalls = 0.05f;
-    private float timeTillNextBall = 0;
+    private Configuration configuration;
+    private enum SimulationState {Running, Paused, Stopped};
 
-    public Simulation(Board startingBoard) {
-        rootBoard = startingBoard;
+    public float speed = 4f;
+    private List<Ball> balls;
+    private final float timeBetweenBalls = 0.005f;
+    private float timeTillNextBall = 0;
+    private SimulationState simulationState;
+
+    public void run() {
+        simulationState = SimulationState.Running;
+    }
+
+    public void pause() {
+        simulationState = SimulationState.Paused;
+    }
+
+    public void stop() {
+        simulationState = SimulationState.Stopped;
+        balls.clear();
+    }
+
+    public Simulation(Configuration configuration) {
+        this.configuration = configuration;
         balls = new ArrayList<>();
     }
 
@@ -26,21 +42,23 @@ public class Simulation implements Drawable {
     }
 
     public void spawnBallAtRoot() {
-        spawnBall(rootBoard.getRootPeg());
+        spawnBall(getRootBoard().getRootPeg());
     }
 
     public Board getRootBoard() {
-        return rootBoard;
+        return configuration.getStartBoard();
     }
 
     public void update(float deltaTime) {
-        for (Ball ball : balls) {
-            ball.update(deltaTime);
-        }
-        timeTillNextBall -= deltaTime;
-        while (timeTillNextBall < 0) {
-            spawnBallAtRoot();
-            timeTillNextBall += timeBetweenBalls;
+        if (simulationState == SimulationState.Running) {
+            for (Ball ball : balls) {
+                ball.update(deltaTime);
+            }
+            timeTillNextBall -= deltaTime;
+            while (timeTillNextBall < 0) {
+                spawnBallAtRoot();
+                timeTillNextBall += timeBetweenBalls;
+            }
         }
     }
 
