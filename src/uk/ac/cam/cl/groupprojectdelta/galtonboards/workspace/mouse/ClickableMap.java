@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.joml.Vector2f;
 
+/**
+ * Class for storing all of the objects that can be clicked at the moment.
+ * (e.g. use a different ClickableMap for when a board is selected vs when boards can be moved around)
+ */
 public class ClickableMap {
   private final Collection<WorkspaceClickable> clickables = new LinkedList<>();
 

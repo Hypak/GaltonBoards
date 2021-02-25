@@ -88,7 +88,7 @@ public class WorkspaceMouseHandler {
         case DOWN2:
           if (currentClickable instanceof WorkspaceDraggable) {
             state = State.DRAG;
-            ((WorkspaceDraggable) currentClickable).startDrag(true);
+            ((WorkspaceDraggable) currentClickable).startDrag();
             ((WorkspaceDraggable) currentClickable).moveDrag(new Vector2f().set(pos).sub(currentPos));
             break;
           } else if (currentClickable == null) {

@@ -719,17 +719,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable 
 
 
     @Override
-    public void startDrag(boolean left) {
-
-    }
-
-    @Override
     public void moveDrag(Vector2f delta) {
         updateBoardPosition(getWorldPos().add(delta));
     }
 
-    @Override
-    public void endDrag() {
-
-    }
 }
