@@ -51,14 +51,14 @@ public class UserInterface {
         if (event.getNewValue().equals(event.getOldValue())) {
           return;
         }
-        wb.getSimulation().stop();
-        wb.getConfiguration().setConfiguration(event.getNewValue());
-        wb.getSimulation().run();
+        windowBoards.getSimulation().stop();
+        windowBoards.getConfiguration().setConfiguration(event.getNewValue());
+        windowBoards.getSimulation().run();
       }
     };
 
     List<String> labels = new ArrayList(Configuration.savedConfigurations.keySet());
-    wc.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
+    windowBoards.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
 
 
 
