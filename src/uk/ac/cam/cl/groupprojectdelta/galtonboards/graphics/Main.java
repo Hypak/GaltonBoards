@@ -58,7 +58,6 @@ public class Main {
 
   public static void main(String[] args) {
     // Create windows
-    WindowControls wc = new WindowControls(320, 320);
     WindowBoards wb = new WindowBoards(1000, 1000,
         "resources/shaders/vertexShader.glsl",
         "resources/shaders/fragmentShader.glsl",
@@ -78,7 +77,7 @@ public class Main {
     configuration.addBoard(board3);
 
     // Start the interface
-    new UserInterface(wb, wc).start(wb, wc);
+    new UserInterface(wb).start();
   }
 
 }
