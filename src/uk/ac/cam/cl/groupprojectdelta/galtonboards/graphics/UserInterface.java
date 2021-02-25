@@ -1,5 +1,17 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import org.joml.Vector2f;
+import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.component.optional.align.HorizontalAlign;
+import org.liquidengine.legui.component.optional.align.VerticalAlign;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.icon.CharIcon;
+import org.liquidengine.legui.icon.Icon;
+import org.liquidengine.legui.listener.EventListener;
+import org.liquidengine.legui.listener.MouseClickEventListener;
+import org.liquidengine.legui.style.border.SimpleLineBorder;
+import org.liquidengine.legui.style.color.ColorConstants;
+import org.liquidengine.legui.style.font.FontRegistry;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -18,8 +30,22 @@ public class UserInterface {
   /**
    * Initialize OpenGL and all the windows
    * Then, run the main loop
+   * @param wb : WindowBoards
+   * @param wc : WindowControls
    */
-  public void start() {
+  public void start(WindowBoards wb, WindowControls wc) {
+    wc.addComponent(makeButton(64, 32, 32, 0xF40A,
+            (MouseClickEventListener) event -> wb.getSimulation().run()));
+    wc.addComponent(makeButton(64, 128, 32, 0xF3E4,
+            (MouseClickEventListener) event -> wb.getSimulation().pause()));
+    wc.addComponent(makeButton(64, 224, 32, 0xF4DB,
+            (MouseClickEventListener) event -> wb.getSimulation().stop()));
+
+    Button resetViewButton = new Button("Reset view", 80, 128, 160, 32);
+    resetViewButton.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    resetViewButton.getListenerMap().addListener(MouseClickEvent.class, e -> wb.getCamera().Reset());
+    wc.addComponent(resetViewButton);
+
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
     // Initialize OpenGL
@@ -50,6 +76,7 @@ public class UserInterface {
     GL.createCapabilities();
     windowControls.initialize(windowControlsID);
 
+
     // Main loop
     running = true;
     while (running) {
@@ -70,6 +97,18 @@ public class UserInterface {
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
     windowControls.destroy(windowControlsID);
+  }
+
+  private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
+    Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
+            (char) iconCode, ColorConstants.black());
+    iconRun.setHorizontalAlign(HorizontalAlign.CENTER);
+    iconRun.setVerticalAlign(VerticalAlign.MIDDLE);
+    Button button = new Button("", xPos, yPos, size, size);
+    button.getStyle().getBackground().setIcon(iconRun);
+    button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    button.getListenerMap().addListener(MouseClickEvent.class, cb);
+    return button;
   }
 
 }

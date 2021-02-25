@@ -329,18 +329,6 @@ public class Main {
     return textureID;
   }
 
-  private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
-    Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
-            (char) iconCode, ColorConstants.black());
-    iconRun.setHorizontalAlign(HorizontalAlign.CENTER);
-    iconRun.setVerticalAlign(VerticalAlign.MIDDLE);
-    Button button = new Button("", xPos, yPos, size, size);
-    button.getStyle().getBackground().setIcon(iconRun);
-    button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-    button.getListenerMap().addListener(MouseClickEvent.class, cb);
-    return button;
-  }
-
   public static void main(String[] args) {
     // Create windows
     WindowControls wc = new WindowControls(320, 320);
@@ -362,20 +350,8 @@ public class Main {
     configuration.addBoard(board2);
     configuration.addBoard(board3);
 
-    wc.addComponent(makeButton(64, 32, 32, 0xF40A,
-            (MouseClickEventListener) event -> wb.getSimulation().run()));
-    wc.addComponent(makeButton(64, 128, 32, 0xF3E4,
-            (MouseClickEventListener) event -> wb.getSimulation().pause()));
-    wc.addComponent(makeButton(64, 224, 32, 0xF4DB,
-            (MouseClickEventListener) event -> wb.getSimulation().stop()));
-
-    Button resetViewButton = new Button("Reset view", 80, 128, 160, 32);
-    resetViewButton.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-    resetViewButton.getListenerMap().addListener(MouseClickEvent.class, e -> wb.getCamera().Reset());
-    wc.addComponent(resetViewButton);
-
     // Start the interface
-    new UserInterface(wb, wc).start();
+    new UserInterface(wb, wc).start(wb, wc);
   }
 
 }
