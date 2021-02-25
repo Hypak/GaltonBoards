@@ -7,6 +7,8 @@ import org.liquidengine.legui.DefaultInitializer;
 import org.liquidengine.legui.animation.AnimatorProvider;
 import org.liquidengine.legui.component.Component;
 import org.liquidengine.legui.component.Frame;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.event.MouseClickEvent.MouseClickAction;
 import org.liquidengine.legui.input.Mouse;
 import org.liquidengine.legui.listener.processor.EventProcessorProvider;
 import org.liquidengine.legui.style.color.ColorConstants;
@@ -295,5 +297,11 @@ class WindowBoards extends Window {
     return textureID;
   }
 
+  public UserInput getUserInput() {
+    return userInput;
+  }
 
+  public void mouseClickEvent(MouseClickEvent event) {
+    // to be handled in the canvas-clickable branch
+  }
 }

@@ -2,15 +2,18 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.SelectBox;
 import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.icon.CharIcon;
 import org.liquidengine.legui.icon.Icon;
 import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
+import org.liquidengine.legui.listener.ScrollEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -38,6 +41,16 @@ public class UserInterface {
    * Then, run the main loop
    */
   public void start() {
+
+    Panel panel = new Panel(300, 0, 700, 1000);
+    panel.getStyle().setHighlightColor(ColorConstants.transparent());
+    panel.getStyle().setFocusedStrokeColor(ColorConstants.transparent());
+    panel.getStyle().getBackground().setColor(ColorConstants.transparent());
+    panel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
+    panel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
+
+    windowBoards.addComponent(panel);
+
     windowBoards.addComponent(makeButton(64, 32, 32, 0xF40A,
             (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
     windowBoards.addComponent(makeButton(64, 128, 32, 0xF3E4,
