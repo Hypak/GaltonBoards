@@ -67,18 +67,11 @@ class WindowBoards extends Window {
   private boolean initialized = false;
 
   static final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
-  // UI
-  private Frame frame;
-  private DefaultInitializer initializer;
-  private final Vector<Component> components = new Vector<>();
-  private boolean initialized = false;
 
   // mouse things
   final DoubleBuffer mouseX = BufferUtils.createDoubleBuffer(1);
   final DoubleBuffer mouseY = BufferUtils.createDoubleBuffer(1);
   Vector2f mousePos = new Vector2f();
-
-  static final float[] CLEAR_COLOUR = {0.5f, 0.5f, 0.5f, 1};
 
   public WindowBoards(int width, int height, String vertexShaderPath, String fragmentShaderPath, String textureFilePath) {
     super(width, height);
