@@ -73,11 +73,11 @@ public class Peg implements LogicalLocation, Drawable {
 
 
     /**
-     * Helper method to convert a Vector2i grid position into a list index.
+     * Helper method to convert a Vector2i grid position into a list index. Static to save on memory.
      * @param gp : Vector2i - The grid position to convert.
      * @return An index corresponding to gp in a list.
      */
-    private int gridPosToIndex(Vector2i gp) {
+    private static int gridPosToIndex(Vector2i gp) {
         return (gp.x * (gp.x + 1)) / 2 + gp.y;
     }
 
@@ -176,10 +176,18 @@ public class Peg implements LogicalLocation, Drawable {
         return -1;
     }
 
+    /**
+     * Get the column to the left of this peg if the peg is on the bottom row.
+     * @return
+     */
     public Column getLeftColumn() {
         return board.getColumnTop(getLeftColumnIndex());
     }
 
+    /**
+     * Get the column to the right of this peg if the peg is on the bottom row.
+     * @return
+     */
     public Column getRightColumn() {
         return board.getColumnTop(getRightColumnIndex());
     }
@@ -194,6 +202,10 @@ public class Peg implements LogicalLocation, Drawable {
         return board.getBucket(getRightColumnIndex());
     }
 
+    /**
+     * Getter for the board this peg is on.
+     * @return The board.
+     */
     @Override
     public Board getBoard() {
         return board;

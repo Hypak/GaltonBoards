@@ -32,9 +32,6 @@ public class Board implements Drawable {
     private Bucket beingEdited;
     private List<Bucket> oldBuckets;
 
-    //TODO - Be able to update the boards (change peg probabilites, add new rows, change buckets, update bucket tags)
-    //TODO - Generate default boards (e.g Gaussian, uniform, poisson etc)
-
      /*
     =====================================================================
                              CONSTRUCTORS
@@ -145,9 +142,7 @@ public class Board implements Drawable {
         this.worldPos = new Vector2f(newWorldPos);
         setPegPositions();
         setBucketOutputPositions();
-
         setColumnPositions();
-
         setColumnBoundaries();
     }
 
@@ -227,6 +222,13 @@ public class Board implements Drawable {
         ColumnTop ct = new ColumnTop(isoGridWidth, buckets.get(buckets.size() - 1), this, cb);
         columns.add(ct);
 
+        // Update the bucket and column positions
+        for (Bucket b : buckets) {
+            b.setOutputPosition();
+        }
+        for (Column c : columns) {
+            c.setPosition();
+        }
 
         // Update the boards position so that the ball input point remains constant
         updateYPos(oldDimensions);
@@ -266,6 +268,14 @@ public class Board implements Drawable {
         }
 
         columns.remove(columns.size() - 1);
+
+        // Update the bucket and column positions
+        for (Bucket b : buckets) {
+            b.setOutputPosition();
+        }
+        for (Column c : columns) {
+            c.setPosition();
+        }
 
         // Update the boards position so that the ball input point remains constant
         updateYPos(oldDimensions);
@@ -472,11 +482,13 @@ public class Board implements Drawable {
     }
 
     /**
-     * Getter to determine whether the bucket layout is being updated.
-     * @return updatingBucketLayout.
+     * Reset this board to its default given its parameters (should be overridden by child instances).
+     * Reset all of the bucket outputs here as it will be a common feature for all boards.
      */
-    public boolean isUpdatingBucketLayout() {
-        return updatingBucketLayout;
+    public void reset() {
+        int[] bw = new int[isoGridWidth+1];
+        Arrays.fill(bw,1);
+        generateBuckets(bw);
     }
 
     /*
@@ -565,6 +577,38 @@ public class Board implements Drawable {
      */
     public Vector2f getDimensions() {
         return new Vector2f(dimensions);
+    }
+
+    /**
+     * Getter for the pegs list.
+     * @return The list of pegs on this board.
+     */
+    public List<Peg> getPegs() {
+        return pegs;
+    }
+
+    /**
+     * Getter for the buckets list.
+     * @return The list of buckets on this board.
+     */
+    public List<Bucket> getBuckets() {
+        return buckets;
+    }
+
+    /**
+     * Getter to determine whether the bucket layout is being updated.
+     * @return updatingBucketLayout.
+     */
+    public boolean isUpdatingBucketLayout() {
+        return updatingBucketLayout;
+    }
+
+    /**
+     * Getter for the bucket currently being edited.
+     * @return The bucket being edited.
+     */
+    public Bucket getBeingEdited() {
+        return beingEdited;
     }
 
     @Override
