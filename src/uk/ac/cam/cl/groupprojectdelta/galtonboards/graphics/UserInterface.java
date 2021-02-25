@@ -15,9 +15,12 @@ import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.lwjgl.opengl.GL;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -59,8 +62,8 @@ public class UserInterface {
       }
     };
 
-    String[] labels = new String[] {"Binomial", "Uniform", "Geometric", "Gaussian"};
-    wc.addComponent(makeSelectBox(128, 16, 96, 192, Arrays.asList(labels), selectEL));
+    List<String> labels = new ArrayList(Configuration.savedConfigurations.keySet());
+    wc.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
 
 
 
