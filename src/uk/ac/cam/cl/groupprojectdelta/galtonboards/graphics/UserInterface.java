@@ -2,6 +2,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.component.SelectBox;
+import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
@@ -13,6 +15,10 @@ import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.lwjgl.opengl.GL;
+
+import java.util.Arrays;
+import java.util.Enumeration;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -40,6 +46,24 @@ public class UserInterface {
             (MouseClickEventListener) event -> wb.getSimulation().pause()));
     wc.addComponent(makeButton(64, 224, 32, 0xF4DB,
             (MouseClickEventListener) event -> wb.getSimulation().stop()));
+
+    EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = new EventListener<>() {
+      @Override
+      public void process(SelectBoxChangeSelectionEvent<String> event) {
+        if (event.getNewValue().equals(event.getOldValue())) {
+          return;
+        }
+        wb.getSimulation().stop();
+        wb.getConfiguration().setConfiguration(event.getNewValue());
+        wb.getSimulation().run();
+      }
+    };
+
+    String[] labels = new String[] {"Binomial", "Uniform", "Geometric"};
+    wc.addComponent(makeSelectBox(128, 16, 96, 192, Arrays.asList(labels), selectEL));
+
+
+
 
     Button resetViewButton = new Button("Reset view", 80, 128, 160, 32);
     resetViewButton.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
@@ -109,6 +133,17 @@ public class UserInterface {
     button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
     button.getListenerMap().addListener(MouseClickEvent.class, cb);
     return button;
+  }
+
+  private static SelectBox<String> makeSelectBox (int width, int height, int xPos, int yPos,Iterable<String> labels,
+                                                  EventListener<SelectBoxChangeSelectionEvent<String>> callback) {
+    SelectBox<String> selectBox = new SelectBox<String>(xPos, yPos, width, height);
+    selectBox.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    for (String label : labels) {
+      selectBox.addElement(label);
+    }
+    selectBox.addSelectBoxChangeSelectionEventListener( callback);
+    return selectBox;
   }
 
 }
