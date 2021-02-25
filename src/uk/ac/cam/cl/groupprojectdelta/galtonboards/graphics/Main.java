@@ -338,19 +338,6 @@ public class Main {
         "resources/textures/texture.png"
     );
 
-    // Set up Boards window by adding boards
-    Configuration configuration = wb.getConfiguration();
-    Board board1 = configuration.getStartBoard();
-    Board board2 = new Board(3);
-    Board board3 = new Board(3);
-    board1.getBucket(0).setOutput(board2);
-    board1.getBucket(1).setOutput(board3);
-    board2.updateBoardPosition(new Vector2f(3, -15));
-    board3.updateBoardPosition(new Vector2f(-2, -15));
-    configuration.addBoard(board2);
-    configuration.addBoard(board3);
-
-    // Start the interface
     new UserInterface(wb, wc).start(wb, wc);
   }
 
