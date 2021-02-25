@@ -18,18 +18,26 @@ public class WorkspaceSelectionHandler {
 
   public void addToSelection(WorkspaceSelectable selectable) {
     currentSelection.add(selectable);
+    selectable.select();
   }
 
   public void addToSelection(Collection<WorkspaceSelectable> selectables) {
     currentSelection.addAll(selectables);
+    for (WorkspaceSelectable selectable : selectables) {
+      selectable.select();
+    }
   }
 
   public void removeFromSelection(WorkspaceSelectable selectable) {
     currentSelection.remove(selectable);
+    selectable.deselect();
   }
 
   void removeFromSelection(Collection<WorkspaceSelectable> selectables) {
     currentSelection.removeAll(selectables);
+    for (WorkspaceSelectable selectable : selectables) {
+      selectable.deselect();
+    }
   }
 
   public void clearSelection() {

@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board implements Drawable, WorkspaceSelectable {
+public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable {
 
     static float unitDistance = 1f;
     static float bucketDepth = 5f;
@@ -691,7 +692,6 @@ public class Board implements Drawable, WorkspaceSelectable {
         getDimensions().mul(0.5f, halfDimensions);
         getWorldPos().sub(halfDimensions, topleft);
         getWorldPos().add(halfDimensions, bottomright);
-        System.out.println(topleft);
         return point.x > topleft.x
             && point.x < bottomright.x
             && point.y > topleft.y
@@ -715,5 +715,21 @@ public class Board implements Drawable, WorkspaceSelectable {
     public boolean isOpen() {
         // This should return false if the board's buckets have been closed by the user.
         return true;
+    }
+
+
+    @Override
+    public void startDrag(boolean left) {
+
+    }
+
+    @Override
+    public void moveDrag(Vector2f delta) {
+        updateBoardPosition(getWorldPos().add(delta));
+    }
+
+    @Override
+    public void endDrag() {
+
     }
 }

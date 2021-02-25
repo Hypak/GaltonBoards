@@ -22,8 +22,6 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseDown(float time) {
-    System.out.println(state.name());
-    System.out.println(currentClickable);
     switch (state) {
       case NONE:
         lastClickTime = time;
@@ -59,8 +57,6 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseUp(float time) {
-    System.out.println(state.name());
-    System.out.println(currentClickable);
     switch (state) {
       case DOWN1:
         state = State.UP1;
@@ -72,6 +68,7 @@ public class WorkspaceMouseHandler {
         currentClickable.doubleClick();
         break;
       case DRAG:
+        state = State.NONE;
         ((WorkspaceDraggable) currentClickable).endDrag();
         break;
       case REGION:
@@ -85,34 +82,32 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseMove(Vector2f pos) {
-    System.out.println(state.name());
-    System.out.println(currentClickable);
-    System.out.println(getCurrentClickableMap().getClickableAtPos(pos));
-    System.out.println(pos);
-    switch (state) {
-      case DOWN1:
-      case DOWN2:
-        if (currentClickable instanceof WorkspaceDraggable) {
-          state = State.DRAG;
-          ((WorkspaceDraggable) currentClickable).startDrag(true);
-          ((WorkspaceDraggable) currentClickable).moveDrag(pos.sub(currentPos));
+    if (!pos.equals(currentPos)) {
+      switch (state) {
+        case DOWN1:
+        case DOWN2:
+          if (currentClickable instanceof WorkspaceDraggable) {
+            state = State.DRAG;
+            ((WorkspaceDraggable) currentClickable).startDrag(true);
+            ((WorkspaceDraggable) currentClickable).moveDrag(new Vector2f().set(pos).sub(currentPos));
+            break;
+          } else if (currentClickable == null) {
+            state = State.REGION;
+            break;
+          }
+        case NONE:
+        case UP1:
+          state = State.NONE;
+          setCurrentClickable(getCurrentClickableMap().getClickableAtPos(pos));
           break;
-        } else if (currentClickable == null) {
-          state = State.REGION;
+        case DRAG:
+          ((WorkspaceDraggable) currentClickable).moveDrag(new Vector2f().set(pos).sub(currentPos));
           break;
-        }
-      case NONE:
-      case UP1:
-        state = State.NONE;
-        setCurrentClickable(getCurrentClickableMap().getClickableAtPos(pos));
-        break;
-      case DRAG:
-        ((WorkspaceDraggable) currentClickable).moveDrag(pos.sub(currentPos));
-        break;
-      case REGION:
-        break;
+        case REGION:
+          break;
+      }
+      currentPos = pos;
     }
-    currentPos = pos;
   }
 
   private void setCurrentClickable(WorkspaceClickable newClickable) {

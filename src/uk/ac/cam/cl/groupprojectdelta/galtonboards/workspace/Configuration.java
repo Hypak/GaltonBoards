@@ -12,9 +12,9 @@ public class Configuration implements Drawable {
     savedConfigurations = new LinkedHashMap<>();
 
     Configuration normal = new Configuration();
-    normal.boards.add(new Board(5));
-    normal.boards.add(new Board(5));
-    normal.boards.add(new Board(5));
+    normal.addBoard(new Board(5));
+    normal.addBoard(new Board(5));
+    normal.addBoard(new Board(5));
     normal.boards.get(0).getBucket(0).setOutput(normal.boards.get(2));
     normal.boards.get(0).getBucket(1).setOutput(normal.boards.get(1));
     normal.boards.get(1).updateBoardPosition(new Vector2f(3, -15));
@@ -22,15 +22,15 @@ public class Configuration implements Drawable {
     savedConfigurations.put("Normal", normal);
 
     Configuration geometric = new Configuration();
-    geometric.boards.add(new GeometricBoard(0.3f, 10));
+    geometric.addBoard(new GeometricBoard(0.3f, 10));
     savedConfigurations.put("Geometric", geometric);
 
     Configuration uniform = new Configuration();
-    uniform.boards.add(new UniformBoard(0.3f, 0.7f, 10));
+    uniform.addBoard(new UniformBoard(0.3f, 0.7f, 10));
     savedConfigurations.put("Uniform", uniform);
 
     Configuration gaussian = new Configuration();
-    gaussian.boards.add(new GaussianBoard(0.3f, 10));
+    gaussian.addBoard(new GaussianBoard(0.3f, 10));
     savedConfigurations.put("Gaussian", gaussian);
 
     Configuration test = new Configuration();
@@ -50,7 +50,6 @@ public class Configuration implements Drawable {
   public Configuration() {
     this.clickableMap = new ClickableMap();
   }
-
 
 
   public Board getStartBoard() {
@@ -83,11 +82,14 @@ public class Configuration implements Drawable {
 
   @Override
   public List<Float> getUV() {
-    // TODO
     List<Float> uv = new ArrayList<>();
     for (Board board : boards) {
       uv.addAll(board.getUV());
     }
     return uv;
+  }
+
+  public ClickableMap getClickableMap() {
+    return clickableMap;
   }
 }

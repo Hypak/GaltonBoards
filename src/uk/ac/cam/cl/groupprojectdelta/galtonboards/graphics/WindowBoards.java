@@ -194,7 +194,6 @@ class WindowBoards extends Window {
     mousePos.mul(1 / (float)windowWidth[0], 1 / (float)windowHeight[0]);
     mousePos.sub(.5f, .5f);
     camera.toWorldSpace(mousePos);
-    System.out.println("mouse is at (" + mousePos.x + ", " + mousePos.y + ")");
     workspace.mouseMove(mousePos);
 
     int vao = glGenVertexArrays();
@@ -313,6 +312,10 @@ class WindowBoards extends Window {
   }
 
   public void mouseClickEvent(MouseClickEvent event) {
-    // to be handled in the canvas-clickable branch
+    if (event.getAction() == MouseClickAction.PRESS) {
+      workspace.mouseDown(currentTime);
+    } else if (event.getAction() == MouseClickAction.RELEASE) {
+      workspace.mouseUp(currentTime);
+    }
   }
 }
