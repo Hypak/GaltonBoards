@@ -4,8 +4,8 @@ import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 public class Workspace implements Drawable {
-  private final Configuration configuration = new Configuration();
-  private final Simulation simulation = new Simulation(configuration.getStartBoard());
+  private final Configuration configuration = Configuration.defaultConfig;
+  private final Simulation simulation = new Simulation(configuration);
 
   public Configuration getConfiguration() {
     return configuration;
