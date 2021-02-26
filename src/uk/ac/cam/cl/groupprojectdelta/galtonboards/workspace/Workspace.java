@@ -36,6 +36,14 @@ public class Workspace implements Drawable {
     mouseHandler.mouseUp(time);
   }
 
+  public void setClickableMap(ClickableMap clickableMap) {
+    mouseHandler.setCurrentClickableMap(clickableMap);
+  }
+
+  public void resetClickableMAp() {
+    mouseHandler.setCurrentClickableMap(configuration);
+  }
+
   public void mouseMove(Vector2f pos) {
     mouseHandler.mouseMove(pos);
     cursor.setPosition(pos);

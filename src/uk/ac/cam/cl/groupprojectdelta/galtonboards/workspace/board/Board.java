@@ -1,6 +1,9 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
+import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
@@ -742,7 +745,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
     @Override
     public void doubleClick() {
-        //TODO: change the current ClickableMap to be this board
+        Workspace.workspace.setClickableMap(this);
     }
 
     @Override
@@ -752,7 +755,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
     @Override
     public Iterable<? extends WorkspaceClickable> getClickables() {
-        return pegs;
+        return Iterables.concat(
+            pegs,
+            List.of(new OutsideBoardRegion(this))
+        );
         //TODO: Add other board UI elements
     }
 }
