@@ -5,8 +5,9 @@ import java.util.*;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 
-public class Configuration implements Drawable {
+public class Configuration implements Drawable, ClickableMap {
   public static LinkedHashMap<String, Configuration> savedConfigurations;
   static {
     savedConfigurations = new LinkedHashMap<>();
@@ -45,11 +46,6 @@ public class Configuration implements Drawable {
   }
   static Configuration defaultConfig = savedConfigurations.get("Normal");
   private List<Board> boards = new LinkedList<>();
-  private ClickableMap clickableMap;
-
-  public Configuration() {
-    this.clickableMap = new ClickableMap();
-  }
 
 
   public Board getStartBoard() {
@@ -58,17 +54,14 @@ public class Configuration implements Drawable {
 
   public void addBoard(Board board) {
     boards.add(board);
-    clickableMap.addClickable(board);
   }
 
   public void removeBoard(Board board) {
     boards.remove(board);
-    clickableMap.removeClickable(board);
   }
 
   public void setConfiguration(String label) {
     boards = savedConfigurations.get(label).boards;
-    clickableMap = savedConfigurations.get(label).clickableMap;
   }
 
   @Override
@@ -89,7 +82,8 @@ public class Configuration implements Drawable {
     return uv;
   }
 
-  public ClickableMap getClickableMap() {
-    return clickableMap;
+  @Override
+  public Iterable<? extends WorkspaceClickable> getClickables() {
+    return boards;
   }
 }

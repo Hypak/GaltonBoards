@@ -1,6 +1,9 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
+import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
@@ -9,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable {
+public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
     static float unitDistance = 1f;
     static float bucketDepth = 5f;
@@ -612,6 +615,12 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable 
         return beingEdited;
     }
 
+    /*
+    =====================================================================
+                                 GRAPHICS
+    =====================================================================
+     */
+
     @Override
     public List<Float> getMesh(float time) {
         List<Float> points = new ArrayList<>();
@@ -684,6 +693,12 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable 
         return UVs;
     }
 
+    /*
+    =====================================================================
+                               MOUSE EVENTS
+    =====================================================================
+     */
+
     @Override
     public boolean containsPoint(Vector2f point) {
         Vector2f topleft = new Vector2f();
@@ -723,4 +738,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable 
         updateBoardPosition(getWorldPos().add(delta));
     }
 
+    @Override
+    public Iterable<? extends WorkspaceClickable> getClickables() {
+        return pegs;
+    }
 }

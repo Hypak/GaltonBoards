@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import org.joml.Vector2f;
 
 public class WorkspaceMouseHandler {
@@ -122,7 +124,6 @@ public class WorkspaceMouseHandler {
     }
   }
 
-
   public void setCurrentClickableMap(ClickableMap currentClickableMap) {
     this.currentClickableMap = currentClickableMap;
   }
@@ -130,5 +131,4 @@ public class WorkspaceMouseHandler {
   public ClickableMap getCurrentClickableMap() {
     return currentClickableMap;
   }
-
 }

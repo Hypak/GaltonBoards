@@ -3,12 +3,12 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import java.util.List;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.Cursor;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMouseHandler;
 
 public class Workspace implements Drawable {
   private final Configuration configuration = Configuration.defaultConfig;
-  private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration.getClickableMap());
+  private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
   private final Simulation simulation = new Simulation(configuration);
   private final Cursor cursor = new Cursor();
 

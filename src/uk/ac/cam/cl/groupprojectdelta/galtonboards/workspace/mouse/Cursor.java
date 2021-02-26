@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
