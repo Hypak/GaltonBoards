@@ -9,6 +9,8 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClic
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMouseHandler;
 
 public class Workspace implements Drawable {
+  public static final Workspace workspace = new Workspace();
+
   private final Configuration configuration = Configuration.defaultConfig;
   private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
   private final Simulation simulation = new Simulation(configuration);

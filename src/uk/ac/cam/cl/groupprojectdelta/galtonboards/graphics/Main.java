@@ -21,7 +21,7 @@ public class Main {
 
   private int mvpShaderLocation;
 
-  private Workspace workspace = new Workspace();
+  private Workspace workspace = Workspace.workspace;
 
   float currentTime;
 

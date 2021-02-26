@@ -46,7 +46,7 @@ class WindowBoards extends Window {
 
   private final Camera camera = new Camera();
   private UserInput userInput;
-  private final Workspace workspace = new Workspace();
+  private final Workspace workspace = Workspace.workspace;
   private float currentTime;
   private int mvpShaderLocation;
 
