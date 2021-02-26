@@ -1,6 +1,7 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 
 public class ColumnBottom extends Column implements LogicalLocation {
 

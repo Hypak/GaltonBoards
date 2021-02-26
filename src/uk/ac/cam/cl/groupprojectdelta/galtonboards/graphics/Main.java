@@ -1,42 +1,12 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.optional.align.HorizontalAlign;
-import org.liquidengine.legui.component.optional.align.VerticalAlign;
-import org.liquidengine.legui.event.MouseClickEvent;
-import org.liquidengine.legui.icon.CharIcon;
-import org.liquidengine.legui.icon.Icon;
-import org.liquidengine.legui.listener.EventListener;
-import org.liquidengine.legui.listener.MouseClickEventListener;
-import org.liquidengine.legui.style.border.SimpleLineBorder;
-import org.liquidengine.legui.style.color.ColorConstants;
-import org.liquidengine.legui.style.font.FontRegistry;
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.UserInput;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
-import java.io.IOException;
-import java.nio.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
-import static org.lwjgl.glfw.Callbacks.*;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glDeleteShader;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.system.MemoryStack.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
 

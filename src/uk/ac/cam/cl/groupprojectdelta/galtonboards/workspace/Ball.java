@@ -6,6 +6,9 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ColumnBottom;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ColumnTop;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
 
 public class Ball implements Drawable {
     Vector2f position;

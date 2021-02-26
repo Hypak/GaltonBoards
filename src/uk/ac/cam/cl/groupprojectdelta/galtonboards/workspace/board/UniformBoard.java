@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;

@@ -1,6 +1,5 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
-import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
@@ -615,6 +614,11 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return beingEdited;
     }
 
+    public boolean isOpen() {
+        // This should return false if the board's buckets have been closed by the user.
+        return true;
+    }
+
     /*
     =====================================================================
                                  GRAPHICS
@@ -727,11 +731,19 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             && to.y > topleft.y;
     }
 
-    public boolean isOpen() {
-        // This should return false if the board's buckets have been closed by the user.
-        return true;
+    @Override
+    public void select() {
+        //TODO: start drawing highlight around board to show that it's selected.
     }
 
+    public void deselect() {
+        //TODO: stop drawing highlight around board to show that it's not selected.
+    }
+
+    @Override
+    public void doubleClick() {
+        //TODO: change the current ClickableMap to be this board
+    }
 
     @Override
     public void moveDrag(Vector2f delta) {
@@ -741,5 +753,6 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     @Override
     public Iterable<? extends WorkspaceClickable> getClickables() {
         return pegs;
+        //TODO: Add other board UI elements
     }
 }

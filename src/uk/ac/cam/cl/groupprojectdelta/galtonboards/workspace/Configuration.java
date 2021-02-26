@@ -4,6 +4,10 @@ import java.util.*;
 
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.GaussianBoard;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.GeometricBoard;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.UniformBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 

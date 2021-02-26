@@ -1,7 +1,9 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
@@ -274,5 +276,20 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
                 bottom,right
         );
         return UVs;
+    }
+
+        /*
+    =====================================================================
+                               MOUSE EVENTS
+    =====================================================================
+     */
+
+    @Override
+    public void select() {
+        //TODO: start drawing highlight around peg to show that it's selected.
+    }
+
+    public void deselect() {
+        //TODO: stop drawing highlight around peg to show that it's not selected.
     }
 }

@@ -3,6 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
 public class Simulation implements Drawable {
     private Configuration configuration;

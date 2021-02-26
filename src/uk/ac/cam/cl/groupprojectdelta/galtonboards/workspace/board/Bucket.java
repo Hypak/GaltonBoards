@@ -1,15 +1,16 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.joml.Vector2f;
-import org.lwjgl.opengl.INTELBlackholeRender;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 
 public class Bucket implements LogicalLocation, Drawable {
 
