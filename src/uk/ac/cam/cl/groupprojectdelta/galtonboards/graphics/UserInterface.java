@@ -2,15 +2,18 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.Button;
+import org.liquidengine.legui.component.Panel;
 import org.liquidengine.legui.component.SelectBox;
 import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.icon.CharIcon;
 import org.liquidengine.legui.icon.Icon;
 import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
+import org.liquidengine.legui.listener.ScrollEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -27,28 +30,33 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UserInterface {
 
-  private final Window windowBoards;
-  private final Window windowControls;
-  private boolean running = false;
+  private final WindowBoards windowBoards;
 
-  UserInterface(Window windowBoards, Window windowControls) {
+  UserInterface(WindowBoards windowBoards) {
     this.windowBoards = windowBoards;
-    this.windowControls = windowControls;
   }
 
   /**
    * Initialize OpenGL and all the windows
    * Then, run the main loop
-   * @param wb : WindowBoards
-   * @param wc : WindowControls
    */
-  public void start(WindowBoards wb, WindowControls wc) {
-    wc.addComponent(makeButton(64, 32, 32, 0xF40A,
-            (MouseClickEventListener) event -> wb.getSimulation().run()));
-    wc.addComponent(makeButton(64, 128, 32, 0xF3E4,
-            (MouseClickEventListener) event -> wb.getSimulation().pause()));
-    wc.addComponent(makeButton(64, 224, 32, 0xF4DB,
-            (MouseClickEventListener) event -> wb.getSimulation().stop()));
+  public void start() {
+
+    Panel panel = new Panel(300, 0, 700, 1000);
+    panel.getStyle().setHighlightColor(ColorConstants.transparent());
+    panel.getStyle().setFocusedStrokeColor(ColorConstants.transparent());
+    panel.getStyle().getBackground().setColor(ColorConstants.transparent());
+    panel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
+    panel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
+
+    windowBoards.addComponent(panel);
+
+    windowBoards.addComponent(makeButton(64, 32, 32, 0xF40A,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
+    windowBoards.addComponent(makeButton(64, 128, 32, 0xF3E4,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().pause()));
+    windowBoards.addComponent(makeButton(64, 224, 32, 0xF4DB,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
 
     EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = new EventListener<>() {
       @Override
@@ -56,22 +64,22 @@ public class UserInterface {
         if (event.getNewValue().equals(event.getOldValue())) {
           return;
         }
-        wb.getSimulation().stop();
-        wb.getConfiguration().setConfiguration(event.getNewValue());
-        wb.getSimulation().run();
+        windowBoards.getSimulation().stop();
+        windowBoards.getConfiguration().setConfiguration(event.getNewValue());
+        windowBoards.getSimulation().run();
       }
     };
 
     List<String> labels = new ArrayList(Configuration.savedConfigurations.keySet());
-    wc.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
+    windowBoards.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
 
 
 
 
     Button resetViewButton = new Button("Reset view", 80, 128, 160, 32);
     resetViewButton.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-    resetViewButton.getListenerMap().addListener(MouseClickEvent.class, e -> wb.getCamera().Reset());
-    wc.addComponent(resetViewButton);
+    resetViewButton.getListenerMap().addListener(MouseClickEvent.class, e -> windowBoards.getCamera().Reset());
+    windowBoards.addComponent(resetViewButton);
 
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
@@ -95,35 +103,13 @@ public class UserInterface {
     GL.createCapabilities();
     windowBoards.initialize(windowBoardsID);
 
-    // Initialize window for controls
-    long windowControlsID = glfwCreateWindow(windowControls.getWidth(), windowControls.getHeight(), "Controls", NULL, NULL);
-    if (windowControlsID == NULL) throw new RuntimeException("Failed to create the GLFW window");
-    glfwShowWindow(windowControlsID);
-    glfwMakeContextCurrent(windowControlsID);
-    GL.createCapabilities();
-    windowControls.initialize(windowControlsID);
-
-
     // Main loop
-    running = true;
-    while (running) {
-      if (glfwWindowShouldClose(windowBoardsID) || glfwWindowShouldClose(windowControlsID)) {
-        running = false;
-        break;
-      }
-
-      glfwMakeContextCurrent(windowBoardsID);
-      GL.getCapabilities();
+    while (!glfwWindowShouldClose(windowBoardsID)) {
       windowBoards.loop(windowBoardsID);
-
-      glfwMakeContextCurrent(windowControlsID);
-      GL.getCapabilities();
-      windowControls.loop(windowControlsID);
     }
 
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
-    windowControls.destroy(windowControlsID);
   }
 
   private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
