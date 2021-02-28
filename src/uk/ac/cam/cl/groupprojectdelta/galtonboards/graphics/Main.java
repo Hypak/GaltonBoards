@@ -10,25 +10,12 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Main {
 
-  private long window;
-  private int programID;
-
-  private int vertexBuffer;
-  private int uvBuffer;
-
-  private Camera camera = new Camera();
-  private UserInput userInput;
-
-  private int mvpShaderLocation;
-
-  private Workspace workspace = Workspace.workspace;
-
-  float currentTime;
-
+  static final int width = 1200;
+  static final int height = 800;
 
   public static void main(String[] args) {
     // Create windows
-    WindowBoards wb = new WindowBoards(1000, 1000,
+    WindowBoards wb = new WindowBoards(width, height,
         "resources/shaders/vertexShader.glsl",
         "resources/shaders/fragmentShader.glsl",
         "resources/textures/texture.png"
