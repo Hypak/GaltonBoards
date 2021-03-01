@@ -12,9 +12,10 @@ public class Workspace implements Drawable {
   public static final Workspace workspace = new Workspace();
 
   private final Configuration configuration = Configuration.defaultConfig;
-  private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
+  public final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
   private final Simulation simulation = new Simulation(configuration);
   private final Cursor cursor = new Cursor();
+
 
   public Configuration getConfiguration() {
     return configuration;
@@ -42,6 +43,10 @@ public class Workspace implements Drawable {
 
   public void resetClickableMAp() {
     mouseHandler.setCurrentClickableMap(configuration);
+  }
+
+  public ClickableMap getClickableMap() {
+    return mouseHandler.getCurrentClickableMap();
   }
 
   public void mouseMove(Vector2f pos) {

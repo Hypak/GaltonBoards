@@ -3,10 +3,13 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.AddRowButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.RemoveRowButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMouseHandler;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
@@ -16,7 +19,7 @@ import java.util.List;
 
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
-    static float unitDistance = 1f;
+    public static final float unitDistance = 1f;
     static float bucketDepth = 5f;
 
     // The world coordinates for this board
@@ -24,7 +27,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private Vector2f dimensions;
 
     // How many pegs are on the bottom row of this board's isometric grid (converts to a triangular number)
-    private int isoGridWidth;
+    protected int isoGridWidth;
     private List<Peg> pegs;
 
     // Explicit bucket instances that collect from the grid's implicit output columns
@@ -37,6 +40,11 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private boolean updatingBucketLayout = false;
     private Bucket beingEdited;
     private List<Bucket> oldBuckets;
+
+    // UI elements for this board
+    private final AddRowButton addRowButton = new AddRowButton(this);
+    private final RemoveRowButton removeRowButton = new RemoveRowButton(this);
+    private final OutsideBoardRegion outsideBoardRegion = new OutsideBoardRegion(this);
 
      /*
     =====================================================================
@@ -216,7 +224,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         this.isoGridWidth ++;
 
         // Add the new row of pegs
-        for (int i = pegs.size(); i < pegs.size() + isoGridWidth; i++) {
+        int newNumberOfPegs = pegs.size() + isoGridWidth;
+        for (int i = pegs.size(); i < newNumberOfPegs; i++) {
             pegs.add(new Peg(0.5f, i, this));
         }
 
@@ -668,6 +677,13 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             points.addAll(bucket.getMesh(time));
         }
 
+        if (Workspace.workspace.getClickableMap() == this) {
+            points.addAll(addRowButton.getMesh(time));
+            if (isoGridWidth > 1) {
+                points.addAll(removeRowButton.getMesh(time));
+            }
+        }
+
         return points;
     }
 
@@ -697,6 +713,13 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             UVs.addAll(bucket.getUV());
         }
 
+        if (Workspace.workspace.getClickableMap() == this) {
+            UVs.addAll(addRowButton.getUV());
+            if (isoGridWidth > 1) {
+                UVs.addAll(removeRowButton.getUV());
+            }
+        }
+
         return UVs;
     }
 
@@ -721,6 +744,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
         return ct;
     }
+=======
+    //TODO: Add the addRowButton and removeRowButton to the color when merged.
 
     /*
     =====================================================================
@@ -779,8 +804,13 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Iterable<? extends WorkspaceClickable> getClickables() {
         return Iterables.concat(
             pegs,
-            List.of(new OutsideBoardRegion(this))
+            List.of(addRowButton, removeRowButton, outsideBoardRegion)
         );
         //TODO: Add other board UI elements
+    }
+
+    @Override
+    public String toString() {
+        return "Board of width " + isoGridWidth;
     }
 }

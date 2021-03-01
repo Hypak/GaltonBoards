@@ -180,4 +180,9 @@ public class BinomialBoard extends Board {
     public int getNumTrials() {
         return numTrials;
     }
+
+    @Override
+    public String toString() {
+        return "Binomial board of width " + super.isoGridWidth;
+    }
 }

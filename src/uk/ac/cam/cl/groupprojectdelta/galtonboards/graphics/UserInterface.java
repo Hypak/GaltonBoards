@@ -1,10 +1,10 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Vector2f;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Panel;
-import org.liquidengine.legui.component.SelectBox;
+import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
+import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
+import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
@@ -18,16 +18,24 @@ import org.liquidengine.legui.style.Border;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
+import org.liquidengine.legui.style.font.TextDirection;
 import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.LongAccumulator;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UserInterface {
+  public static UserInterface userInterface;
+  public Panel editPanel;
+  public Slider probabilitySlider;
 
   private final WindowBoards windowBoards;
 
@@ -39,11 +47,21 @@ public class UserInterface {
    * Initialize OpenGL and all the windows
    * Then, run the main loop
    */
+
+  public void sliderChangeEvent(SliderChangeValueEvent<Slider> event) {
+    if (Workspace.workspace.mouseHandler.selectedClickable instanceof Board) {
+      for (Peg peg : ((Board) Workspace.workspace.mouseHandler.selectedClickable).getPegs()) {
+        peg.setProbability(1 - event.getNewValue());
+      }
+    }
+  }
+
   public void start() {
+    final int editPanelWidth = 400;
 
     // Panels for boards and UI sections
 
-    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320, windowBoards.getHeight());
+    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320 - editPanelWidth, windowBoards.getHeight());
     rightPanel.getStyle().getBackground().setColor(ColorConstants.transparent());
     rightPanel.getStyle().setBorder(new SimpleLineBorder());
     rightPanel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
@@ -53,8 +71,22 @@ public class UserInterface {
     leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
     leftPanel.getStyle().setBorder(new SimpleLineBorder());
 
+    editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
+    editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
+    editPanel.getStyle().setBorder(new SimpleLineBorder());
+
+    Label selectedLabel = new Label(100, 50, 200, 100);
+    selectedLabel.setTextState(new TextState("Test"));
+    editPanel.add(selectedLabel);
+
+    probabilitySlider = new Slider(100, 150, 200, 30);
+    probabilitySlider.setMaxValue(1);
+    probabilitySlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::sliderChangeEvent);
+    editPanel.add(probabilitySlider);
+
     windowBoards.addComponent(rightPanel);
     windowBoards.addComponent(leftPanel);
+    windowBoards.addComponent(editPanel);
 
     // Buttons for play/pause/stop
 
