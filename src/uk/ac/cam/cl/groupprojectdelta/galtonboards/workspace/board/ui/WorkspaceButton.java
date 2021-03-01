@@ -22,6 +22,20 @@ public abstract class WorkspaceButton implements WorkspaceClickable, Drawable {
     hover = false;
   }
 
+  @Override
+  public boolean containsPoint(Vector2f point) {
+    Vector2f bound = new Vector2f();
+    Vector2f position = getPosition();
+
+    Vector2f dimensions = new Vector2f(size);
+    position.add(dimensions, bound);
+
+    return point.x > position.x
+        && point.x < bound.x
+        && point.y > position.y
+        && point.y < bound.y;
+  }
+
   protected abstract Vector2f getPosition();
 
   @Override

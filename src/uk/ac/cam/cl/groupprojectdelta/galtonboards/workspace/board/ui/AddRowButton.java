@@ -17,19 +17,12 @@ public class AddRowButton extends WorkspaceButton {
   protected Vector2f getPosition() {
     return new Vector2f()
         .add(board.getWorldPos())
-        .mul(2f)
-        .add(board.getDimensions().x/2, -board.getDimensions().y/2)
-        .add(Board.unitDistance, 0);
-  }
-
-  @Override
-  public boolean containsPoint(Vector2f point) {
-    return false;
+        .add(Board.unitDistance, board.getDimensions().y/2);
   }
 
   @Override
   public void release() {
-
+    board.addRow();
   }
 
   @Override

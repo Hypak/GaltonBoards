@@ -24,6 +24,7 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseDown(float time) {
+    System.out.println(currentClickable);
     switch (state) {
       case NONE:
         lastClickTime = time;

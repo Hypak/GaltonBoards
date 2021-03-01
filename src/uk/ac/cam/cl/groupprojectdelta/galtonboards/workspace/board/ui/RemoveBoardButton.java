@@ -7,9 +7,4 @@ public class RemoveBoardButton extends WorkspaceButton {
   protected Vector2f getPosition() {
     return null;
   }
-
-  @Override
-  public boolean containsPoint(Vector2f point) {
-    return false;
-  }
 }
