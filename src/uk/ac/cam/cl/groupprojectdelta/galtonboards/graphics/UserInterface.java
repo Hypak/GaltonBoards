@@ -61,63 +61,13 @@ public class UserInterface {
 
     // Panels for boards and UI sections
 
-    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320 - editPanelWidth, windowBoards.getHeight());
-    rightPanel.getStyle().getBackground().setColor(ColorConstants.transparent());
-    rightPanel.getStyle().setBorder(new SimpleLineBorder());
-    rightPanel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
-    rightPanel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
-
-    Panel leftPanel = new Panel(0, 0, 320, windowBoards.getHeight());
-    leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
-    leftPanel.getStyle().setBorder(new SimpleLineBorder());
-
-    editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
-    editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
-    editPanel.getStyle().setBorder(new SimpleLineBorder());
-
-    Label selectedLabel = new Label(100, 50, 200, 100);
-    selectedLabel.setTextState(new TextState("Test"));
-    editPanel.add(selectedLabel);
-
-    probabilitySlider = new Slider(100, 150, 200, 30);
-    probabilitySlider.setMaxValue(1);
-    probabilitySlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::sliderChangeEvent);
-    editPanel.add(probabilitySlider);
+    Panel rightPanel = getRightPanel(editPanelWidth);
+    Panel leftPanel = getLeftPanel();
+    editPanel = getEditPanel(editPanelWidth);
 
     windowBoards.addComponent(rightPanel);
     windowBoards.addComponent(leftPanel);
     windowBoards.addComponent(editPanel);
-
-    // Buttons for play/pause/stop
-
-    windowBoards.addComponent(makeButton(64, 32, 32, 0xF40A,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
-    windowBoards.addComponent(makeButton(64, 128, 32, 0xF3E4,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().pause()));
-    windowBoards.addComponent(makeButton(64, 224, 32, 0xF4DB,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
-
-    // Zoom buttons
-
-    windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 32, 0xF374,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
-    windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 64, 0xF415,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
-
-    // Movement buttons
-
-    float movement = 0.5f;
-    windowBoards.addComponent(makeButton(24, 324, windowBoards.getHeight() - 64, 0xF141,
-            makeMovementCallback(windowBoards.getCamera(), movement, 0)));
-    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 32, 0xF140,
-            makeMovementCallback(windowBoards.getCamera(), 0, -movement)));
-    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 64, 0xF44A,
-            (MouseClickEventListener) event -> windowBoards.getCamera().Reset()));
-    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 96, 0xF143,
-            makeMovementCallback(windowBoards.getCamera(), 0, movement)));
-    windowBoards.addComponent(makeButton(24, 380, windowBoards.getHeight() - 64, 0xF142,
-            makeMovementCallback(windowBoards.getCamera(), -movement, 0)));
-
 
       // Select board SelectBox
 
@@ -166,6 +116,71 @@ public class UserInterface {
 
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
+  }
+
+  private Panel getRightPanel(int editPanelWidth) {
+    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320 - editPanelWidth, windowBoards.getHeight());
+    rightPanel.getStyle().getBackground().setColor(ColorConstants.transparent());
+    rightPanel.getStyle().setBorder(new SimpleLineBorder());
+    rightPanel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
+    rightPanel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
+
+    return rightPanel;
+  }
+
+  private Panel getEditPanel(int editPanelWidth) {
+    Panel editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
+    editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
+    editPanel.getStyle().setBorder(new SimpleLineBorder());
+
+    Label selectedLabel = new Label(100, 50, 200, 100);
+    selectedLabel.setTextState(new TextState("Test"));
+    editPanel.add(selectedLabel);
+
+    probabilitySlider = new Slider(100, 150, 200, 30);
+    probabilitySlider.setMaxValue(1);
+    probabilitySlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::sliderChangeEvent);
+    editPanel.add(probabilitySlider);
+
+    return editPanel;
+  }
+
+  private Panel getLeftPanel() {
+    Panel leftPanel = new Panel(0, 0, 320, windowBoards.getHeight());
+    leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
+    leftPanel.getStyle().setBorder(new SimpleLineBorder());
+
+    // Buttons for play/pause/stop
+
+    leftPanel.add(makeButton(64, 32, 32, 0xF40A,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
+    leftPanel.add(makeButton(64, 128, 32, 0xF3E4,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().pause()));
+    leftPanel.add(makeButton(64, 224, 32, 0xF4DB,
+            (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
+
+    // Zoom buttons
+
+    leftPanel.add(makeButton(24, 408, windowBoards.getHeight() - 32, 0xF374,
+            (MouseClickEventListener) event -> System.out.println("TODO")));
+    leftPanel.add(makeButton(24, 408, windowBoards.getHeight() - 64, 0xF415,
+            (MouseClickEventListener) event -> System.out.println("TODO")));
+
+    // Movement buttons
+
+    float movement = 0.5f;
+    leftPanel.add(makeButton(24, 324, windowBoards.getHeight() - 64, 0xF141,
+            makeMovementCallback(windowBoards.getCamera(), movement, 0)));
+    leftPanel.add(makeButton(24, 352, windowBoards.getHeight() - 32, 0xF140,
+            makeMovementCallback(windowBoards.getCamera(), 0, -movement)));
+    leftPanel.add(makeButton(24, 352, windowBoards.getHeight() - 64, 0xF44A,
+            (MouseClickEventListener) event -> windowBoards.getCamera().Reset()));
+    leftPanel.add(makeButton(24, 352, windowBoards.getHeight() - 96, 0xF143,
+            makeMovementCallback(windowBoards.getCamera(), 0, movement)));
+    leftPanel.add(makeButton(24, 380, windowBoards.getHeight() - 64, 0xF142,
+            makeMovementCallback(windowBoards.getCamera(), -movement, 0)));
+
+    return leftPanel;
   }
 
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
