@@ -44,7 +44,7 @@ public class Camera {
   public void toWorldSpace(Vector2f normalisedScreenSpace) {
     normalisedScreenSpace.set(-normalisedScreenSpace.x, normalisedScreenSpace.y);
     normalisedScreenSpace.mul(r.z);
-    normalisedScreenSpace.add(r.x, r.y);
+    normalisedScreenSpace.add(-r.x, r.y);
   }
 
 }
