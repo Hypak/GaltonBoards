@@ -45,9 +45,7 @@ public class UserInput {
     }
 
     public void scroll(ScrollEvent scrollEvent) {
-        Matrix3f m = new Matrix3f();
-        m.m22 = (float)Math.exp(scrollEvent.getYoffset() * scrollSpeed);
-        camera.getPosition().mul(m);
+        camera.zoom((float) scrollEvent.getYoffset() * scrollSpeed);
     }
 
 }
