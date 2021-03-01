@@ -14,6 +14,7 @@ import org.liquidengine.legui.icon.Icon;
 import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.listener.ScrollEventListener;
+import org.liquidengine.legui.style.Border;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -21,8 +22,6 @@ import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -42,14 +41,22 @@ public class UserInterface {
    */
   public void start() {
 
-    Panel panel = new Panel(300, 0, 700, 1000);
-    panel.getStyle().setHighlightColor(ColorConstants.transparent());
-    panel.getStyle().setFocusedStrokeColor(ColorConstants.transparent());
-    panel.getStyle().getBackground().setColor(ColorConstants.transparent());
-    panel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
-    panel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
+    // Panels for boards and UI sections
 
-    windowBoards.addComponent(panel);
+    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320, windowBoards.getHeight());
+    rightPanel.getStyle().getBackground().setColor(ColorConstants.transparent());
+    rightPanel.getStyle().setBorder(new SimpleLineBorder());
+    rightPanel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
+    rightPanel.getListenerMap().addListener(ScrollEvent.class,  (ScrollEventListener) event -> windowBoards.getUserInput().scroll(event));
+
+    Panel leftPanel = new Panel(0, 0, 320, windowBoards.getHeight());
+    leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
+    leftPanel.getStyle().setBorder(new SimpleLineBorder());
+
+    windowBoards.addComponent(rightPanel);
+    windowBoards.addComponent(leftPanel);
+
+    // Buttons for play/pause/stop
 
     windowBoards.addComponent(makeButton(64, 32, 32, 0xF40A,
             (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
@@ -57,6 +64,30 @@ public class UserInterface {
             (MouseClickEventListener) event -> windowBoards.getSimulation().pause()));
     windowBoards.addComponent(makeButton(64, 224, 32, 0xF4DB,
             (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
+
+    // Zoom buttons
+
+    windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 32, 0xF374,
+            (MouseClickEventListener) event -> System.out.println("TODO")));
+    windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 64, 0xF415,
+            (MouseClickEventListener) event -> System.out.println("TODO")));
+
+    // Movement buttons
+
+    float movement = 0.5f;
+    windowBoards.addComponent(makeButton(24, 324, windowBoards.getHeight() - 64, 0xF141,
+            makeMovementCallback(windowBoards.getCamera(), movement, 0)));
+    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 32, 0xF140,
+            makeMovementCallback(windowBoards.getCamera(), 0, -movement)));
+    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 64, 0xF44A,
+            (MouseClickEventListener) event -> windowBoards.getCamera().Reset()));
+    windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 96, 0xF143,
+            makeMovementCallback(windowBoards.getCamera(), 0, movement)));
+    windowBoards.addComponent(makeButton(24, 380, windowBoards.getHeight() - 64, 0xF142,
+            makeMovementCallback(windowBoards.getCamera(), -movement, 0)));
+
+
+      // Select board SelectBox
 
     EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = new EventListener<>() {
       @Override
@@ -73,13 +104,6 @@ public class UserInterface {
     List<String> labels = new ArrayList(Configuration.savedConfigurations.keySet());
     windowBoards.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
 
-
-
-
-    Button resetViewButton = new Button("Reset view", 80, 128, 160, 32);
-    resetViewButton.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-    resetViewButton.getListenerMap().addListener(MouseClickEvent.class, e -> windowBoards.getCamera().Reset());
-    windowBoards.addComponent(resetViewButton);
 
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
@@ -110,6 +134,17 @@ public class UserInterface {
 
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
+  }
+
+  private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
+    return event -> {
+    if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+      System.out.println(event.getAction() == MouseClickEvent.MouseClickAction.CLICK);
+        camera.setPosition(
+              camera.getPosition().add(dx, dy, 0)
+        );
+      }
+    };
   }
 
   private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
