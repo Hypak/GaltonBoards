@@ -241,7 +241,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         List<Float> points;
         Vector2f bound = new Vector2f();
 
-        Vector2f dimensions = new Vector2f(0.1f, 0.1f);
+        Vector2f dimensions = new Vector2f(0.1f);
         worldPos.add(dimensions, bound);
 
         //  +----+
@@ -276,6 +276,15 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
                 bottom,right
         );
         return UVs;
+    }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        return List.of(
+                1f,1f,1f,
+                1f,1f,1f,
+                1f,1f,1f
+        );
     }
 
         /*

@@ -64,4 +64,12 @@ public class Workspace implements Drawable {
     uv.addAll(cursor.getUV());
     return uv;
   }
+
+  @Override
+  public List<Float> getColourTemplate() {
+    List<Float> ct = configuration.getColourTemplate();
+    ct.addAll(simulation.getColourTemplate());
+    ct.addAll(cursor.getColourTemplate());
+    return ct;
+  }
 }

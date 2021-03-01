@@ -700,6 +700,28 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return UVs;
     }
 
+    @Override
+    public List<Float> getColourTemplate() {
+        List<Float> ct = new ArrayList<>(Arrays.asList(
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        ));
+
+        for (Peg peg : pegs) {
+            ct.addAll(peg.getColourTemplate());
+        }
+        for (Bucket bucket : buckets) {
+            ct.addAll(bucket.getColourTemplate());
+        }
+
+        return ct;
+    }
+
     /*
     =====================================================================
                                MOUSE EVENTS

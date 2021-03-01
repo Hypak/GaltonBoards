@@ -316,4 +316,17 @@ public class Bucket implements LogicalLocation, Drawable {
 
         return UVs;
     }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        return List.of(
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        );
+    }
 }

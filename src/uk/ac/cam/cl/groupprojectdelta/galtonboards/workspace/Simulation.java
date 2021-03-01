@@ -80,4 +80,13 @@ public class Simulation implements Drawable {
         }
         return uv;
     }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        List<Float> ct = new ArrayList<>();
+        for (Ball ball : balls) {
+            ct.addAll(ball.getColourTemplate());
+        }
+        return ct;
+    }
 }

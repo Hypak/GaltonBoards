@@ -87,6 +87,15 @@ public class Configuration implements Drawable, ClickableMap {
   }
 
   @Override
+  public List<Float> getColourTemplate() {
+    List<Float> ct = new ArrayList<>();
+    for (Board board : boards) {
+      ct.addAll(board.getColourTemplate());
+    }
+    return ct;
+  }
+
+  @Override
   public Iterable<? extends WorkspaceClickable> getClickables() {
     return boards;
   }
