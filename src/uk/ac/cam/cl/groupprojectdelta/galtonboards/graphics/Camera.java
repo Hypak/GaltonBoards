@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Camera {
@@ -37,8 +38,13 @@ public class Camera {
             r,
             facing,
             up
-    );
+    ).reflect(new Vector3f(1,0,0), new Vector3f(0,0,0));
   }
 
+  public void toWorldSpace(Vector2f normalisedScreenSpace) {
+    normalisedScreenSpace.set(-normalisedScreenSpace.x, normalisedScreenSpace.y);
+    normalisedScreenSpace.mul(r.z);
+    normalisedScreenSpace.add(-r.x, r.y);
+  }
 
 }

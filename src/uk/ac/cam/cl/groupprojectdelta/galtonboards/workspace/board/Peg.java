@@ -1,12 +1,15 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.*;
 
-public class Peg implements LogicalLocation, Drawable {
+public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     // The position of this peg in the board's grid
     private Vector2i gridPos;
@@ -17,6 +20,8 @@ public class Peg implements LogicalLocation, Drawable {
 
     // The board that this peg is on
     private Board board;
+
+    private final float RADIUS = 0.4f;
 
     private Set<Ball> ballsAtPeg;
 
@@ -193,6 +198,23 @@ public class Peg implements LogicalLocation, Drawable {
     }
 
     //OBSOLETE
+    @Override
+    public boolean containsPoint(Vector2f point) {
+        return getWorldPos().distance(point) < RADIUS;
+    }
+
+    @Override
+    public boolean intersectsRegion(Vector2f from, Vector2f to) {
+        Vector2f topleft = new Vector2f(RADIUS, RADIUS);
+        Vector2f bottomright = new Vector2f(RADIUS, RADIUS);
+        topleft.add(getWorldPos());
+        bottomright.add(getWorldPos());
+        return from.x < bottomright.x
+            && from.y < bottomright.y
+            && to.x > topleft.x
+            && to.y > topleft.y;
+    }
+
     public Bucket getLeftBucket() {
         return board.getBucket(getLeftColumnIndex());
     }
@@ -254,5 +276,20 @@ public class Peg implements LogicalLocation, Drawable {
                 bottom,right
         );
         return UVs;
+    }
+
+        /*
+    =====================================================================
+                               MOUSE EVENTS
+    =====================================================================
+     */
+
+    @Override
+    public void select() {
+        //TODO: start drawing highlight around peg to show that it's selected.
+    }
+
+    public void deselect() {
+        //TODO: stop drawing highlight around peg to show that it's not selected.
     }
 }

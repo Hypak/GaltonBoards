@@ -3,13 +3,14 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 import java.util.ArrayList;
 import java.util.List;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
 public class Simulation implements Drawable {
+    private Configuration configuration;
     private enum SimulationState {Running, Paused, Stopped};
 
     public float speed = 4f;
     private List<Ball> balls;
-    Board rootBoard;
     private final float timeBetweenBalls = 0.005f;
     private float timeTillNextBall = 0;
     private SimulationState simulationState;
@@ -27,8 +28,8 @@ public class Simulation implements Drawable {
         balls.clear();
     }
 
-    public Simulation(Board startingBoard) {
-        rootBoard = startingBoard;
+    public Simulation(Configuration configuration) {
+        this.configuration = configuration;
         balls = new ArrayList<>();
     }
 
@@ -42,11 +43,11 @@ public class Simulation implements Drawable {
     }
 
     public void spawnBallAtRoot() {
-        spawnBall(rootBoard.getRootPeg());
+        spawnBall(getRootBoard().getRootPeg());
     }
 
     public Board getRootBoard() {
-        return rootBoard;
+        return configuration.getStartBoard();
     }
 
     public void update(float deltaTime) {

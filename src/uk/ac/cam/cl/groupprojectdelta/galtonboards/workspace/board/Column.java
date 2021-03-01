@@ -1,9 +1,11 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 
 import java.util.HashSet;
 import java.util.Set;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 
 public class Column implements LogicalLocation {
 

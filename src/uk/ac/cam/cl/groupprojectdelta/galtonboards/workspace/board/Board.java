@@ -1,14 +1,20 @@
-package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
+package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
+import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board implements Drawable {
+public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
     static float unitDistance = 1f;
     static float bucketDepth = 5f;
@@ -611,6 +617,17 @@ public class Board implements Drawable {
         return beingEdited;
     }
 
+    public boolean isOpen() {
+        // This should return false if the board's buckets have been closed by the user.
+        return true;
+    }
+
+    /*
+    =====================================================================
+                                 GRAPHICS
+    =====================================================================
+     */
+
     @Override
     public List<Float> getMesh(float time) {
         List<Float> points = new ArrayList<>();
@@ -683,8 +700,65 @@ public class Board implements Drawable {
         return UVs;
     }
 
-    public boolean isOpen() {
-        // This should return false if the board's buckets have been closed by the user.
-        return true;
+    /*
+    =====================================================================
+                               MOUSE EVENTS
+    =====================================================================
+     */
+
+    @Override
+    public boolean containsPoint(Vector2f point) {
+        Vector2f topleft = new Vector2f();
+        Vector2f bottomright = new Vector2f();
+        Vector2f halfDimensions = new Vector2f();
+        getDimensions().mul(0.5f, halfDimensions);
+        getWorldPos().sub(halfDimensions, topleft);
+        getWorldPos().add(halfDimensions, bottomright);
+        return point.x > topleft.x
+            && point.x < bottomright.x
+            && point.y > topleft.y
+            && point.y < bottomright.y;
+    }
+
+    @Override
+    public boolean intersectsRegion(Vector2f from, Vector2f to) {
+        Vector2f topleft = new Vector2f();
+        Vector2f bottomright = new Vector2f();
+        Vector2f halfDimensions = new Vector2f();
+        getDimensions().mul(0.5f, halfDimensions);
+        getWorldPos().sub(halfDimensions, topleft);
+        getWorldPos().add(halfDimensions, bottomright);
+        return from.x < bottomright.x
+            && from.y < bottomright.y
+            && to.x > topleft.x
+            && to.y > topleft.y;
+    }
+
+    @Override
+    public void select() {
+        //TODO: start drawing highlight around board to show that it's selected.
+    }
+
+    public void deselect() {
+        //TODO: stop drawing highlight around board to show that it's not selected.
+    }
+
+    @Override
+    public void doubleClick() {
+        Workspace.workspace.setClickableMap(this);
+    }
+
+    @Override
+    public void moveDrag(Vector2f delta) {
+        updateBoardPosition(getWorldPos().add(delta));
+    }
+
+    @Override
+    public Iterable<? extends WorkspaceClickable> getClickables() {
+        return Iterables.concat(
+            pegs,
+            List.of(new OutsideBoardRegion(this))
+        );
+        //TODO: Add other board UI elements
     }
 }

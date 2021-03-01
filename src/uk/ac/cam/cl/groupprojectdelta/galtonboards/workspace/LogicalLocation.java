@@ -2,8 +2,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
 
-import java.util.List;
 import java.util.Set;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
 public interface LogicalLocation {
     // Represents a logical node (peg or bucket) in the path that a ball takes.

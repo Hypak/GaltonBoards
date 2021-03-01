@@ -1,11 +1,20 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import java.util.List;
+import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.Cursor;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMouseHandler;
 
 public class Workspace implements Drawable {
-  private final Configuration configuration = new Configuration();
-  private final Simulation simulation = new Simulation(configuration.getStartBoard());
+  public static final Workspace workspace = new Workspace();
+
+  private final Configuration configuration = Configuration.defaultConfig;
+  private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
+  private final Simulation simulation = new Simulation(configuration);
+  private final Cursor cursor = new Cursor();
 
   public Configuration getConfiguration() {
     return configuration;
@@ -19,10 +28,32 @@ public class Workspace implements Drawable {
     simulation.update(deltaTime);
   }
 
+  public void mouseDown(float time) {
+    mouseHandler.mouseDown(time);
+  }
+
+  public void mouseUp(float time) {
+    mouseHandler.mouseUp(time);
+  }
+
+  public void setClickableMap(ClickableMap clickableMap) {
+    mouseHandler.setCurrentClickableMap(clickableMap);
+  }
+
+  public void resetClickableMAp() {
+    mouseHandler.setCurrentClickableMap(configuration);
+  }
+
+  public void mouseMove(Vector2f pos) {
+    mouseHandler.mouseMove(pos);
+    cursor.setPosition(pos);
+  }
+
   @Override
   public List<Float> getMesh(float time) {
     List<Float> mesh = configuration.getMesh(time);
     mesh.addAll(simulation.getMesh(time));
+    mesh.addAll(cursor.getMesh(time));
     return mesh;
   }
 
@@ -30,6 +61,7 @@ public class Workspace implements Drawable {
   public List<Float> getUV() {
     List<Float> uv = configuration.getUV();
     uv.addAll(simulation.getUV());
+    uv.addAll(cursor.getUV());
     return uv;
   }
 }

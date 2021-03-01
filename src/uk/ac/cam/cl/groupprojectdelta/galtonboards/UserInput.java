@@ -1,7 +1,10 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards;
 
+import java.util.EventListener;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
+import org.liquidengine.legui.event.ScrollEvent;
+import org.liquidengine.legui.listener.ScrollEventListener;
 import org.lwjgl.glfw.GLFW;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Camera;
 
@@ -12,18 +15,12 @@ public class UserInput {
     float scrollSpeed = -0.15f;
     long window;
     Camera camera;
+
     public UserInput(long window, Camera camera) {
         this.window = window;
         this.camera = camera;
-        GLFW.glfwSetScrollCallback(
-                window,
-                (w, xOffset, yOffset) -> {
-                    Matrix3f m = new Matrix3f();
-                    m.m22 = (float)Math.exp(yOffset * scrollSpeed);
-                    camera.getPosition().mul(m);
-                }
-        );
     }
+
     public void update(float deltaT) {
         float right = 0;
         float up = 0;
@@ -45,6 +42,12 @@ public class UserInput {
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == 1) {
             camera.Reset();
         }
+    }
+
+    public void scroll(ScrollEvent scrollEvent) {
+        Matrix3f m = new Matrix3f();
+        m.m22 = (float)Math.exp(scrollEvent.getYoffset() * scrollSpeed);
+        camera.getPosition().mul(m);
     }
 
 }
