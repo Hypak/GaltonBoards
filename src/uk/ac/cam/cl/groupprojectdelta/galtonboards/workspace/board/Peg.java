@@ -236,8 +236,6 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
     @Override
     public List<Float> getMesh(float time) {
 
-        // todo: generate just one triangle based on the probability see jamboard
-
         List<Float> points;
         Vector2f bound = new Vector2f();
 
@@ -248,8 +246,6 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         //  |1 / |
         //  | / 2|
         //  +----+
-
-        float z = 0.5f;
 
         float ratio = probability;
 

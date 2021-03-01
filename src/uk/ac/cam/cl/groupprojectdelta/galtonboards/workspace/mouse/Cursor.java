@@ -26,8 +26,6 @@ public class Cursor implements Drawable {
     //  | / 2|
     //  +----+
 
-    float z = 0.25f;
-
     points = new ArrayList<>(Arrays.asList(
         // Face 1
         position.x, position.y, z,
