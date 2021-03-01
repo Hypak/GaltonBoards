@@ -19,6 +19,7 @@ import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class UserInterface {
+  public static UserInterface userInterface;
+  public Panel editPanel;
 
   private final WindowBoards windowBoards;
 
@@ -54,7 +57,7 @@ public class UserInterface {
     leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
     leftPanel.getStyle().setBorder(new SimpleLineBorder());
 
-    Panel editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
+    editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
     editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
     editPanel.getStyle().setBorder(new SimpleLineBorder());
     Label selectedLabel = new Label(150, 50, 150, 100);

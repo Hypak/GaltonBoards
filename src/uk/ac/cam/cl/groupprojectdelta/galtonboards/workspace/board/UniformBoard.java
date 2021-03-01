@@ -207,4 +207,9 @@ public class UniformBoard extends Board{
     public int getSteps() {
         return steps;
     }
+
+    @Override
+    public String toString() {
+        return "Uniform board of width " + super.isoGridWidth;
+    }
 }

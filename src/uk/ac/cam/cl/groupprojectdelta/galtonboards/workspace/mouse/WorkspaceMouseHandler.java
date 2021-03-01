@@ -3,6 +3,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.joml.Vector2f;
+import org.liquidengine.legui.component.Label;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
 
 public class WorkspaceMouseHandler {
   private ClickableMap currentClickableMap;
@@ -24,7 +26,7 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseDown(float time) {
-    System.out.println(currentClickable);
+    ((Label)UserInterface.userInterface.editPanel.getChildComponents().get(0)).getTextState().setText(currentClickable.toString());
     switch (state) {
       case NONE:
         lastClickTime = time;

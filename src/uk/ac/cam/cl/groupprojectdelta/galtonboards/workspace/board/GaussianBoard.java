@@ -165,4 +165,9 @@ public class GaussianBoard extends Board {
     public int getNumColumns() {
         return numColumns;
     }
+
+    @Override
+    public String toString() {
+        return "Gaussian board of width " + super.isoGridWidth;
+    }
 }

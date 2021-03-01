@@ -27,7 +27,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private Vector2f dimensions;
 
     // How many pegs are on the bottom row of this board's isometric grid (converts to a triangular number)
-    private int isoGridWidth;
+    protected int isoGridWidth;
     private List<Peg> pegs;
 
     // Explicit bucket instances that collect from the grid's implicit output columns
@@ -785,5 +785,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             List.of(addRowButton, removeRowButton, outsideBoardRegion)
         );
         //TODO: Add other board UI elements
+    }
+
+    @Override
+    public String toString() {
+        return "Board of width " + isoGridWidth;
     }
 }
