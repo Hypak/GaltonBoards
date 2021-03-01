@@ -1,10 +1,9 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
 import org.joml.Vector2f;
-import org.liquidengine.legui.component.Button;
-import org.liquidengine.legui.component.Panel;
-import org.liquidengine.legui.component.SelectBox;
+import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
+import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
@@ -23,6 +22,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.LongAccumulator;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -40,10 +40,11 @@ public class UserInterface {
    * Then, run the main loop
    */
   public void start() {
+    final int editPanelWidth = 400;
 
     // Panels for boards and UI sections
 
-    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320, windowBoards.getHeight());
+    Panel rightPanel = new Panel(320, 0, windowBoards.getWidth() - 320 - editPanelWidth, windowBoards.getHeight());
     rightPanel.getStyle().getBackground().setColor(ColorConstants.transparent());
     rightPanel.getStyle().setBorder(new SimpleLineBorder());
     rightPanel.getListenerMap().addListener(MouseClickEvent.class,  (MouseClickEventListener) windowBoards::mouseClickEvent);
@@ -53,8 +54,16 @@ public class UserInterface {
     leftPanel.getStyle().getBackground().setColor(ColorConstants.gray());
     leftPanel.getStyle().setBorder(new SimpleLineBorder());
 
+    Panel editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
+    editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
+    editPanel.getStyle().setBorder(new SimpleLineBorder());
+    Label selectedLabel = new Label(150, 50, 150, 100);
+    selectedLabel.setTextState(new TextState("Test"));
+    editPanel.add(selectedLabel);
+
     windowBoards.addComponent(rightPanel);
     windowBoards.addComponent(leftPanel);
+    windowBoards.addComponent(editPanel);
 
     // Buttons for play/pause/stop
 
