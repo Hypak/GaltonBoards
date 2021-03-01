@@ -7,6 +7,7 @@ import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
+import org.liquidengine.legui.event.Event;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.icon.CharIcon;
@@ -47,14 +48,6 @@ public class UserInterface {
    * Initialize OpenGL and all the windows
    * Then, run the main loop
    */
-
-  public void sliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    if (Workspace.workspace.mouseHandler.selectedClickable instanceof Board) {
-      for (Peg peg : ((Board) Workspace.workspace.mouseHandler.selectedClickable).getPegs()) {
-        peg.setProbability(1 - event.getNewValue());
-      }
-    }
-  }
 
   public void start() {
     final int editPanelWidth = 400;
@@ -132,7 +125,30 @@ public class UserInterface {
     leftPanel.add(makeButton(64, 224, 32, 0xF4DB,
             (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
 
+    Slider simSpeedSlider = new Slider(80, 300, 160, 30);
+    simSpeedSlider.setMinValue(0.05f);
+    simSpeedSlider.setMaxValue(15);
+    simSpeedSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::speedSliderChangeEvent);
+
+    leftPanel.add(simSpeedSlider);
+
+    Slider ballSpawnSlider = new Slider(80, 400, 160, 30);
+    ballSpawnSlider.setMinValue(0.25f);
+    ballSpawnSlider.setMaxValue(50);
+    ballSpawnSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::spawnSliderChangeEvent);
+
+    leftPanel.add(ballSpawnSlider);
+
     return leftPanel;
+  }
+
+  public void speedSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
+    Workspace.workspace.getSimulation().speed = event.getNewValue();
+  }
+
+  public void spawnSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
+    Workspace.workspace.getSimulation().timeBetweenBalls = 1 / event.getNewValue();
+    Workspace.workspace.getSimulation().timeTillNextBall *= event.getOldValue() / event.getNewValue();
   }
 
   private Panel getRightPanel(int editPanelWidth) {
@@ -181,6 +197,14 @@ public class UserInterface {
     editPanel.add(probabilitySlider);
 
     return editPanel;
+  }
+
+  public void sliderChangeEvent(SliderChangeValueEvent<Slider> event) {
+    if (Workspace.workspace.mouseHandler.selectedClickable instanceof Board) {
+      for (Peg peg : ((Board) Workspace.workspace.mouseHandler.selectedClickable).getPegs()) {
+        peg.setProbability(1 - event.getNewValue());
+      }
+    }
   }
 
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
