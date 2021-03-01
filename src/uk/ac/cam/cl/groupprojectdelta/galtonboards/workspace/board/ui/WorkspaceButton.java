@@ -92,7 +92,7 @@ public abstract class WorkspaceButton implements WorkspaceClickable, Drawable {
   @Override
   public List<Float> getColourTemplate() {
     float red = 1;
-    float green = 1;
+    float green = 0;
     float blue = 1;
     return List.of(
             // face 1
