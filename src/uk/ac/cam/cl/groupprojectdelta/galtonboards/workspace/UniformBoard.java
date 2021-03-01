@@ -43,11 +43,11 @@ public class UniformBoard extends Board{
      * Reset all of the peg values so that they follow the uniform distribution.
      */
     private void fixAllPegs() {
-        int denominator = steps;
+        float denominator = steps;
         for (Peg peg : getPegs()) {
             Vector2i gp = peg.getGridPos();
             if(gp.x == 0) {
-                peg.setProbability(1-((float)1/denominator));
+                peg.setProbability(1f-(1f/denominator));
                 denominator--;
             }
             else { peg.setProbability(0f); }
