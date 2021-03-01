@@ -99,14 +99,15 @@ public class UserInterface {
 
     // Zoom buttons
 
+    float zoomOffset = 0.2f;
     windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 32, 0xF374,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), zoomOffset)));
     windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 64, 0xF415,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), -zoomOffset)));
 
     // Movement buttons
 
-    float movement = 0.5f;
+    float movement = 1.0f;
     windowBoards.addComponent(makeButton(24, 324, windowBoards.getHeight() - 64, 0xF141,
             makeMovementCallback(windowBoards.getCamera(), movement, 0)));
     windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 32, 0xF140,
@@ -170,14 +171,20 @@ public class UserInterface {
 
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
     return event -> {
-    if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
-      System.out.println(event.getAction() == MouseClickEvent.MouseClickAction.CLICK);
-        camera.setPosition(
-              camera.getPosition().add(dx, dy, 0)
-        );
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.setPosition(camera.getPosition().add(dx, dy, 0));
       }
     };
   }
+
+  private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
+    return event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.zoom(dz);
+      }
+    };
+  }
+
 
   private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
     Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
