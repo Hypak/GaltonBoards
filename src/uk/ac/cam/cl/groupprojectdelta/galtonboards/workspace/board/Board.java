@@ -16,7 +16,7 @@ import java.util.List;
 
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
-    static float unitDistance = 1f;
+    public static float unitDistance = 1f;
     static float bucketDepth = 5f;
 
     // The world coordinates for this board
