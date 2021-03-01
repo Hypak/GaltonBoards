@@ -133,8 +133,8 @@ public class UserInterface {
     leftPanel.add(simSpeedSlider);
 
     Slider ballSpawnSlider = new Slider(80, 400, 160, 30);
-    ballSpawnSlider.setMinValue(0.25f);
-    ballSpawnSlider.setMaxValue(50);
+    ballSpawnSlider.setMinValue(0.5f);
+    ballSpawnSlider.setMaxValue(30);
     ballSpawnSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::spawnSliderChangeEvent);
 
     leftPanel.add(ballSpawnSlider);
@@ -147,8 +147,9 @@ public class UserInterface {
   }
 
   public void spawnSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    Workspace.workspace.getSimulation().timeBetweenBalls = 1 / event.getNewValue();
-    Workspace.workspace.getSimulation().timeTillNextBall *= event.getOldValue() / event.getNewValue();
+    Workspace.workspace.getSimulation().timeBetweenBalls = 1 / event.getNewValue() / event.getNewValue();
+    Workspace.workspace.getSimulation().timeTillNextBall *= (event.getOldValue() * event.getOldValue());
+    Workspace.workspace.getSimulation().timeTillNextBall /= (event.getNewValue() * event.getNewValue());
   }
 
   private Panel getRightPanel(int editPanelWidth) {
