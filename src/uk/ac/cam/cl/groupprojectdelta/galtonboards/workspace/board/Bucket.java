@@ -11,6 +11,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 
 public class Bucket implements LogicalLocation, Drawable {
 
@@ -249,6 +250,19 @@ public class Bucket implements LogicalLocation, Drawable {
     @Override
     public Set<Ball> balls() {
         return ballsInBucket;
+    }
+
+    @Override
+    public void removeBall(Ball ball) {
+        ballsInBucket.remove(ball);
+    }
+
+    @Override
+    public void addBall(Ball ball) {
+        ballsInBucket.add(ball);
+        if (ballsInBucket.size() > board.getSimulation().getBucketScale()) {
+            board.getSimulation().enlargeBuckets();
+        }
     }
 
     public Map<String, Integer> liquifiedBallsByTag() {

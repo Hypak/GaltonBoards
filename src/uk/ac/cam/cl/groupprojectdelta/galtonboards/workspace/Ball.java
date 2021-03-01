@@ -118,47 +118,6 @@ public class Ball implements Drawable {
             // ball can move toMove without reaching the next logical location
             position.add(toMove);
         }
-
-        /*
-        Vector2f toNextLogLoc = new Vector2f(0,0); // IMPORTANT: Vector2f not immutable, need to do all this initialisation and copying
-        nextLoc.getWorldPos().sub(currentLoc.getWorldPos(), toNextLogLoc);
-        float currentToNextDistance = toNextLogLoc.length();
-        System.out.println("CURRENT LOCATION IS CURRENTLY: " + currentLoc.getWorldPos());
-        if (currentToNextDistance < 0.001) {
-            System.out.println("Two ball logical locations are in the same place:");
-            System.out.println(currentLoc + " is at " + currentLoc.getWorldPos());
-            System.out.println(nextLoc + " is at " + currentLoc.getWorldPos());
-            System.out.println("Moving to the next item on the ball's path ...");
-            switchToNextLogLoc();
-            moveTowardsNextLoc(f);
-            return;
-        }
-        float distToMove = f * currentToNextDistance; // total distance to move
-        System.out.println("The ball is at: " + position);
-        System.out.println("Current loc: " + currentLoc.getWorldPos());
-        System.out.println("Next loc: " + nextLoc.getWorldPos());
-        System.out.println("Vector: " + toNextLogLoc);
-        System.out.println("Distance to move: " + distToMove);
-        Vector2f remainingTrip = new Vector2f(0,0);
-        nextLoc.getWorldPos().sub(position, remainingTrip);
-        float tripLeft = remainingTrip.length() / currentToNextDistance; // fraction of trip to next logLoc that's left
-        System.out.println("Trip left: " + tripLeft);
-        Vector2f dir = new Vector2f(0,0);
-        remainingTrip.normalize(dir);
-        Vector2f moved = new Vector2f(0,0);
-        dir.mul(Math.max(tripLeft, f) * distToMove, moved);
-        position.add(moved);
-        System.out.println("Ball moved: " + moved + "; now at: " + position);
-        if (tripLeft < f) { // then we've reached the next logical location
-            System.out.println("Ball has reached next logical location: " + nextLoc + ", " + nextLoc.getWorldPos());
-            if (nextLoc instanceof Bucket && !nextLoc.getBoard().isOpen()) {
-                return; // we've reached the end of a bucket that's closed
-            }
-            position = copyVec(nextLoc.getWorldPos());
-            switchToNextLogLoc();
-            moveTowardsNextLoc(f - tripLeft);
-        } else System.out.println("Ball has not reached next logical location");
-        */
     }
 
     public void update(float deltaTime) {
