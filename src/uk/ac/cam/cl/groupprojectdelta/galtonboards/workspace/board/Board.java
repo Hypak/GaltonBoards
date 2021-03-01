@@ -744,7 +744,6 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
         return ct;
     }
-=======
     //TODO: Add the addRowButton and removeRowButton to the color when merged.
 
     /*
