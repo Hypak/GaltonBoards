@@ -251,11 +251,13 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
         float z = 0.5f;
 
+        float ratio = probability;
+
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
                 worldPos.x, worldPos.y, z,
                 bound.x, worldPos.y, z,
-                (bound.x + worldPos.x)/2, bound.y, z
+                ratio * bound.x + (1 - ratio) * worldPos.x, bound.y, z
         ));
 
         return points;
