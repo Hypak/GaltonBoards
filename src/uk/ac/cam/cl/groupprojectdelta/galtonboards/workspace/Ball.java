@@ -128,6 +128,7 @@ public class Ball implements Drawable {
 
     @Override
     public List<Float> getMesh(float time) {
+        if (getLogLoc() instanceof ColumnBottom) return new ArrayList<>();
         List<Float> points;
         Vector2f bound = new Vector2f();
 
@@ -156,6 +157,7 @@ public class Ball implements Drawable {
 
     @Override
     public List<Float> getUV() {
+        if (getLogLoc() instanceof ColumnBottom) return new ArrayList<>();
         final float top = 0.75f;
         final float bottom = 1f;
         final float left = 0.75f;
@@ -175,6 +177,7 @@ public class Ball implements Drawable {
 
     @Override
     public List<Float> getColourTemplate() {
+        if (getLogLoc() instanceof ColumnBottom) return new ArrayList<>();
         // todo: colour balls based on colour tagging
         final boolean isLow = position.x < 0;
         final float red = isLow? 0 : 1f;

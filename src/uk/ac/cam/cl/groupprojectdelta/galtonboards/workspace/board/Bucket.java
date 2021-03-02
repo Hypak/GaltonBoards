@@ -300,9 +300,6 @@ public class Bucket implements LogicalLocation, Drawable {
         // Returns a map of ball tags to the number of them that are
         // liquified in a bucket
         Set<Ball> liquid = ballsInBucket;
-        // or: set the liquid set to be the union of all columnBottom.balls() for all column bottoms of this bucket
-        // (depends on whether you want balls to liquify upon entering a bucket, hitting the bottom, or
-        //  (probably a later optimisation) on hitting the surface of the current liquid in the bucket.)
         Map<String, Integer> nByTag = new HashMap<>();
         for (Ball ball : liquid) {
             if (nByTag.containsKey(ball.getTag())) {

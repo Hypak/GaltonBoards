@@ -1,7 +1,11 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.joml.Vector3f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
@@ -17,6 +21,8 @@ public class Simulation implements Drawable {
     public float timeTillNextBall = 0;
     private SimulationState simulationState;
     private float bucketScale = 1f; // the number of balls that will fill a bucket
+
+    public Map<String, Vector3f> tagColours = new HashMap<>();
 
     public void run() {
         simulationState = SimulationState.Running;
@@ -38,6 +44,15 @@ public class Simulation implements Drawable {
         this.configuration = configuration;
         configuration.setSimulation(this);
         balls = new ArrayList<>();
+        tagColours.put("untagged", new Vector3f(0f, 0f, 0f));
+    }
+
+    public void addBallTag(String tag, Vector3f colour) {
+        tagColours.put(tag, colour);
+    }
+
+    public void addBallTag(String tag) {
+        addBallTag(tag, new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random()));
     }
 
     public List<Ball> getBalls() {
