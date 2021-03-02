@@ -11,6 +11,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.PipeEditHandle;
 
 public class Bucket implements LogicalLocation, Drawable {
 
@@ -33,6 +34,9 @@ public class Bucket implements LogicalLocation, Drawable {
     private Set<Ball> ballsInBucket; // need this for visualisation
 
     String logLocType = "bucket"; // logical location type
+
+    // UI elements for this bucket
+    private final PipeEditHandle pipeEditHandle;
 
     /*
     =====================================================================
@@ -63,6 +67,7 @@ public class Bucket implements LogicalLocation, Drawable {
         this.tag = null;
         setOutputPosition();
         this.ballsInBucket = new HashSet<>();
+        this.pipeEditHandle = new PipeEditHandle(this);
     }
 
     /*
@@ -328,5 +333,9 @@ public class Bucket implements LogicalLocation, Drawable {
                 1f, 1f, 1f,
                 1f, 1f, 1f
         );
+    }
+
+    PipeEditHandle getPipeEditHandle() {
+        return pipeEditHandle;
     }
 }

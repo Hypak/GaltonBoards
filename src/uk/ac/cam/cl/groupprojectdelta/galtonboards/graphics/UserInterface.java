@@ -40,6 +40,10 @@ public class UserInterface {
 
   private final WindowBoards windowBoards;
 
+  public Configuration getConfiguration() {
+    return windowBoards.getConfiguration();
+  }
+
   UserInterface(WindowBoards windowBoards) {
     this.windowBoards = windowBoards;
   }
