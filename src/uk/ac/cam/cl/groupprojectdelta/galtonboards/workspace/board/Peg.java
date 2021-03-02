@@ -246,12 +246,10 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
     @Override
     public List<Float> getMesh(float time) {
 
-        // todo: generate just one triangle based on the probability see jamboard
-
         List<Float> points;
         Vector2f bound = new Vector2f();
 
-        Vector2f dimensions = new Vector2f(0.1f, 0.1f);
+        Vector2f dimensions = new Vector2f(0.1f);
         worldPos.add(dimensions, bound);
 
         //  +----+
@@ -259,13 +257,13 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 0.5f;
+        float ratio = probability;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
                 worldPos.x, worldPos.y, z,
                 bound.x, worldPos.y, z,
-                (bound.x + worldPos.x)/2, bound.y, z
+                ratio * bound.x + (1 - ratio) * worldPos.x, bound.y, z
         ));
 
         return points;
@@ -286,6 +284,15 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
                 bottom,right
         );
         return UVs;
+    }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        return List.of(
+                1f,1f,1f,
+                1f,1f,1f,
+                1f,1f,1f
+        );
     }
 
         /*

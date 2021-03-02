@@ -12,9 +12,10 @@ public class Workspace implements Drawable {
   public static final Workspace workspace = new Workspace();
 
   private final Configuration configuration = Configuration.defaultConfig;
-  private final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
+  public final WorkspaceMouseHandler mouseHandler = new WorkspaceMouseHandler(configuration);
   private final Simulation simulation = new Simulation(configuration);
   private final Cursor cursor = new Cursor();
+
 
   public Configuration getConfiguration() {
     return configuration;
@@ -44,6 +45,10 @@ public class Workspace implements Drawable {
     mouseHandler.setCurrentClickableMap(configuration);
   }
 
+  public ClickableMap getClickableMap() {
+    return mouseHandler.getCurrentClickableMap();
+  }
+
   public void mouseMove(Vector2f pos) {
     mouseHandler.mouseMove(pos);
     cursor.setPosition(pos);
@@ -63,5 +68,13 @@ public class Workspace implements Drawable {
     uv.addAll(simulation.getUV());
     uv.addAll(cursor.getUV());
     return uv;
+  }
+
+  @Override
+  public List<Float> getColourTemplate() {
+    List<Float> ct = configuration.getColourTemplate();
+    ct.addAll(simulation.getColourTemplate());
+    ct.addAll(cursor.getColourTemplate());
+    return ct;
   }
 }
