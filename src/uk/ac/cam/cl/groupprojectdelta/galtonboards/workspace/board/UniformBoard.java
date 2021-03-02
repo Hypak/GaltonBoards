@@ -147,6 +147,7 @@ public class UniformBoard extends Board{
     public void removeRow() {
         super.removeRow();
         steps--;
+        fixAllPegs();
         fixAllBucketTags();
     }
 
