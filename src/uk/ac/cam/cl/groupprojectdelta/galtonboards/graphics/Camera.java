@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -18,6 +19,12 @@ public class Camera {
 
   public void setPosition(Vector3f position) {
     r = position;
+  }
+
+  public void zoom(float offset) {
+    Matrix3f m = new Matrix3f();
+    m.m22 = (float)Math.exp(offset);
+    r.mul(m);
   }
 
   public Vector3f getPosition() {

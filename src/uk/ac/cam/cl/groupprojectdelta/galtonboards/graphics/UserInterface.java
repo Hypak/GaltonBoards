@@ -54,7 +54,6 @@ public class UserInterface {
    * Initialize OpenGL and all the windows
    * Then, run the main loop
    */
-
   public void start() {
     final int editPanelWidth = 400;
 
@@ -227,9 +226,15 @@ public class UserInterface {
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
     return event -> {
     if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
-        camera.setPosition(
-              camera.getPosition().add(dx, dy, 0)
-        );
+        camera.setPosition(camera.getPosition().add(dx, dy, 0));
+      }
+    };
+  }
+
+  private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
+    return event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.zoom(dz);
       }
     };
   }

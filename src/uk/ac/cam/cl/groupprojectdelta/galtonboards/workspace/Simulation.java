@@ -16,6 +16,7 @@ public class Simulation implements Drawable {
     public float timeBetweenBalls = 0.005f;
     public float timeTillNextBall = 0;
     private SimulationState simulationState;
+    private float bucketScale = 50f; // the number of balls that will fill a bucket
 
     public void run() {
         simulationState = SimulationState.Running;
@@ -32,6 +33,7 @@ public class Simulation implements Drawable {
 
     public Simulation(Configuration configuration) {
         this.configuration = configuration;
+        configuration.setSimulation(this);
         balls = new ArrayList<>();
     }
 
@@ -50,6 +52,14 @@ public class Simulation implements Drawable {
 
     public Board getRootBoard() {
         return configuration.getStartBoard();
+    }
+
+    public float getBucketScale() {
+        return bucketScale;
+    }
+
+    public void enlargeBuckets() {
+        bucketScale *= 2; // what to do to all bucket scales in the simulation when a bucket fills up
     }
 
     public void update(float deltaTime) {
