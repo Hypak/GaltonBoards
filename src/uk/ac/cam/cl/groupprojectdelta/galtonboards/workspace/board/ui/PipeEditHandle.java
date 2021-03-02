@@ -30,7 +30,7 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     return new Vector2f()
             .add(deltaDrag)
             .add(bucket.getBottomRight())
-            .add(-width/2, size/2);
+            .add(-width/2 - size/2, size/2);
   }
 
   @Override
