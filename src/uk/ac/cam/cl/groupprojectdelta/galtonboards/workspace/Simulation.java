@@ -16,7 +16,7 @@ public class Simulation implements Drawable {
     public float timeBetweenBalls = 0.005f;
     public float timeTillNextBall = 0;
     private SimulationState simulationState;
-    private float bucketScale = 50f; // the number of balls that will fill a bucket
+    private float bucketScale = 1f; // the number of balls that will fill a bucket
 
     public void run() {
         simulationState = SimulationState.Running;
