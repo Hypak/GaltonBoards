@@ -779,13 +779,6 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             }
         }
 
-        if (Workspace.workspace.getClickableMap() == this) {
-            ct.addAll(addRowButton.getColourTemplate());
-            if (isoGridWidth > 1) {
-                ct.addAll(removeRowButton.getColourTemplate());
-            }
-        }
-
         return ct;
     }
 
