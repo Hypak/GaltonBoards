@@ -16,6 +16,11 @@ public class GaussianBoard extends Board {
     private int numColumns;
 
     /**
+     * Construct a 10 levels board that shows the Gaussian Distribution for for N(0.3,o^2).
+     */
+    public GaussianBoard() { this(0.3f, 10); }
+
+    /**
      * Construct a board that shows the Gaussian Distribution for N(u,o^2).
      * @param u : float - The mean value for the sake of labelling buckets.
      * @param n : int - How many buckets we want to split the output into.

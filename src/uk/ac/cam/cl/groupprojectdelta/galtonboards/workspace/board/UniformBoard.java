@@ -21,6 +21,11 @@ public class UniformBoard extends Board{
     private int steps;
 
     /**
+     * Construct a 10 levels board that shows the Uniform Distribution for U(0,1).
+     */
+    public UniformBoard() { this(0, 1, 10); }
+
+    /**
      * Construct a board that shows the Uniform Distribution for U(a,b).
      * @param a : float - The lower bound of the distribution.
      * @param b : float - The upper bound of the distribution.
