@@ -10,8 +10,8 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Main {
 
-  static final int width = 1200;
-  static final int height = 800;
+  static final int width = 1600;
+  static final int height = 900;
 
   public static void main(String[] args) {
     // Create windows
@@ -22,7 +22,8 @@ public class Main {
     );
 
     // Start the interface
-    new UserInterface(wb).start();
+    UserInterface.userInterface = new UserInterface(wb);
+    UserInterface.userInterface.start();
   }
 
 }

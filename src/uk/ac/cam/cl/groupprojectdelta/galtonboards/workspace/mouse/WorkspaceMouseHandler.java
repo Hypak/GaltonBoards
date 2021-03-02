@@ -3,6 +3,10 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.joml.Vector2f;
+import org.liquidengine.legui.component.Label;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
 public class WorkspaceMouseHandler {
   private ClickableMap currentClickableMap;
@@ -16,6 +20,7 @@ public class WorkspaceMouseHandler {
   private Vector2f dragStart;
   private State state = State.NONE;
   private WorkspaceClickable currentClickable;
+  public WorkspaceClickable selectedClickable;
   private Vector2f currentPos = new Vector2f();
   private WorkspaceSelectionHandler selectionHandler = new WorkspaceSelectionHandler();
 
@@ -24,6 +29,21 @@ public class WorkspaceMouseHandler {
   }
 
   public void mouseDown(float time) {
+    selectedClickable = currentClickable;
+    if (currentClickable instanceof Board) {
+      UserInterface.userInterface.probabilitySlider.setValue(((Board) currentClickable).getPegs().get(0).rightProb());
+    } else {
+      UserInterface.userInterface.probabilitySlider.setValue(-1);  // Ideally we would disable
+    }
+    String clickedDescription;
+    if (currentClickable == null) {
+      clickedDescription = "";
+    } else {
+      clickedDescription = currentClickable.toString();
+    }
+    ((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0))
+            .getTextState().setText(clickedDescription);
+
     switch (state) {
       case NONE:
         lastClickTime = time;

@@ -53,7 +53,7 @@ class WindowBoards extends Window {
   private int programID;
   private int vertexShaderID;
   private int fragmentShaderID;
-  private int vertexBuffer, uvBuffer;
+  private int vertexBuffer, uvBuffer, colourTemplateBuffer;
   private int textureID;
 
   private final String textureFilePath;
@@ -123,6 +123,7 @@ class WindowBoards extends Window {
     // Generate buffers
     vertexBuffer = glGenBuffers();
     uvBuffer = glGenBuffers();
+    colourTemplateBuffer = glGenBuffers();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -161,7 +162,7 @@ class WindowBoards extends Window {
     float lastTime, deltaTime;
     Matrix4f MVP = new Matrix4f();
     List<Float> auxList;
-    float[] mesh, UVs;
+    float[] mesh, UVs, colourTemplates;
 
     // Clear window and setup OpenGL
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -209,6 +210,11 @@ class WindowBoards extends Window {
     for (int i = 0; i < auxList.size(); i++)
       UVs[i] = auxList.get(i);
 
+    auxList = workspace.getColourTemplate();
+    colourTemplates = new float[auxList.size()];
+    for (int i = 0; i < auxList.size(); i++)
+      colourTemplates[i] = auxList.get(i);
+
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, mesh, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -218,6 +224,11 @@ class WindowBoards extends Window {
     glBufferData(GL_ARRAY_BUFFER, UVs, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, colourTemplateBuffer);
+    glBufferData(GL_ARRAY_BUFFER, colourTemplates, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+    glEnableVertexAttribArray(2);
 
     glBindTexture(GL_TEXTURE_2D, textureID);
 

@@ -191,4 +191,9 @@ public class GeometricBoard extends Board {
     public int getNumUniqueTrials() {
         return numUniqueTrials;
     }
+
+    @Override
+    public String toString() {
+        return "Geometric board of width " + super.isoGridWidth;
+    }
 }

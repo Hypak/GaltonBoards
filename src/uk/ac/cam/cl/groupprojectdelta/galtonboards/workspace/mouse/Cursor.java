@@ -26,8 +26,6 @@ public class Cursor implements Drawable {
     //  | / 2|
     //  +----+
 
-    float z = 0.25f;
-
     points = new ArrayList<>(Arrays.asList(
         // Face 1
         position.x, position.y, z,
@@ -61,5 +59,17 @@ public class Cursor implements Drawable {
         bottom,right
     );
     return UVs;
+  }
+
+  @Override
+  public List<Float> getColourTemplate() {
+    return List.of(
+            1f,1f,1f,
+            1f,1f,1f,
+            1f,1f,1f,
+            1f,1f,1f,
+            1f,1f,1f,
+            1f,1f,1f
+    );
   }
 }
