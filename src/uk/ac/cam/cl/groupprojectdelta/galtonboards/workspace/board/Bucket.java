@@ -120,6 +120,7 @@ public class Bucket implements LogicalLocation, Drawable {
      */
     public void destroy() {
         // Handle deleting this bucket cleanly (e.g. handle the output connection from this bucket)
+        clearOutput();
     }
 
     /**
@@ -127,8 +128,21 @@ public class Bucket implements LogicalLocation, Drawable {
      * @param board : Board - the board balls fall into from this bucket
      */
     public void setOutput(Board board) {
+        clearOutput();
         output = board;
+        board.updateInputs(this);
     }
+
+    /**
+     * Reset the output of this bucket by setting it to null
+     */
+    public void clearOutput() {
+        if (output != null) {
+            output.updateInputs(this);
+        }
+        output = null;
+    }
+
 
     /*
     =====================================================================

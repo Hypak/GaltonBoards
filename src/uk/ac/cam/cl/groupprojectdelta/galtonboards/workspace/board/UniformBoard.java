@@ -51,7 +51,7 @@ public class UniformBoard extends Board{
         float denominator = steps;
         for (Peg peg : getPegs()) {
             Vector2i gp = peg.getGridPos();
-            if(gp.x == 0) {
+            if(gp.y == 0) {
                 peg.setProbability(1f-(1f/denominator));
                 denominator--;
             }
@@ -60,10 +60,24 @@ public class UniformBoard extends Board{
     }
 
     /**
+     * Check whether the user has edited any of the buckets.
+     * @return Whether the bucket layout is default or not.
+     */
+    private boolean bucketsEdited() {
+        boolean edited = false;
+        for (Bucket b : getBuckets()) {
+            if (b.getWidth() > 1) {
+                edited = true;
+            }
+        }
+        return edited;
+    }
+
+    /**
      * Reset all of the bucket tags when we increase the number of buckets
      */
     private void fixAllBucketTags() {
-        // TODO - This will break if bucket sizes have been edited, create check for bucket editing
+        if (bucketsEdited()) { return; }
         int i = 0;
         float stepInc = (upperBound-lowerBound) / steps;
         for (Bucket bucket : getBuckets()) {
