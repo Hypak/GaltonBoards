@@ -36,7 +36,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     // Explicit bucket instances that collect from the grid's implicit output columns
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
-    private List<Column> columns;
+    private List<ColumnTop> columns;
 
     // Variables and states for editing bucket layouts
     private List<Float> columnBoundaries;
@@ -568,7 +568,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return null;
     }
 
-    public Column getColumnTop(int x) {
+    public ColumnTop getColumnTop(int x) {
         // Input sanitation
         if(x > isoGridWidth || x < 0) {
             System.err.println(String.format("%d is an invalid column index.", x));

@@ -91,8 +91,8 @@ public class Ball implements Drawable {
     }
 
     private void switchToNextLogLoc() {
-        logLocs.get(logLocI).balls().remove(this);
-        logLocs.get(logLocI + 1).balls().add(this);
+        logLocs.get(logLocI).removeBall(this);
+        logLocs.get(logLocI + 1).addBall(this);
         logLocI += 1;
     }
 
