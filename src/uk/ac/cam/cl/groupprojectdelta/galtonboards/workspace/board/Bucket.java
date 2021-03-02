@@ -279,18 +279,18 @@ public class Bucket implements LogicalLocation, Drawable {
         //  | / 2|
         //  +----+
 
-        float z = 0.75f;
+        float zEpsilon = z + 1E-4f;
 
         points = new ArrayList<>(Arrays.asList(
             // Face 1
-            lowBound.x, lowBound.y, z,
-            highBound.x, lowBound.y, z,
-            highBound.x, highBound.y, z,
+            lowBound.x, lowBound.y, zEpsilon,
+            highBound.x, lowBound.y, zEpsilon,
+            highBound.x, highBound.y, zEpsilon,
 
             // Face 2
-            lowBound.x, lowBound.y, z,
-            lowBound.x, highBound.y, z,
-            highBound.x, highBound.y, z
+            lowBound.x, lowBound.y, zEpsilon,
+            lowBound.x, highBound.y, zEpsilon,
+            highBound.x, highBound.y, zEpsilon
         ));
 
         return points;
@@ -315,5 +315,18 @@ public class Bucket implements LogicalLocation, Drawable {
         ));
 
         return UVs;
+    }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        return List.of(
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        );
     }
 }

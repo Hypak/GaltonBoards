@@ -6,13 +6,15 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 
 public class Simulation implements Drawable {
+    public static Simulation simulation;
+
     private Configuration configuration;
     private enum SimulationState {Running, Paused, Stopped};
 
     public float speed = 4f;
     private List<Ball> balls;
-    private final float timeBetweenBalls = 0.005f;
-    private float timeTillNextBall = 0;
+    public float timeBetweenBalls = 0.005f;
+    public float timeTillNextBall = 0;
     private SimulationState simulationState;
 
     public void run() {
@@ -79,5 +81,14 @@ public class Simulation implements Drawable {
             uv.addAll(ball.getUV());
         }
         return uv;
+    }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        List<Float> ct = new ArrayList<>();
+        for (Ball ball : balls) {
+            ct.addAll(ball.getColourTemplate());
+        }
+        return ct;
     }
 }

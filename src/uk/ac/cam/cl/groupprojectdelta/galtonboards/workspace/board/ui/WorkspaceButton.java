@@ -88,4 +88,21 @@ public abstract class WorkspaceButton implements WorkspaceClickable, Drawable {
     );
     return UVs;
   }
+
+  @Override
+  public List<Float> getColourTemplate() {
+    float red = 1;
+    float green = 0;
+    float blue = 1;
+    return List.of(
+            // face 1
+            red, green, blue,
+            red, green, blue,
+            red, green, blue,
+            // face 2
+            red, green, blue,
+            red, green, blue,
+            red, green, blue
+    );
+  }
 }

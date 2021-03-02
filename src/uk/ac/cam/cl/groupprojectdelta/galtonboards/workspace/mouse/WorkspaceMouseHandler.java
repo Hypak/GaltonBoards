@@ -31,18 +31,18 @@ public class WorkspaceMouseHandler {
   public void mouseDown(float time) {
     selectedClickable = currentClickable;
     if (currentClickable instanceof Board) {
-      UserInterface.userInterface.probabilitySlider.setValue(((Board) currentClickable).getPegs().get(0).leftProb());
+      UserInterface.userInterface.probabilitySlider.setValue(((Board) currentClickable).getPegs().get(0).rightProb());
     } else {
       UserInterface.userInterface.probabilitySlider.setValue(-1);  // Ideally we would disable
     }
-    String clickedDesciption;
+    String clickedDescription;
     if (currentClickable == null) {
-      clickedDesciption = "";
+      clickedDescription = "";
     } else {
-      clickedDesciption = currentClickable.toString();
+      clickedDescription = currentClickable.toString();
     }
     ((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0))
-            .getTextState().setText(clickedDesciption);
+            .getTextState().setText(clickedDescription);
 
     switch (state) {
       case NONE:

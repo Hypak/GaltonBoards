@@ -655,18 +655,18 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         //  | / 2|
         //  +----+
 
-        float z = 1;
+        float zEpsilon = z + 1E-3f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
-                lowBound.x, lowBound.y, z,
-                highBound.x, lowBound.y, z,
-                highBound.x, highBound.y, z,
+                lowBound.x, lowBound.y, zEpsilon,
+                highBound.x, lowBound.y, zEpsilon,
+                highBound.x, highBound.y, zEpsilon,
 
                 // Face 2
-                lowBound.x, lowBound.y, z,
-                lowBound.x, highBound.y, z,
-                highBound.x, highBound.y, z
+                lowBound.x, lowBound.y, zEpsilon,
+                lowBound.x, highBound.y, zEpsilon,
+                highBound.x, highBound.y, zEpsilon
         ));
 
         for (Peg peg : pegs) {
@@ -723,7 +723,34 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return UVs;
     }
 
-    //TODO: Add the addRowButton and removeRowButton to the color when merged.
+    @Override
+    public List<Float> getColourTemplate() {
+        List<Float> ct = new ArrayList<>(Arrays.asList(
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+        ));
+
+        for (Peg peg : pegs) {
+            ct.addAll(peg.getColourTemplate());
+        }
+        for (Bucket bucket : buckets) {
+            ct.addAll(bucket.getColourTemplate());
+        }
+
+        if (Workspace.workspace.getClickableMap() == this) {
+            ct.addAll(addRowButton.getColourTemplate());
+            if (isoGridWidth > 1) {
+                ct.addAll(removeRowButton.getColourTemplate());
+            }
+        }
+
+        return ct;
+    }
 
     /*
     =====================================================================

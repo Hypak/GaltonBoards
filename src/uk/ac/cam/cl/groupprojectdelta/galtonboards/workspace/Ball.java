@@ -17,6 +17,8 @@ public class Ball implements Drawable {
     Simulation simulation; // Simulation object that contains this ball
     String tag = "untagged";
 
+    static final float RADIUS = 0.1f;
+
     public Ball(LogicalLocation startingPoint, Simulation sim) {
         simulation = sim;
         logLocI = 0;
@@ -167,18 +169,16 @@ public class Ball implements Drawable {
 
     @Override
     public List<Float> getMesh(float time) {
-        List<Float> points = new ArrayList<>();
+        List<Float> points;
         Vector2f bound = new Vector2f();
 
-        Vector2f dimensions = new Vector2f(0.1f, 0.1f);
+        Vector2f dimensions = new Vector2f(RADIUS);
         position.add(dimensions, bound);
 
         //  +----+
         //  |1 / |
         //  | / 2|
         //  +----+
-
-        float z = 0.25f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1
@@ -202,7 +202,7 @@ public class Ball implements Drawable {
         final float left = 0.75f;
         final float right = 1f;
 
-        List<Float> UVs = List.of(
+        return List.of(
                 // face 1
                 top,left,
                 bottom,left,
@@ -212,6 +212,25 @@ public class Ball implements Drawable {
                 top,right,
                 bottom,right
         );
-        return UVs;
+    }
+
+    @Override
+    public List<Float> getColourTemplate() {
+        // todo: colour balls based on colour tagging
+        final boolean isLow = position.x < 0;
+        final float red = isLow? 0 : 1f;
+        final float green = 1;
+        final float blue = red;
+
+        return List.of(
+                // face 1
+                red, green, blue,
+                red, green, blue,
+                red, green, blue,
+                // face 2
+                red, green, blue,
+                red, green, blue,
+                red, green, blue
+        );
     }
 }
