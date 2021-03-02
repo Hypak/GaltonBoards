@@ -9,9 +9,14 @@ import java.util.List;
 import java.util.Set;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.PipeEditHandle;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 public class Bucket implements LogicalLocation, Drawable {
 
@@ -245,6 +250,14 @@ public class Bucket implements LogicalLocation, Drawable {
         return board;
     }
 
+    public Simulation getSimulation() {
+        return Workspace.workspace.getSimulation();
+    }
+
+    public Float getSize() {
+        return getSimulation().getBucketScale();
+    }
+
     @Override
     public Vector2f getWorldPos() {
         // Needed so it can implement the LogicalLocation interface
@@ -256,11 +269,26 @@ public class Bucket implements LogicalLocation, Drawable {
         return ballsInBucket;
     }
 
+    @Override
+    public void removeBall(Ball ball) {
+        ballsInBucket.remove(ball);
+    }
+
+    @Override
+    public void addBall(Ball ball) {
+        ballsInBucket.add(ball);
+        if (ballsInBucket.size() > getSimulation().getBucketScale()) {
+            getSimulation().enlargeBuckets();
+        }
+    }
+
     public Map<String, Integer> liquifiedBallsByTag() {
         // Returns a map of ball tags to the number of them that are
         // liquified in a bucket
-        // TODO: set the liquid set to be the union of all columnBottom.balls() for all column bottoms of this bucket:
-        Set<Ball> liquid = null;
+        Set<Ball> liquid = ballsInBucket;
+        // or: set the liquid set to be the union of all columnBottom.balls() for all column bottoms of this bucket
+        // (depends on whether you want balls to liquify upon entering a bucket, hitting the bottom, or
+        //  (probably a later optimisation) on hitting the surface of the current liquid in the bucket.)
         Map<String, Integer> nByTag = new HashMap<>();
         for (Ball ball : liquid) {
             if (nByTag.containsKey(ball.getTag())) {
@@ -272,19 +300,51 @@ public class Bucket implements LogicalLocation, Drawable {
         return nByTag;
     }
 
+    private List<Float> getRectMesh(Vector2f bottomRight, Vector2f topLeft) {
+        float zEpsilon = z + 1E-4f;
+        //  +----+
+        //  |1 / |
+        //  | / 2|
+        //  +----+
+        return new ArrayList<>(Arrays.asList(
+            // Face 1
+            bottomRight.x, bottomRight.y, zEpsilon,
+            topLeft.x, bottomRight.y, zEpsilon,
+            topLeft.x, topLeft.y, zEpsilon,
+
+            // Face 2
+            bottomRight.x, bottomRight.y, zEpsilon,
+            bottomRight.x, topLeft.y, zEpsilon,
+            topLeft.x, topLeft.y, zEpsilon
+        ));
+
+    }
+
     @Override
     public List<Float> getMesh(float time) {
         List<Float> points = new ArrayList<>();
         Vector2f lowBound = getBottomRight();
         Vector2f highBound = getTopLeft();
 
+        Float ballLevel = balls().size() / getSize();
+        Float yLevel = (highBound.y - lowBound.y) * ballLevel + lowBound.y;
 
-        //  +----+
-        //  |1 / |
-        //  | / 2|
-        //  +----+
+        List<Float> levels = new ArrayList<>(Arrays.asList(highBound.y, yLevel, lowBound.y));
 
-        float zEpsilon = z + 1E-4f;
+        int i = 0;
+        while (i + 1 < levels.size()) {
+            Float y0 = levels.get(i);
+            Float y1 = levels.get(i+1);
+            Vector2f bottomRight = new Vector2f(lowBound.x, y1);
+            Vector2f topLeft = new Vector2f(highBound.x, y0);
+            points = Stream.concat(points.stream(), getRectMesh(bottomRight, topLeft).stream()).collect(Collectors.toList());
+            ++i;
+        }
+
+        return points;
+
+
+        /*float zEpsilon = z + 1E-4f;
 
         points = new ArrayList<>(Arrays.asList(
             // Face 1
@@ -298,7 +358,7 @@ public class Bucket implements LogicalLocation, Drawable {
             highBound.x, highBound.y, zEpsilon
         ));
 
-        return points;
+        return points;*/
     }
 
     @Override
@@ -316,6 +376,14 @@ public class Bucket implements LogicalLocation, Drawable {
             // face 2
             top, left,
             top, right,
+            bottom, right,
+            // face 3
+            top, left,
+            bottom, left,
+            bottom, right,
+            // face 4
+            top, left,
+            top, right,
             bottom, right
         ));
 
@@ -331,7 +399,15 @@ public class Bucket implements LogicalLocation, Drawable {
 
                 1f, 1f, 1f,
                 1f, 1f, 1f,
-                1f, 1f, 1f
+                1f, 1f, 1f,
+
+                1f, 0f, 0f, // change colour here
+                1f, 0f, 0f,
+                1f, 0f, 0f,
+
+                1f, 0f, 0f,
+                1f, 0f, 0f,
+                1f, 0f, 0f
         );
     }
 

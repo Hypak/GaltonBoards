@@ -1,7 +1,11 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ColumnTop extends Column implements LogicalLocation {
 
@@ -10,6 +14,10 @@ public class ColumnTop extends Column implements LogicalLocation {
 
     // The world coordinates of the top of this column
     private Vector2f worldPos;
+
+    private Set<Ball> ballSet;
+
+    private Bucket bucket;
 
     /**
      * Create the top part of a column output of a board.
@@ -21,7 +29,9 @@ public class ColumnTop extends Column implements LogicalLocation {
     public ColumnTop(int columnIndex, Bucket bucket, Board board, ColumnBottom columnBottom) {
         super(columnIndex, bucket, board);
         this.columnBottom = columnBottom;
+        this.bucket = bucket;
         setPosition();
+        ballSet = new HashSet<>();
     }
 
     /**
@@ -55,5 +65,22 @@ public class ColumnTop extends Column implements LogicalLocation {
     @Override
     public Vector2f getWorldPos() {
         return new Vector2f(worldPos);
+    }
+
+    @Override
+    public Set<Ball> balls() {
+        return ballSet;
+    }
+
+    @Override
+    public void addBall(Ball ball) {
+        ballSet.add(ball);
+        //bucket.addBall(ball);
+    }
+
+    @Override
+    public void removeBall(Ball ball) {
+        ballSet.remove(ball);
+        //bucket.removeBall(ball);
     }
 }

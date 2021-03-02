@@ -23,12 +23,14 @@ import org.liquidengine.legui.style.font.TextDirection;
 import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.LongAccumulator;
+import java.util.stream.Collectors;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -52,7 +54,6 @@ public class UserInterface {
    * Initialize OpenGL and all the windows
    * Then, run the main loop
    */
-
   public void start() {
     final int editPanelWidth = 400;
 
@@ -80,7 +81,7 @@ public class UserInterface {
       }
     };
 
-    List<String> labels = new ArrayList(Configuration.savedConfigurations.keySet());
+    List<String> labels = new ArrayList<>(Configuration.savedConfigurations.keySet());
     windowBoards.addComponent(makeSelectBox(128, 16, 96, 192, labels, selectEL));
 
 
@@ -142,6 +143,16 @@ public class UserInterface {
     ballSpawnSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::spawnSliderChangeEvent);
 
     leftPanel.add(ballSpawnSlider);
+
+    // Button for adding boards
+    leftPanel.add(makeAddBoardButton(80, 500, 160, 40, "Add a Binomial board",
+                                     BinomialBoard.class));
+    leftPanel.add(makeAddBoardButton(80, 550, 160, 40, "Add a Gaussian board",
+                                     GaussianBoard.class));
+    leftPanel.add(makeAddBoardButton(80, 600, 160, 40, "Add a Geometric board",
+                                     GeometricBoard.class));
+    leftPanel.add(makeAddBoardButton(80, 650, 160, 40, "Add a Uniform board",
+                                     UniformBoard.class));
 
     return leftPanel;
   }
@@ -215,10 +226,15 @@ public class UserInterface {
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
     return event -> {
     if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
-      System.out.println(event.getAction() == MouseClickEvent.MouseClickAction.CLICK);
-        camera.setPosition(
-              camera.getPosition().add(dx, dy, 0)
-        );
+        camera.setPosition(camera.getPosition().add(dx, dy, 0));
+      }
+    };
+  }
+
+  private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
+    return event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.zoom(dz);
       }
     };
   }
@@ -235,6 +251,22 @@ public class UserInterface {
     return button;
   }
 
+  private Button makeAddBoardButton(int xPos, int yPos, int width, int height, String boardName,
+                                    Class<? extends Board> boardClass) {
+    Button button = new Button(boardName, xPos, yPos, width, height);
+    button.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    button.getListenerMap().addListener(MouseClickEvent.class, event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        try {
+          getConfiguration().addBoard(boardClass.getDeclaredConstructor().newInstance());
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    return button;
+  }
+
   private static SelectBox<String> makeSelectBox (int width, int height, int xPos, int yPos,Iterable<String> labels,
                                                   EventListener<SelectBoxChangeSelectionEvent<String>> callback) {
     SelectBox<String> selectBox = new SelectBox<String>(xPos, yPos, width, height);
@@ -242,7 +274,7 @@ public class UserInterface {
     for (String label : labels) {
       selectBox.addElement(label);
     }
-    selectBox.addSelectBoxChangeSelectionEventListener( callback);
+    selectBox.addSelectBoxChangeSelectionEventListener(callback);
     return selectBox;
   }
 

@@ -7,7 +7,7 @@ import java.util.Set;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 
-public class Column implements LogicalLocation {
+public class Column {
 
     // References to the bucket this column feeds into and the board it is on
     private Bucket bucket;
@@ -17,7 +17,7 @@ public class Column implements LogicalLocation {
   /*private*/ int columnIndex;
 
     // Ball set for Logical Location
-    private Set<Ball> ballSet;
+    //private Set<Ball> ballSet;
 
     /**
      * Create a column output for a board (this class should only be instantiated via a super() call).
@@ -29,7 +29,7 @@ public class Column implements LogicalLocation {
         this.columnIndex = columnIndex;
         this.bucket = bucket;
         this.board = board;
-        this.ballSet = new HashSet<>();
+        //this.ballSet = new HashSet<>();
     }
 
     /**
@@ -54,21 +54,34 @@ public class Column implements LogicalLocation {
         return;
     }
 
-    @Override
+    /*
+    //@Override
     public Vector2f getWorldPos() {
         return null;
     }
 
-    @Override
+    //@Override
     public Set<Ball> balls() {
         return ballSet;
     }
+
+    //@Override
+    public void addBall(Ball ball) {
+        //System.out.println("ADDING BALL TO COLUMN");
+        //ballSet.add(ball);
+        //bucket.addBall(ball);
+    }
+
+    public void removeBall(Ball ball) {
+        //ballSet.remove(ball);
+        //bucket.removeBall(ball);
+    }*/
 
     /**
      * Getter for the board this column is on.
      * @return The board.
      */
-    @Override
+    //@Override
     public Board getBoard() {
         return board;
     }

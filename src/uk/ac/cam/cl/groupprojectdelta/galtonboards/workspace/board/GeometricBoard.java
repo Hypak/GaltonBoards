@@ -18,6 +18,11 @@ public class GeometricBoard extends Board {
     private int numUniqueTrials;
 
     /**
+     * Construct a 10 levels board that shows the Geometric Distribution for Geo(0.3).
+     */
+    public GeometricBoard() { this(0.3f, 10); }
+
+    /**
      * Construct a board that shows the Geometric Distribution for Geo(p).
      * @param p : float - The probability of a trial succeeding.
      * @param k : int - How many unique X=k's we can test for with buckets.

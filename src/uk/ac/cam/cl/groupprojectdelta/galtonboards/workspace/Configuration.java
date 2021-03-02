@@ -50,6 +50,15 @@ public class Configuration implements Drawable, ClickableMap {
   }
   static Configuration defaultConfig = savedConfigurations.get("Normal");
   private List<Board> boards = new LinkedList<>();
+  private Simulation simulation = null;
+
+  public Simulation getSimulation() {
+    return simulation;
+  }
+
+  void setSimulation(Simulation sim) {
+    simulation = sim;
+  }
 
 
   public Board getStartBoard() {
@@ -58,6 +67,7 @@ public class Configuration implements Drawable, ClickableMap {
 
   public void addBoard(Board board) {
     boards.add(board);
+    board.setSimulation(simulation);
   }
 
   public void removeBoard(Board board) {

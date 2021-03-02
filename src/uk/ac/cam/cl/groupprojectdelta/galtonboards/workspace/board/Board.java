@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.AddRowButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
@@ -28,6 +29,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private Vector2f worldPos;
     private Vector2f dimensions;
 
+    private Simulation simulation = null;
+
     // How many pegs are on the bottom row of this board's isometric grid (converts to a triangular number)
     protected int isoGridWidth;
     private List<Peg> pegs;
@@ -35,7 +38,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     // Explicit bucket instances that collect from the grid's implicit output columns
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
-    private List<Column> columns;
+    private List<ColumnTop> columns;
 
     // Variables and states for editing bucket layouts
     private List<Float> columnBoundaries;
@@ -210,6 +213,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         float deltaHeight = (dimensions.y - oldDimensions.y) / 2f;
         float newYPos = worldPos.y - deltaHeight;
         updateBoardPosition(new Vector2f(worldPos.x, newYPos));
+    }
+
+    public void setSimulation(Simulation sim) {
+        simulation = sim;
     }
 
     /*
@@ -563,7 +570,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return null;
     }
 
-    public Column getColumnTop(int x) {
+    public ColumnTop getColumnTop(int x) {
         // Input sanitation
         if(x > isoGridWidth || x < 0) {
             System.err.println(String.format("%d is an invalid column index.", x));
@@ -640,6 +647,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public boolean isOpen() {
         // This should return false if the board's buckets have been closed by the user.
         return true;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
     }
 
     /*
@@ -768,9 +779,15 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             }
         }
 
+        if (Workspace.workspace.getClickableMap() == this) {
+            ct.addAll(addRowButton.getColourTemplate());
+            if (isoGridWidth > 1) {
+                ct.addAll(removeRowButton.getColourTemplate());
+            }
+        }
+
         return ct;
     }
-    //TODO: Add the addRowButton and removeRowButton to the color when merged.
 
     /*
     =====================================================================

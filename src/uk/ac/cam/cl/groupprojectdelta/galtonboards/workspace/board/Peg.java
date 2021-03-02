@@ -157,6 +157,16 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         return ballsAtPeg;
     }
 
+    @Override
+    public void addBall(Ball ball) {
+        ballsAtPeg.add(ball);
+    }
+
+    @Override
+    public void removeBall(Ball ball) {
+        ballsAtPeg.remove(ball);
+    }
+
     /**
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.
@@ -185,7 +195,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * Get the column to the left of this peg if the peg is on the bottom row.
      * @return
      */
-    public Column getLeftColumn() {
+    public ColumnTop getLeftColumn() {
         return board.getColumnTop(getLeftColumnIndex());
     }
 
@@ -193,7 +203,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * Get the column to the right of this peg if the peg is on the bottom row.
      * @return
      */
-    public Column getRightColumn() {
+    public ColumnTop getRightColumn() {
         return board.getColumnTop(getRightColumnIndex());
     }
 
