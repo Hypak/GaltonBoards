@@ -43,6 +43,8 @@ public class Bucket implements LogicalLocation, Drawable {
     // UI elements for this bucket
     private final PipeEditHandle pipeEditHandle;
 
+    private static final float zEpsilon = z + 5E-4f;
+
     /*
     =====================================================================
                              CONSTRUCTORS
@@ -301,7 +303,6 @@ public class Bucket implements LogicalLocation, Drawable {
     }
 
     private List<Float> getRectMesh(Vector2f bottomRight, Vector2f topLeft) {
-        float zEpsilon = z + 1E-4f;
         //  +----+
         //  |1 / |
         //  | / 2|
@@ -339,6 +340,24 @@ public class Bucket implements LogicalLocation, Drawable {
             Vector2f topLeft = new Vector2f(highBound.x, y0);
             points = Stream.concat(points.stream(), getRectMesh(bottomRight, topLeft).stream()).collect(Collectors.toList());
             ++i;
+        }
+
+        if (output != null) {
+            final float w = highBound.x - lowBound.x;
+            highBound = lowBound;
+            lowBound = output.getInputPos();
+            lowBound.x -= w / 2;
+            lowBound.y += w;
+
+            points.addAll(Arrays.asList(
+                    highBound.x, highBound.y, zEpsilon,
+                    highBound.x + w, highBound.y, zEpsilon,
+                    lowBound.x + w, lowBound.y, zEpsilon,
+
+                    highBound.x, highBound.y, zEpsilon,
+                    lowBound.x, lowBound.y, zEpsilon,
+                    lowBound.x + w, lowBound.y, zEpsilon
+            ));
         }
 
         return points;
@@ -387,12 +406,26 @@ public class Bucket implements LogicalLocation, Drawable {
             bottom, right
         ));
 
+        if (output != null) {
+            UVs.addAll(List.of(
+                    // pipe
+                    // face 1
+                    top, left,
+                    bottom, left,
+                    bottom, right,
+                    // face 2
+                    top, left,
+                    top, right,
+                    bottom, right
+            ));
+        }
+
         return UVs;
     }
 
     @Override
     public List<Float> getColourTemplate() {
-        return List.of(
+        List<Float> ct = new ArrayList<>(List.of(
                 1f, 1f, 1f,
                 1f, 1f, 1f,
                 1f, 1f, 1f,
@@ -408,7 +441,21 @@ public class Bucket implements LogicalLocation, Drawable {
                 1f, 0f, 0f,
                 1f, 0f, 0f,
                 1f, 0f, 0f
-        );
+        ));
+
+        if (output != null) {
+            ct.addAll(List.of(
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+
+                1f, 1f, 1f,
+                1f, 1f, 1f,
+                1f, 1f, 1f
+            ));
+        }
+
+        return ct;
     }
 
     PipeEditHandle getPipeEditHandle() {
