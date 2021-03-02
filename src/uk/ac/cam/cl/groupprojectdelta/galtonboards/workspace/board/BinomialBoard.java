@@ -17,6 +17,11 @@ public class BinomialBoard extends Board {
     private int numTrials;
 
     /**
+     * Construct a 10 levels board that shows the Binomial Distribution for B(10,0.3).
+     */
+    public BinomialBoard() { this(10, 0.3f); }
+
+    /**
      * Construct a board that shows the Binomial Distribution for B(n,p).
      * @param n : int - The probability of a trial succeeding.
      * @param p : float - How many unique X=k's we can test for with buckets.
