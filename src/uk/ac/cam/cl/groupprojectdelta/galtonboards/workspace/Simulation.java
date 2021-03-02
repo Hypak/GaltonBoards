@@ -28,6 +28,9 @@ public class Simulation implements Drawable {
 
     public void stop() {
         simulationState = SimulationState.Stopped;
+        for (Ball ball : balls) {
+            ball.getLogLoc().removeBall(ball);
+        }
         balls.clear();
     }
 

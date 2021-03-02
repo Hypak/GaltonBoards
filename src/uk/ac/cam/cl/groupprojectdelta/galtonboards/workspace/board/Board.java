@@ -6,6 +6,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.AddRowButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.PipeEditHandle;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.RemoveRowButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
@@ -17,6 +18,7 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
@@ -36,7 +38,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     // Explicit bucket instances that collect from the grid's implicit output columns
     private List<Bucket> buckets;
     private List<Integer> bucketWidths;
-    private List<Column> columns;
+    private List<ColumnTop> columns;
 
     // Variables and states for editing bucket layouts
     private List<Float> columnBoundaries;
@@ -568,7 +570,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         return null;
     }
 
-    public Column getColumnTop(int x) {
+    public ColumnTop getColumnTop(int x) {
         // Input sanitation
         if(x > isoGridWidth || x < 0) {
             System.err.println(String.format("%d is an invalid column index.", x));
@@ -616,6 +618,15 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public List<Bucket> getBuckets() {
         return buckets;
     }
+
+    /**
+     * Getter for the list of pipe edit handles.
+     * @return The list of pipe edit handles on this board.
+     */
+    public List<PipeEditHandle> getPipeEditHandles() {
+        return buckets.stream().map(Bucket::getPipeEditHandle).collect(Collectors.toList());
+    }
+
 
     /**
      * Getter to determine whether the bucket layout is being updated.
@@ -693,6 +704,9 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             if (isoGridWidth > 1) {
                 points.addAll(removeRowButton.getMesh(time));
             }
+            for (PipeEditHandle handle : getPipeEditHandles()) {
+                points.addAll(handle.getMesh(time));
+            }
         }
 
         return points;
@@ -729,6 +743,9 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             if (isoGridWidth > 1) {
                 UVs.addAll(removeRowButton.getUV());
             }
+            for (PipeEditHandle handle : getPipeEditHandles()) {
+                UVs.addAll(handle.getUV());
+            }
         }
 
         return UVs;
@@ -752,11 +769,13 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         for (Bucket bucket : buckets) {
             ct.addAll(bucket.getColourTemplate());
         }
-
         if (Workspace.workspace.getClickableMap() == this) {
             ct.addAll(addRowButton.getColourTemplate());
             if (isoGridWidth > 1) {
                 ct.addAll(removeRowButton.getColourTemplate());
+            }
+            for (PipeEditHandle handle : getPipeEditHandles()) {
+                ct.addAll(handle.getColourTemplate());
             }
         }
 
@@ -820,7 +839,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Iterable<? extends WorkspaceClickable> getClickables() {
         return Iterables.concat(
             pegs,
-            List.of(addRowButton, removeRowButton, outsideBoardRegion)
+            List.of(addRowButton, removeRowButton, outsideBoardRegion),
+            getPipeEditHandles()
         );
         //TODO: Add other board UI elements
     }
