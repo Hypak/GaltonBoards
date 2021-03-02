@@ -61,7 +61,7 @@ public class UserInterface {
     windowBoards.addComponent(rightPanel);
     windowBoards.addComponent(leftPanel);
     windowBoards.addComponent(editPanel);
-
+    
       // Select board SelectBox
 
     EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = new EventListener<>() {
@@ -210,14 +210,20 @@ public class UserInterface {
 
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
     return event -> {
-    if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
-      System.out.println(event.getAction() == MouseClickEvent.MouseClickAction.CLICK);
-        camera.setPosition(
-              camera.getPosition().add(dx, dy, 0)
-        );
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.setPosition(camera.getPosition().add(dx, dy, 0));
       }
     };
   }
+
+  private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
+    return event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.zoom(dz);
+      }
+    };
+  }
+
 
   private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
     Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
