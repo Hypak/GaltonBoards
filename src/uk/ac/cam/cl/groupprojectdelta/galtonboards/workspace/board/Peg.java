@@ -157,6 +157,16 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         return ballsAtPeg;
     }
 
+    @Override
+    public void addBall(Ball ball) {
+        ballsAtPeg.add(ball);
+    }
+
+    @Override
+    public void removeBall(Ball ball) {
+        ballsAtPeg.remove(ball);
+    }
+
     /**
      * If this peg is on the last row, then return the output column that a left falling ball will go into.
      * @return The output column (implicit bucket) index for output to the left.

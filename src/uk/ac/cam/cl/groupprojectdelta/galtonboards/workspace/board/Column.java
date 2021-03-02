@@ -64,6 +64,15 @@ public class Column implements LogicalLocation {
         return ballSet;
     }
 
+    @Override
+    public void addBall(Ball ball) {
+        ballSet.add(ball);
+    }
+
+    public void removeBall(Ball ball) {
+        ballSet.remove(ball);
+    }
+
     /**
      * Getter for the board this column is on.
      * @return The board.

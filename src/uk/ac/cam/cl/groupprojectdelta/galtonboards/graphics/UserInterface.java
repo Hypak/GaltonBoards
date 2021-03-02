@@ -14,7 +14,6 @@ import org.liquidengine.legui.icon.Icon;
 import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.listener.ScrollEventListener;
-import org.liquidengine.legui.style.Border;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
@@ -67,14 +66,15 @@ public class UserInterface {
 
     // Zoom buttons
 
+    float zoomOffset = 0.2f;
     windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 32, 0xF374,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), zoomOffset)));
     windowBoards.addComponent(makeButton(24, 408, windowBoards.getHeight() - 64, 0xF415,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), -zoomOffset)));
 
     // Movement buttons
 
-    float movement = 0.5f;
+    float movement = 1.0f;
     windowBoards.addComponent(makeButton(24, 324, windowBoards.getHeight() - 64, 0xF141,
             makeMovementCallback(windowBoards.getCamera(), movement, 0)));
     windowBoards.addComponent(makeButton(24, 352, windowBoards.getHeight() - 32, 0xF140,
@@ -139,10 +139,15 @@ public class UserInterface {
   private static MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
     return event -> {
     if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
-      System.out.println(event.getAction() == MouseClickEvent.MouseClickAction.CLICK);
-        camera.setPosition(
-              camera.getPosition().add(dx, dy, 0)
-        );
+        camera.setPosition(camera.getPosition().add(dx, dy, 0));
+      }
+    };
+  }
+
+  private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
+    return event -> {
+      if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+        camera.zoom(dz);
       }
     };
   }

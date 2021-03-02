@@ -12,5 +12,9 @@ public interface LogicalLocation {
 
     abstract Set<Ball> balls();
 
+    abstract void addBall(Ball ball);
+
+    abstract void removeBall(Ball ball);
+
     abstract Board getBoard();
 }

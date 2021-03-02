@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.OutsideBoardRegion;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
@@ -22,6 +23,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     // The world coordinates for this board
     private Vector2f worldPos;
     private Vector2f dimensions;
+
+    private Simulation simulation = null;
 
     // How many pegs are on the bottom row of this board's isometric grid (converts to a triangular number)
     private int isoGridWidth;
@@ -200,6 +203,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         float deltaHeight = (dimensions.y - oldDimensions.y) / 2f;
         float newYPos = worldPos.y - deltaHeight;
         updateBoardPosition(new Vector2f(worldPos.x, newYPos));
+    }
+
+    public void setSimulation(Simulation sim) {
+        simulation = sim;
     }
 
     /*
@@ -620,6 +627,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public boolean isOpen() {
         // This should return false if the board's buckets have been closed by the user.
         return true;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
     }
 
     /*
