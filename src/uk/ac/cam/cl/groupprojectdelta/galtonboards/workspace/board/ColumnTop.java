@@ -75,12 +75,12 @@ public class ColumnTop extends Column implements LogicalLocation {
     @Override
     public void addBall(Ball ball) {
         ballSet.add(ball);
-        //bucket.addBall(ball);
+        bucket.addBall(ball);
     }
 
     @Override
     public void removeBall(Ball ball) {
         ballSet.remove(ball);
-        //bucket.removeBall(ball);
+        bucket.removeBall(ball);
     }
 }
