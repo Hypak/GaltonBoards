@@ -742,9 +742,15 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             ct.addAll(bucket.getColourTemplate());
         }
 
+        if (Workspace.workspace.getClickableMap() == this) {
+            ct.addAll(addRowButton.getColourTemplate());
+            if (isoGridWidth > 1) {
+                ct.addAll(removeRowButton.getColourTemplate());
+            }
+        }
+
         return ct;
     }
-    //TODO: Add the addRowButton and removeRowButton to the color when merged.
 
     /*
     =====================================================================
