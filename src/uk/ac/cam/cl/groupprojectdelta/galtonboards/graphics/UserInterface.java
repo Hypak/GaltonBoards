@@ -117,18 +117,24 @@ public class UserInterface {
     leftPanel.add(makeButton(64, 128, 32, 0xF3E4, event -> windowBoards.getSimulation().pause()));
     leftPanel.add(makeButton(64, 224, 32, 0xF4DB, event -> windowBoards.getSimulation().stop()));
 
+    Label simSpeedSliderLabel = new Label("Simulation speed", 80, 270, 160, 30);
+    simSpeedSliderLabel.getStyle().setHorizontalAlign(HorizontalAlign.CENTER);
     Slider simSpeedSlider = new Slider(80, 300, 160, 30);
     simSpeedSlider.setMinValue(0.05f);
     simSpeedSlider.setMaxValue(15);
     simSpeedSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::speedSliderChangeEvent);
 
+    leftPanel.add(simSpeedSliderLabel);
     leftPanel.add(simSpeedSlider);
 
+    Label ballSpawnLabel = new Label("Balls spawn rate", 80, 370, 160, 30);
+    ballSpawnLabel.getStyle().setHorizontalAlign(HorizontalAlign.CENTER);
     Slider ballSpawnSlider = new Slider(80, 400, 160, 30);
     ballSpawnSlider.setMinValue(0.5f);
     ballSpawnSlider.setMaxValue(30);
     ballSpawnSlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::spawnSliderChangeEvent);
 
+    leftPanel.add(ballSpawnLabel);
     leftPanel.add(ballSpawnSlider);
 
     // Button for adding boards
