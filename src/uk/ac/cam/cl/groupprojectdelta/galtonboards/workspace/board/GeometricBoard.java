@@ -51,10 +51,24 @@ public class GeometricBoard extends Board {
     }
 
     /**
-     * Reset all of the bucket tags when we increase the number of buckets
+     * Check whether the user has edited any of the buckets.
+     * @return Whether the bucket layout is default or not.
+     */
+    private boolean bucketsEdited() {
+        boolean edited = false;
+        for (Bucket b : getBuckets()) {
+            if (b.getWidth() > 1) {
+                edited = true;
+            }
+        }
+        return edited;
+    }
+
+    /**
+     * Reset all of the bucket tags when we increase the number of buckets.
      */
     private void fixAllBucketTags() {
-        // TODO - This will break if bucket sizes have been edited, create check for bucket editing
+        if (bucketsEdited()) { return; }
         int i = 1;
         for (Bucket b : getBuckets()) {
             if (i==numUniqueTrials+1) { b.setTag("k>" + numUniqueTrials); }

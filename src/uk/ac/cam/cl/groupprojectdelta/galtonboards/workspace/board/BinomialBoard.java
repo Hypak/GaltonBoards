@@ -23,8 +23,8 @@ public class BinomialBoard extends Board {
 
     /**
      * Construct a board that shows the Binomial Distribution for B(n,p).
-     * @param n : int - The probability of a trial succeeding.
-     * @param p : float - How many unique X=k's we can test for with buckets.
+     * @param n : int - How many trials we want to perform (isoGridWidth).
+     * @param p : float - Probability of each trial succeeding.
      */
     public BinomialBoard(int n, float p) {
         super(n); // isoGridWidth = n
@@ -48,10 +48,24 @@ public class BinomialBoard extends Board {
     }
 
     /**
+     * Check whether the user has edited any of the buckets.
+     * @return Whether the bucket layout is default or not.
+     */
+    private boolean bucketsEdited() {
+        boolean edited = false;
+        for (Bucket b : getBuckets()) {
+            if (b.getWidth() > 1) {
+                edited = true;
+            }
+        }
+        return edited;
+    }
+
+    /**
      * Reset all of the bucket tags when we increase the number of buckets
      */
     private void fixAllBucketTags() {
-        // TODO - This will break if bucket sizes have been edited, create check for bucket editing
+        if (bucketsEdited()) { return; }
         int i = 0;
         for (Bucket b : getBuckets()) {
             b.setTag("n=" + i);
