@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.LongAccumulator;
 import java.util.stream.Collectors;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectionHandler;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -44,6 +46,10 @@ public class UserInterface {
 
   public Configuration getConfiguration() {
     return windowBoards.getConfiguration();
+  }
+
+  public WorkspaceSelectionHandler getSelectionHandler() {
+    return windowBoards.getSelectionHandler();
   }
 
   UserInterface(WindowBoards windowBoards) {
@@ -216,9 +222,10 @@ public class UserInterface {
   }
 
   public void sliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    if (Workspace.workspace.mouseHandler.selectedClickable instanceof Board) {
-      for (Peg peg : ((Board) Workspace.workspace.mouseHandler.selectedClickable).getPegs()) {
-        peg.setProbability(1 - event.getNewValue());
+    WorkspaceSelectionHandler selectionHandler = getSelectionHandler();
+    if (Peg.class.isAssignableFrom(selectionHandler.getSelectionType())) {
+      for (WorkspaceSelectable peg : selectionHandler.getSelection()) {
+        ((Peg) peg).setProbability(1 - event.getNewValue());
       }
     }
   }

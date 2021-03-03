@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Vector;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectionHandler;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -98,6 +99,8 @@ class WindowBoards extends Window {
   Simulation getSimulation() {
     return workspace.getSimulation();
   }
+
+  WorkspaceSelectionHandler getSelectionHandler() {return workspace.mouseHandler.getSelectionHandler();}
 
   Camera getCamera() {
     return camera;
