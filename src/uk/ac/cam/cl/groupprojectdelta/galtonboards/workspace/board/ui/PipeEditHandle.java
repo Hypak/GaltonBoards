@@ -47,17 +47,19 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
   @Override
   public void startDrag() {
     selected = true;
-  };
+  }
 
   @Override
   public void moveDrag(Vector2f delta) {
     deltaDrag.add(delta);
-  };
+  }
 
   @Override
   public void endDrag() {
     // On end drag, check if the handle was dropped on a board
     // If it is, connect the bucket to the board
+    // Otherwise, remove the pipe
+    boolean droppedOnABoard = false;
     for (WorkspaceClickable clickable : UserInterface.userInterface.getConfiguration().getClickables()) {
       if (clickable instanceof Board) {
         Board board = (Board) clickable;
@@ -65,12 +67,16 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
           // Make sure it is not a self loop
           if (!bucket.getBoard().equals(board)) {
             bucket.setOutput(board);
+            droppedOnABoard = true;
             break;
           }
         }
       }
     }
+    if (!droppedOnABoard) {
+      bucket.clearOutput();
+    }
     selected = false;
     deltaDrag = new Vector2f();
-  };
+  }
 }

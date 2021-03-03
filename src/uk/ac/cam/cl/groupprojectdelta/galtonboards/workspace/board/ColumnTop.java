@@ -4,7 +4,9 @@ import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ColumnTop extends Column implements LogicalLocation {
@@ -16,6 +18,8 @@ public class ColumnTop extends Column implements LogicalLocation {
     private Vector2f worldPos;
 
     private Set<Ball> ballSet;
+
+    private List<String> ballsTaggedWith;
 
     private Bucket bucket;
 
@@ -30,6 +34,7 @@ public class ColumnTop extends Column implements LogicalLocation {
         super(columnIndex, bucket, board);
         this.columnBottom = columnBottom;
         this.bucket = bucket;
+        this.ballsTaggedWith = new ArrayList<>();
         setPosition();
         ballSet = new HashSet<>();
     }
@@ -82,5 +87,20 @@ public class ColumnTop extends Column implements LogicalLocation {
     public void removeBall(Ball ball) {
         ballSet.remove(ball);
         bucket.removeBall(ball);
+    }
+
+    @Override
+    public List<String> getGivenTags() {
+        return ballsTaggedWith;
+    }
+
+    @Override
+    public void setGivenTags(List<String> newTagList) {
+        ballsTaggedWith = newTagList;
+    }
+
+    @Override
+    public void clearGivenTags() {
+        ballsTaggedWith = new ArrayList<>();
     }
 }

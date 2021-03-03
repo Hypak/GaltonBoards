@@ -17,7 +17,7 @@ public class UniformBoard extends Board{
     // Parameter b - the lower bound of the uniform distribution
     private float upperBound;
 
-    // The number of buckets that the ouput is divided into
+    // The number of buckets that the output is divided into
     private int steps;
 
     /**
@@ -48,11 +48,11 @@ public class UniformBoard extends Board{
      * Reset all of the peg values so that they follow the uniform distribution.
      */
     private void fixAllPegs() {
-        int denominator = steps;
+        float denominator = steps;
         for (Peg peg : getPegs()) {
             Vector2i gp = peg.getGridPos();
-            if(gp.x == 0) {
-                peg.setProbability(1-((float)1/denominator));
+            if(gp.y == 0) {
+                peg.setProbability(1f-(1f/denominator));
                 denominator--;
             }
             else { peg.setProbability(0f); }
@@ -60,10 +60,24 @@ public class UniformBoard extends Board{
     }
 
     /**
+     * Check whether the user has edited any of the buckets.
+     * @return Whether the bucket layout is default or not.
+     */
+    private boolean bucketsEdited() {
+        boolean edited = false;
+        for (Bucket b : getBuckets()) {
+            if (b.getWidth() > 1) {
+                edited = true;
+            }
+        }
+        return edited;
+    }
+
+    /**
      * Reset all of the bucket tags when we increase the number of buckets
      */
     private void fixAllBucketTags() {
-        // TODO - This will break if bucket sizes have been edited, create check for bucket editing
+        if (bucketsEdited()) { return; }
         int i = 0;
         float stepInc = (upperBound-lowerBound) / steps;
         for (Bucket bucket : getBuckets()) {
@@ -133,6 +147,7 @@ public class UniformBoard extends Board{
     public void removeRow() {
         super.removeRow();
         steps--;
+        fixAllPegs();
         fixAllBucketTags();
     }
 

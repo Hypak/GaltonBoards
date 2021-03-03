@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.AddRowButton;
@@ -19,6 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+enum Distribution {
+    Gaussian,
+    Uniform,
+    Binomial,
+    Geometric,
+    Custom
+}
 
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
@@ -45,6 +54,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private boolean updatingBucketLayout = false;
     private Bucket beingEdited;
     private List<Bucket> oldBuckets;
+    private List<Bucket> inputs;
+
 
     // UI elements for this board
     private final AddRowButton addRowButton = new AddRowButton(this);
@@ -80,6 +91,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Board(int isoGridWidth, int[] bucketWidths) {
         this.worldPos = new Vector2f(0,0);
         this.isoGridWidth = isoGridWidth;
+        this.inputs = new ArrayList<>();
         // Sanitising input for isoGridWidth
         if (isoGridWidth < 0) {
             System.err.println(String.format("%d is an invalid value for isoGridWidth, defaulting to 0", isoGridWidth));
@@ -119,7 +131,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      * row of pegs (isoGridWidth), generate buckets that collect from the columns.
      * @param bucketWidths : int[] - Array of integers defining the width of each bucket.
      */
-    private void generateBuckets(int[] bucketWidths) {
+    public void generateBuckets(int[] bucketWidths) {
         this.buckets = new ArrayList<>();
         this.bucketWidths = new ArrayList<>();
         this.columns = new ArrayList<>();
@@ -138,6 +150,19 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         // Make sure that the bucket instances cover all column outputs
         if (sum != isoGridWidth + 1) {
             System.err.println(String.format("Defined bucket widths do not sum to the amount of output columns. Sum to %d, should sum to %d", sum, isoGridWidth+1));
+        }
+    }
+
+    /**
+     * Update the set of inputs to this board by adding or removing a bucket input.
+     * @param b : Bucket - The bucket that we are either adding or removing.
+     */
+    public void updateInputs(Bucket b) {
+        if (!inputs.contains(b)) {
+            inputs.add(b);
+        }
+        else {
+            inputs.remove(b);
         }
     }
 
@@ -515,6 +540,83 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         generateBuckets(bw);
     }
 
+    /**
+     * Safely delete this board from existence.
+     */
+    public void destroy() {
+        for (Bucket b : getInputs()) {
+            b.clearOutput();
+        }
+        for (Bucket b : getBuckets()) {
+            b.destroy();
+        }
+    }
+
+    /**
+     * Change the type of the board (e.g. from a Gaussian board to a Uniform board).
+     * @param d : Distribution - The new type for this board/
+     */
+    public void changeBoard(Distribution d) {
+        if (this instanceof GaussianBoard && d == Distribution.Gaussian ||
+            this instanceof UniformBoard && d == Distribution.Uniform ||
+            this instanceof BinomialBoard && d == Distribution.Binomial ||
+            this instanceof GeometricBoard && d == Distribution.Geometric ||
+            this.getClass() == Board.class) {
+            return;
+        }
+
+        // We are changing the board to a new type, so instantiate new board (trying to maintain layout) and delete this
+        Board newBoard;
+        switch(d) {
+            case Gaussian:
+                newBoard = new GaussianBoard(0,isoGridWidth+1);
+                break;
+            case Uniform:
+                newBoard = new UniformBoard(0,1,isoGridWidth+1);
+                break;
+            case Binomial:
+                newBoard = new BinomialBoard(isoGridWidth, 0.5f);
+                break;
+            case Geometric:
+                newBoard = new GeometricBoard(0.5f, isoGridWidth);
+                break;
+            default:
+                newBoard = new Board(isoGridWidth);
+                break;
+        }
+
+        if (buckets.size() != columns.size()) {
+            // Buckets have been edited, copy over existing bucket layout
+            int[] widths = new int[buckets.size()];
+            for (int i = 0; i < buckets.size(); i++) {
+                widths[i] = buckets.get(i).getWidth();
+            }
+            newBoard.generateBuckets(widths);
+            // Copy over tags
+            for (Bucket b : buckets) {
+                newBoard.getBucket(b.getStartColumn()).setTag(b.getTag());
+            }
+        }
+
+        // Copy bucket outputs
+        for (Bucket b : buckets) {
+            newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
+        }
+
+        newBoard.updateBoardPosition(getWorldPos());
+
+        // For all of the buckets that feed into this board, update their output to the new board
+        for (Bucket b : inputs) {
+            b.setOutput(newBoard);
+            b.destroy();
+        }
+
+        // remove board from configuration
+        Workspace.workspace.getConfiguration().addBoard(newBoard);
+        Workspace.workspace.getConfiguration().removeBoard(this);
+
+    }
+
     /*
     =====================================================================
                             PUBLIC GETTERS
@@ -536,6 +638,14 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      */
     public Peg getPeg(int x) {
         return pegs.get(x);
+    }
+
+    /**
+     * Get the buckets that acts as the input to this board.
+     * @return The list of buckets that input into this board.
+     */
+    public List<Bucket> getInputs() {
+        return inputs;
     }
 
     /**
