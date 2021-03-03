@@ -21,10 +21,12 @@ public interface ClickableMap {
   }
 
   public default Collection<WorkspaceSelectable> getSelectablesInRegion(Vector2f from, Vector2f to) {
+    Vector2f topleft = new Vector2f(Float.min(from.x, to.x), Float.min(from.y,to.y));
+    Vector2f bottomright = new Vector2f(Float.max(from.x, to.x), Float.max(from.y,to.y));
     Collection<WorkspaceSelectable> result = new LinkedList<>();
     for (WorkspaceClickable clickable : getClickables()) {
       if (clickable instanceof WorkspaceSelectable) {
-        if (((WorkspaceSelectable) clickable).intersectsRegion(from, to)) {
+        if (((WorkspaceSelectable) clickable).intersectsRegion(topleft, bottomright)) {
           result.add((WorkspaceSelectable) clickable);
         }
       }

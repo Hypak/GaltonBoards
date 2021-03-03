@@ -59,6 +59,7 @@ public class Workspace implements Drawable {
     List<Float> mesh = configuration.getMesh(time);
     mesh.addAll(simulation.getMesh(time));
     mesh.addAll(cursor.getMesh(time));
+    mesh.addAll(mouseHandler.getMesh(time));
     return mesh;
   }
 
@@ -67,6 +68,7 @@ public class Workspace implements Drawable {
     List<Float> uv = configuration.getUV();
     uv.addAll(simulation.getUV());
     uv.addAll(cursor.getUV());
+    uv.addAll(mouseHandler.getUV());
     return uv;
   }
 
@@ -75,6 +77,7 @@ public class Workspace implements Drawable {
     List<Float> ct = configuration.getColourTemplate();
     ct.addAll(simulation.getColourTemplate());
     ct.addAll(cursor.getColourTemplate());
+    ct.addAll(mouseHandler.getColourTemplate());
     return ct;
   }
 }
