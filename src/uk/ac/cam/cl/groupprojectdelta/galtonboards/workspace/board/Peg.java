@@ -25,7 +25,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
 
     private Set<Ball> ballsAtPeg;
 
-    String logLocType = "peg"; // logical location type
+    List<String> ballsTaggedWith;
 
     /*
     =====================================================================
@@ -56,6 +56,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
         this.probability = probability;
         this.board = board;
         this.ballsAtPeg = new HashSet<>();
+        this.ballsTaggedWith = new ArrayList<>();
         setPosition();
     }
 
@@ -165,6 +166,21 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
     @Override
     public void removeBall(Ball ball) {
         ballsAtPeg.remove(ball);
+    }
+
+    @Override
+    public List<String> getGivenTags() {
+        return ballsTaggedWith;
+    }
+
+    @Override
+    public void setGivenTags(List<String> newTagList) {
+        ballsTaggedWith = newTagList;
+    }
+
+    @Override
+    public void clearGivenTags() {
+        ballsTaggedWith = new ArrayList<>();
     }
 
     /**

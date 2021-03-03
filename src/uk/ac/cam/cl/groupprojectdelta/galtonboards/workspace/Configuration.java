@@ -24,6 +24,7 @@ public class Configuration implements Drawable, ClickableMap {
     normal.boards.get(0).getBucket(1).setOutput(normal.boards.get(1));
     normal.boards.get(1).updateBoardPosition(new Vector2f(3, -15));
     normal.boards.get(2).updateBoardPosition(new Vector2f(-2, -15));
+    normal.boards.get(0).getRootPeg().setGivenTags(List.of("testtag1", "testtag2"));
     savedConfigurations.put("Normal", normal);
 
     Configuration geometric = new Configuration();
@@ -36,6 +37,7 @@ public class Configuration implements Drawable, ClickableMap {
 
     Configuration gaussian = new Configuration();
     gaussian.addBoard(new GaussianBoard(0.3f, 10));
+    gaussian.boards.get(0).getRootPeg().setGivenTags(List.of("testtag1", "testtag2"));
     savedConfigurations.put("Gaussian", gaussian);
 
     Configuration test = new Configuration();
@@ -46,6 +48,7 @@ public class Configuration implements Drawable, ClickableMap {
     test.boards.get(0).getBucket(1).setOutput(normal.boards.get(1));
     test.boards.get(1).updateBoardPosition(new Vector2f(3, -15));
     test.boards.get(2).updateBoardPosition(new Vector2f(-2, -15));
+    test.boards.get(0).getRootPeg().setGivenTags(List.of("testtag1", "testtag2"));
     savedConfigurations.put("Test", test);
   }
   static Configuration defaultConfig = savedConfigurations.get("Normal");

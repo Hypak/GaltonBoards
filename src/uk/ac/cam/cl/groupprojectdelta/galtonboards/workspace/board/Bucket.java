@@ -7,6 +7,9 @@ import org.joml.Vector2f;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +40,8 @@ public class Bucket implements LogicalLocation, Drawable {
     private String tag;
 
     private Set<Ball> ballsInBucket; // need this for visualisation
+
+    List<String> ballsTaggedWith;
 
     String logLocType = "bucket"; // logical location type
 
@@ -73,6 +78,7 @@ public class Bucket implements LogicalLocation, Drawable {
         setOutputPosition();
         this.ballsInBucket = new HashSet<>();
         this.pipeEditHandle = new PipeEditHandle(this);
+        this.ballsTaggedWith = new ArrayList<>();
     }
 
     /*
@@ -296,6 +302,21 @@ public class Bucket implements LogicalLocation, Drawable {
         }
     }
 
+    @Override
+    public List<String> getGivenTags() {
+        return ballsTaggedWith;
+    }
+
+    @Override
+    public void setGivenTags(List<String> newTagList) {
+        ballsTaggedWith = newTagList;
+    }
+
+    @Override
+    public void clearGivenTags() {
+        ballsTaggedWith = new ArrayList<>();
+    }
+
     public Map<String, Integer> liquifiedBallsByTag() {
         // Returns a map of ball tags to the number of them that are
         // liquified in a bucket
@@ -309,6 +330,37 @@ public class Bucket implements LogicalLocation, Drawable {
             }
         }
         return nByTag;
+    }
+
+    public Map<Vector3f, Integer> liquifiedBallsByColour() {
+        Map<Vector3f, Integer> numByCol = new HashMap<>();
+        Map<String, Integer> numByTag = liquifiedBallsByTag();
+        for (String tag : numByTag.keySet()) {
+            numByCol.put(getSimulation().getTagColour(tag), numByTag.get(tag));
+        }
+        return numByCol;
+    }
+
+    public List<Vector4f> liquidBarStructure() {
+        /* FUTURE OPTIMISATION: this is currently called independently by each of the getMesh/getUV/getColourTemplate
+           functions; can save on performance by only calling it once and then having these methods access an
+           updated copy.
+        */
+        List<Vector4f> nrgbs = new ArrayList<>();
+        Map<String, Integer> numByTag = liquifiedBallsByTag();
+        // white space sufficient to fill the part of the bar that isn't covered by liquified balls:
+        nrgbs.add(new Vector4f(1f, 1f, 1f, 1 - ballsInBucket.size() / getSize()));
+        for (String tag : numByTag.keySet()) {
+            Vector4f nrgb = new Vector4f();
+            nrgb.w = numByTag.get(tag) / getSize();
+            Vector3f colour = getSimulation().getTagColour(tag);
+            nrgb.x = colour.x;
+            nrgb.y = colour.y;
+            nrgb.z = colour.z;
+            nrgbs.add(nrgb);
+        }
+        //System.out.println(nrgbs);
+        return nrgbs;
     }
 
     private List<Float> getRectMesh(Vector2f bottomRight, Vector2f topLeft) {
@@ -337,7 +389,27 @@ public class Bucket implements LogicalLocation, Drawable {
         Vector2f lowBound = getBottomRight();
         Vector2f highBound = getTopLeft();
 
-        Float ballLevel = balls().size() / getSize();
+        List<Vector4f> nrgbs = liquidBarStructure();
+        List<Float> levels = new ArrayList<>();
+        Float height = highBound.y - lowBound.y;
+        Float currentHeight = highBound.y;
+        for (Vector4f nrgb : nrgbs) {
+            levels.add(currentHeight);
+            currentHeight -= nrgb.w * height;
+        }
+        levels.add(currentHeight);
+        int i = 0;
+        while (i + 1 < levels.size()) {
+            Float y0 = levels.get(i);
+            Float y1 = levels.get(i+1);
+            Vector2f bottomRight = new Vector2f(lowBound.x, y1);
+            Vector2f topLeft = new Vector2f(highBound.x, y0);
+            points = Stream.concat(points.stream(), getRectMesh(bottomRight, topLeft).stream()).collect(Collectors.toList());
+            ++i;
+        }
+        return points;
+
+        /*Float ballLevel = balls().size() / getSize();
         Float yLevel = (highBound.y - lowBound.y) * ballLevel + lowBound.y;
 
         List<Float> levels = new ArrayList<>(Arrays.asList(highBound.y, yLevel, lowBound.y));
@@ -352,7 +424,7 @@ public class Bucket implements LogicalLocation, Drawable {
             ++i;
         }
 
-        return points;
+        return points;*/
 
 
         /*float zEpsilon = z + 1E-4f;
@@ -379,7 +451,28 @@ public class Bucket implements LogicalLocation, Drawable {
         final float left = 0.5f;
         final float right = 1f;
 
-        List<Float> UVs = new ArrayList<>(Arrays.asList(
+        List<Vector4f> nrgbs = liquidBarStructure();
+
+        List<Float> UVs = new ArrayList<>();
+
+        for (int i = 0; i < nrgbs.size(); i++) {
+            UVs.add(top);
+            UVs.add(left);
+            UVs.add(bottom);
+            UVs.add(left);
+            UVs.add(bottom);
+            UVs.add(right);
+
+            UVs.add(top);
+            UVs.add(left);
+            UVs.add(top);
+            UVs.add(right);
+            UVs.add(bottom);
+            UVs.add(right);
+        }
+        return UVs;
+
+        /*List<Float> UVs = new ArrayList<>(Arrays.asList(
             // face 1
             top, left,
             bottom, left,
@@ -398,12 +491,26 @@ public class Bucket implements LogicalLocation, Drawable {
             bottom, right
         ));
 
-        return UVs;
+        return UVs;*/
     }
 
     @Override
     public List<Float> getColourTemplate() {
-        return List.of(
+        List<Vector4f> nrgbs = liquidBarStructure();
+
+        List<Float> colours = new ArrayList<>();
+
+        for (Vector4f nrgb : nrgbs) {
+            for (int i = 0; i < 6; i++) {
+                colours.add(nrgb.x);
+                colours.add(nrgb.y);
+                colours.add(nrgb.z);
+            }
+        }
+
+        return colours;
+
+        /*return List.of(
                 1f, 1f, 1f,
                 1f, 1f, 1f,
                 1f, 1f, 1f,
@@ -419,7 +526,7 @@ public class Bucket implements LogicalLocation, Drawable {
                 1f, 0f, 0f,
                 1f, 0f, 0f,
                 1f, 0f, 0f
-        );
+        );*/
     }
 
     PipeEditHandle getPipeEditHandle() {

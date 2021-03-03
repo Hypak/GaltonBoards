@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
 public class Ball implements Drawable {
     Vector2f position;
     List<LogicalLocation> logLocs; // all pegs/buckets the ball will encounter on its path
+    // List of same length as lgoLocs with -1 if left direction taken from peg, 0 if not peg, 1 if right direction taken:
+    List<Integer> pegChoices = new ArrayList<>();
     int logLocI; // current index into logLocs
     Simulation simulation; // Simulation object that contains this ball
     String tag = "untagged";
@@ -23,11 +26,15 @@ public class Ball implements Drawable {
         simulation = sim;
         logLocI = 0;
         position = startingPoint.getWorldPos();
-        logLocs = getLogicalPath(startingPoint);
+        setLogicalPath(startingPoint);
     }
 
     public String getTag() {
         return tag;
+    }
+
+    public void setTag(String newTag) {
+        this.tag = newTag;
     }
 
     public Vector2f getPosition() {
@@ -47,38 +54,46 @@ public class Ball implements Drawable {
         return false;
     }
 
-    List<LogicalLocation> getLogicalPath(LogicalLocation start) {
-        List<LogicalLocation> locs = new ArrayList<>();
-        locs.add(start);
+    void setLogicalPath(LogicalLocation start) {
+        logLocs = new ArrayList<>();
+        logLocs.add(start);
         int i = 0;
         while (true) {
             //System.out.println(locs.get(i));
-            if (locs.get(i) instanceof ColumnBottom) {
-                ColumnBottom cb = (ColumnBottom) locs.get(i);
+            if (logLocs.get(i) instanceof ColumnBottom) {
+                pegChoices.add(0);
+                ColumnBottom cb = (ColumnBottom) logLocs.get(i);
                 // System.out.println(b + ", " + b.getWorldPos());
                 if (cb.getBucket().getOutput() == null) { // this is the final bucket
-                    return locs; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
+                    return; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
                 } else {
-                    locs.add((LogicalLocation)cb.getBucket().getOutput().getRootPeg());
+                    logLocs.add((LogicalLocation)cb.getBucket().getOutput().getRootPeg());
                 }
-            } else if (locs.get(i) instanceof ColumnTop) {
-                ColumnTop ct = (ColumnTop) locs.get(i);
-                locs.add(ct.getColumnBottom());
-            } else if (locs.get(i) instanceof Peg) {
-                Peg p = (Peg) locs.get(i);
+            } else if (logLocs.get(i) instanceof ColumnTop) {
+                pegChoices.add(0);
+                ColumnTop ct = (ColumnTop) logLocs.get(i);
+                logLocs.add(ct.getColumnBottom());
+            } else if (logLocs.get(i) instanceof Peg) {
+                Peg p = (Peg) logLocs.get(i);
                 boolean takeLeft = Math.random() < p.leftProb();
+                if (takeLeft) {
+                    pegChoices.add(-1);
+                } else {
+                    pegChoices.add(1);
+                }
+                if (i == 0) updateTag();
                 boolean pegIsNext = p.getLeftColumnIndex() == -1;
                 if (pegIsNext) {
                     if (takeLeft) {
-                        locs.add(p.getLeft());
+                        logLocs.add(p.getLeft());
                     } else {
-                        locs.add(p.getRight());
+                        logLocs.add(p.getRight());
                     }
                 } else { // bucket is next
                     if (takeLeft) {
-                        locs.add(p.getLeftColumn());
+                        logLocs.add(p.getLeftColumn());
                     } else {
-                        locs.add(p.getRightColumn());
+                        logLocs.add(p.getRightColumn());
                     }
                 }
             }
@@ -90,13 +105,25 @@ public class Ball implements Drawable {
         return new Vector2f(v.x(), v.y());
     }
 
-    void dummyMoveTowardsNextLoc(float f) {
-        position.add(new Vector2f(0f, 0.5f));
+    private void updateTag() {
+        LogicalLocation logLoc = logLocs.get(logLocI);
+        if (logLoc.getGivenTags().size() != 0) {
+            if (logLoc instanceof Peg) {
+                if (pegChoices.get(logLocI) == -1) { // left path was taken from this peg
+                    tag = logLoc.getGivenTags().get(0);
+                } else { // right path was taken from this peg
+                    tag = logLoc.getGivenTags().get(1);
+                }
+            } else {
+                tag = logLoc.getGivenTags().get(0);
+            }
+        }
     }
 
     private void switchToNextLogLoc() {
         logLocs.get(logLocI).removeBall(this);
         logLocs.get(logLocI + 1).addBall(this);
+        updateTag();
         logLocI += 1;
     }
 
@@ -182,11 +209,11 @@ public class Ball implements Drawable {
     @Override
     public List<Float> getColourTemplate() {
         if (isLiquified()) return new ArrayList<>();
-        // todo: colour balls based on colour tagging
-        final boolean isLow = position.x < 0;
-        final float red = isLow? 0 : 1f;
-        final float green = 1;
-        final float blue = red;
+
+        Vector3f rgb = simulation.getTagColour(tag);
+        final float red = rgb.x;
+        final float green = rgb.y;
+        final float blue = rgb.z;
 
         return List.of(
                 // face 1

@@ -44,7 +44,9 @@ public class Simulation implements Drawable {
         this.configuration = configuration;
         configuration.setSimulation(this);
         balls = new ArrayList<>();
-        tagColours.put("untagged", new Vector3f(0f, 0f, 0f));
+        tagColours.put("untagged", new Vector3f(0.4f, 0f, 0.4f));
+        tagColours.put("testtag1", new Vector3f(1f,0f,0f));
+        tagColours.put("testtag2", new Vector3f(0f, 1f, 0f));
     }
 
     public void addBallTag(String tag, Vector3f colour) {
@@ -53,6 +55,10 @@ public class Simulation implements Drawable {
 
     public void addBallTag(String tag) {
         addBallTag(tag, new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random()));
+    }
+
+    public Vector3f getTagColour(String tag) {
+        return tagColours.getOrDefault(tag, new Vector3f(1f,0f,1f));
     }
 
     public List<Ball> getBalls() {
