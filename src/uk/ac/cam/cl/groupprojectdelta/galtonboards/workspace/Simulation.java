@@ -37,6 +37,7 @@ public class Simulation implements Drawable {
         for (Ball ball : balls) {
             ball.getLogLoc().removeBall(ball);
         }
+        bucketScale = 1f;
         balls.clear();
     }
 
