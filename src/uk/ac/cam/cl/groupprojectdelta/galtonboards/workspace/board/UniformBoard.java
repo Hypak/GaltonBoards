@@ -17,7 +17,7 @@ public class UniformBoard extends Board{
     // Parameter b - the lower bound of the uniform distribution
     private float upperBound;
 
-    // The number of buckets that the ouput is divided into
+    // The number of buckets that the output is divided into
     private int steps;
 
     /**

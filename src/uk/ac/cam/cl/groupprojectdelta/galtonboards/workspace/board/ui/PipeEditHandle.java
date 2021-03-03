@@ -47,12 +47,12 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
   @Override
   public void startDrag() {
     selected = true;
-  };
+  }
 
   @Override
   public void moveDrag(Vector2f delta) {
     deltaDrag.add(delta);
-  };
+  }
 
   @Override
   public void endDrag() {
@@ -74,9 +74,9 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
       }
     }
     if (!droppedOnABoard) {
-      bucket.setOutput(null);
+      bucket.clearOutput();
     }
     selected = false;
     deltaDrag = new Vector2f();
-  };
+  }
 }

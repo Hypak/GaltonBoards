@@ -7,7 +7,6 @@ import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
-import org.liquidengine.legui.event.Event;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.icon.CharIcon;
@@ -15,22 +14,16 @@ import org.liquidengine.legui.icon.Icon;
 import org.liquidengine.legui.listener.EventListener;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.listener.ScrollEventListener;
-import org.liquidengine.legui.style.Border;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
-import org.liquidengine.legui.style.font.TextDirection;
 import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.LongAccumulator;
-import java.util.stream.Collectors;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -69,16 +62,13 @@ public class UserInterface {
 
       // Select board SelectBox
 
-    EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = new EventListener<>() {
-      @Override
-      public void process(SelectBoxChangeSelectionEvent<String> event) {
-        if (event.getNewValue().equals(event.getOldValue())) {
-          return;
-        }
-        windowBoards.getSimulation().stop();
-        windowBoards.getConfiguration().setConfiguration(event.getNewValue());
-        windowBoards.getSimulation().run();
+    EventListener<SelectBoxChangeSelectionEvent<String>> selectEL = event -> {
+      if (event.getNewValue().equals(event.getOldValue())) {
+        return;
       }
+      windowBoards.getSimulation().stop();
+      windowBoards.getConfiguration().setConfiguration(event.getNewValue());
+      windowBoards.getSimulation().run();
     };
 
     List<String> labels = new ArrayList<>(Configuration.savedConfigurations.keySet());
@@ -123,12 +113,9 @@ public class UserInterface {
 
     // Buttons for play/pause/stop
 
-    leftPanel.add(makeButton(64, 32, 32, 0xF40A,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().run()));
-    leftPanel.add(makeButton(64, 128, 32, 0xF3E4,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().pause()));
-    leftPanel.add(makeButton(64, 224, 32, 0xF4DB,
-            (MouseClickEventListener) event -> windowBoards.getSimulation().stop()));
+    leftPanel.add(makeButton(64, 32, 32, 0xF40A, event -> windowBoards.getSimulation().run()));
+    leftPanel.add(makeButton(64, 128, 32, 0xF3E4, event -> windowBoards.getSimulation().pause()));
+    leftPanel.add(makeButton(64, 224, 32, 0xF4DB, event -> windowBoards.getSimulation().stop()));
 
     Slider simSpeedSlider = new Slider(80, 300, 160, 30);
     simSpeedSlider.setMinValue(0.05f);
@@ -176,20 +163,21 @@ public class UserInterface {
 
     // Zoom buttons
 
+    float zoomOffset = 0.2f;
     rightPanel.add(makeButton(24, 108, windowBoards.getHeight() - 32, 0xF374,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), zoomOffset)));
     rightPanel.add(makeButton(24, 108, windowBoards.getHeight() - 64, 0xF415,
-            (MouseClickEventListener) event -> System.out.println("TODO")));
+            makeZoomCallback(windowBoards.getCamera(), -zoomOffset)));
 
     // Movement buttons
 
-    float movement = 0.5f;
+    float movement = 1.0f;
     rightPanel.add(makeButton(24, 24, windowBoards.getHeight() - 64, 0xF141,
             makeMovementCallback(windowBoards.getCamera(), movement, 0)));
     rightPanel.add(makeButton(24, 52, windowBoards.getHeight() - 32, 0xF140,
             makeMovementCallback(windowBoards.getCamera(), 0, -movement)));
     rightPanel.add(makeButton(24, 52, windowBoards.getHeight() - 64, 0xF44A,
-            (MouseClickEventListener) event -> windowBoards.getCamera().Reset()));
+            event -> windowBoards.getCamera().Reset()));
     rightPanel.add(makeButton(24, 52, windowBoards.getHeight() - 96, 0xF143,
             makeMovementCallback(windowBoards.getCamera(), 0, movement)));
     rightPanel.add(makeButton(24, 80, windowBoards.getHeight() - 64, 0xF142,
@@ -239,7 +227,7 @@ public class UserInterface {
     };
   }
 
-  private static Button makeButton(int size, int xPos, int yPos, int iconCode, EventListener<MouseClickEvent> cb) {
+  private static Button makeButton(int size, int xPos, int yPos, int iconCode, MouseClickEventListener cb) {
     Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
             (char) iconCode, ColorConstants.black());
     iconRun.setHorizontalAlign(HorizontalAlign.CENTER);
@@ -269,7 +257,7 @@ public class UserInterface {
 
   private static SelectBox<String> makeSelectBox (int width, int height, int xPos, int yPos,Iterable<String> labels,
                                                   EventListener<SelectBoxChangeSelectionEvent<String>> callback) {
-    SelectBox<String> selectBox = new SelectBox<String>(xPos, yPos, width, height);
+    SelectBox<String> selectBox = new SelectBox<>(xPos, yPos, width, height);
     selectBox.getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
     for (String label : labels) {
       selectBox.addElement(label);
