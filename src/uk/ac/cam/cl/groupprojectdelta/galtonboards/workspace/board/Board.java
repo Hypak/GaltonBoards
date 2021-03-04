@@ -949,6 +949,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Iterable<? extends WorkspaceClickable> getClickables() {
         return Iterables.concat(
             pegs,
+            buckets,
             List.of(addRowButton, removeRowButton, outsideBoardRegion),
             getPipeEditHandles()
         );

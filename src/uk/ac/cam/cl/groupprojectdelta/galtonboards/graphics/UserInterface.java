@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelTagOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
@@ -253,6 +254,18 @@ public class UserInterface {
         editPanel.add(newSlider);
 
         current_y += 100;
+      } else if (panelOption instanceof PanelTagOption) {
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState("TODO: ADD TAG EDITING UI"));
+        // todo: Add tag editing UI
+        /*
+        The interfaces allow for a list of tags, but I think in reality, we'll only want to
+        be able to have the list contain one tag or zero tags if it's not tagging, thus we
+        can probably just look at the first element of the lists.
+
+        To get all of the current tags we can use the methods in Simulation.
+         */
+        editPanel.add(label);
       }
     }
   }
