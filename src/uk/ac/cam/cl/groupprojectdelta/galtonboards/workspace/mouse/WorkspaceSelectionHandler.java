@@ -154,7 +154,5 @@ public class WorkspaceSelectionHandler {
     }
 
     UserInterface.userInterface.updateEditPanel(panelOptions);
-
-    //((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0)).getTextState().setText(description);
   }
 }
