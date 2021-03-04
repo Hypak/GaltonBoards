@@ -1,12 +1,15 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import java.util.Objects;
 import org.joml.Vector2f;
 import org.liquidengine.legui.component.*;
 import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
+import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.component.optional.align.VerticalAlign;
+import org.liquidengine.legui.event.Event;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.icon.CharIcon;
@@ -18,6 +21,9 @@ import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 import org.lwjgl.opengl.GL;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
@@ -215,6 +221,40 @@ public class UserInterface {
     editPanel.add(probabilitySlider);
 
     return editPanel;
+  }
+
+  public void updateEditPanel(List<PanelOption> panelOptions) {
+    int current_y = 50;
+    editPanel.clearChildComponents();
+
+    for (PanelOption panelOption : panelOptions) {
+      if (panelOption instanceof PanelLabel) {
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState(panelOption.getName()));
+        editPanel.add(label);
+
+        current_y += 50;
+      } else if (panelOption instanceof PanelFloatSliderOption) {
+        Float value = ((PanelFloatSliderOption) panelOption).getValue();
+
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState(panelOption.getName() + " ( " + value + ")"));
+        editPanel.add(label);
+
+        Slider newSlider = new Slider(100, current_y + 50, 200, 30);
+        newSlider.setMaxValue(((PanelFloatSliderOption) panelOption).getMax());
+        newSlider.setMinValue(((PanelFloatSliderOption) panelOption).getMin());
+        newSlider.setValue(Objects.requireNonNullElse(value, 0.5f));
+        newSlider.getListenerMap().addListener(SliderChangeValueEvent.class,
+            (SliderChangeValueEventListener) sliderChangeValueEvent -> {
+              ((PanelFloatSliderOption) panelOption).setValue(sliderChangeValueEvent.getNewValue());
+              label.getTextState().setText(panelOption.getName() + " ( " + sliderChangeValueEvent.getNewValue() + ")");
+            });
+        editPanel.add(newSlider);
+
+        current_y += 100;
+      }
+    }
   }
 
   public void sliderChangeEvent(SliderChangeValueEvent<Slider> event) {

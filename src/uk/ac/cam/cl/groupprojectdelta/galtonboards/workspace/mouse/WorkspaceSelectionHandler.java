@@ -1,11 +1,15 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 import org.liquidengine.legui.component.Label;
+import org.liquidengine.legui.component.Panel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.BinomialBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
@@ -82,28 +86,75 @@ public class WorkspaceSelectionHandler {
 
   private void updatePanel() {
     Class<? extends WorkspaceSelectable> selectionType = getSelectionType();
-    String description = "";
+    List<PanelOption> panelOptions = new ArrayList<>();
 
     if (Peg.class.isAssignableFrom(selectionType)) {
-      float probability = ((Peg) currentSelection.get(0)).rightProb();
-      for (WorkspaceSelectable peg : currentSelection) {
-        if (((Peg) peg).rightProb() != probability) {
-          probability = -1f; //todo: change to some sort of null value
-          break;
+      panelOptions.add(new PanelLabel("PEG PROPERTIES"));
+      panelOptions.add(new PanelFloatSliderOption() {
+        @Override
+        public Float getValue() {
+          Float probability = ((Peg) currentSelection.get(0)).rightProb();
+          for (WorkspaceSelectable peg : currentSelection) {
+            if (((Peg) peg).rightProb() != probability) {
+              probability = null;
+              break;
+            }
+          }
+          return probability;
         }
-      }
 
-      UserInterface.userInterface.probabilitySlider.setValue(probability);
+        @Override
+        public void setValue(float value) {
+          for (WorkspaceSelectable peg : currentSelection) {
+            ((Peg) peg).setProbability(1 - value);
+          }
+        }
 
-      description = "peg (x" + Integer.toString(currentSelection.size()) + ")";
-    } else if (BinomialBoard.class.isAssignableFrom(selectionType)) {
-      description = "binomial board (x" + Integer.toString(currentSelection.size()) + ")";
+        @Override
+        public String getName() {
+          return "Peg probability";
+        }
+      });
     } else if (Board.class.isAssignableFrom(selectionType)) {
-      description = "board (x" + Integer.toString(currentSelection.size()) + ")";
-    } else {
-      description = selectionType.getName() + "(x" + Integer.toString(currentSelection.size()) + ")";
+      panelOptions.add(new PanelLabel("PEG PROPERTIES"));
+
+      panelOptions.add(new PanelFloatSliderOption() {
+        @Override
+        public Float getValue() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          Float probability = firstBoard.getRootPeg().rightProb();
+
+           for (WorkspaceSelectable board : currentSelection) {
+             for (Peg peg : ((Board) board).getPegs()) {
+               if (peg.rightProb() != probability) {
+                 probability = null;
+                 break;
+               }
+             }
+           }
+           return probability;
+        }
+
+        @Override
+        public void setValue(float value) {
+          for (WorkspaceSelectable board : currentSelection) {
+            for (Peg peg : ((Board) board).getPegs()) {
+              peg.setProbability(1-value);
+            }
+          }
+        }
+
+        @Override
+        public String getName() {
+          return "Peg probability";
+        }
+      });
+
+      panelOptions.add(new PanelLabel("BOARD PROPERTIES"));
     }
 
-    ((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0)).getTextState().setText(description);
+    UserInterface.userInterface.updateEditPanel(panelOptions);
+
+    //((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0)).getTextState().setText(description);
   }
 }
