@@ -7,6 +7,8 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Bucket;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceDraggable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,13 +36,60 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
   }
 
   @Override
+  public List<Float> getMesh(float time) {
+    Vector2f bound = new Vector2f();
+    Vector2f position = getPosition();
+
+    Vector2f dimensions = new Vector2f(size);
+    position.add(dimensions, bound);
+
+    //  +----+
+    //  |1 / |
+    //  | / 2|
+    //  +----+
+
+    float z = 0.25f;
+
+    return new ArrayList<>(Arrays.asList(
+            // Face 1
+            position.x, position.y, z,
+            bound.x, position.y, z,
+            bound.x, bound.y, z,
+
+            // Face 2
+            position.x, position.y, z,
+            position.x, bound.y, z,
+            bound.x, bound.y, z
+    ));
+  }
+
+  @Override
+  public List<Float> getUV() {
+    final float top = 0.5f;
+    final float bottom = 0.75f;
+    final float left = 0.0f;
+    final float right = 0.25f;
+
+    return List.of(
+            // face 1
+            top,left,
+            bottom,left,
+            bottom,right,
+            // face 2
+            top,left,
+            top,right,
+            bottom,right
+    );
+  }
+
+  @Override
   public List<Float> getColourTemplate() {
     if (selected) {
-      return listFromColors(0, 1, 0);
+      return listFromColors(0.3f, 0.8f, 0.8f);
     } else if (hover) {
-      return listFromColors(1, 1, 0);
+      return listFromColors(0.3f, 0.8f, 0.8f);
     } else {
-      return listFromColors(1, 0, 1);
+      return listFromColors(0.75f, 0.75f, 0.75f);
     }
   }
 
