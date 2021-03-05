@@ -48,7 +48,7 @@ public class Bucket implements LogicalLocation, Drawable {
     // UI elements for this bucket
     private final PipeEditHandle pipeEditHandle;
 
-    private static final float zEpsilon = z + 5E-4f;
+    private static final float zEpsilon = z + 5E-3f;
 
     /*
     =====================================================================
@@ -411,21 +411,6 @@ public class Bucket implements LogicalLocation, Drawable {
             ++i;
         }
 
-        /*Float ballLevel = balls().size() / getSize();
-        Float yLevel = (highBound.y - lowBound.y) * ballLevel + lowBound.y;
-
-        List<Float> levels = new ArrayList<>(Arrays.asList(highBound.y, yLevel, lowBound.y));
-
-        int i = 0;
-        while (i + 1 < levels.size()) {
-            Float y0 = levels.get(i);
-            Float y1 = levels.get(i+1);
-            Vector2f bottomRight = new Vector2f(lowBound.x, y1);
-            Vector2f topLeft = new Vector2f(highBound.x, y0);
-            points = Stream.concat(points.stream(), getRectMesh(bottomRight, topLeft).stream()).collect(Collectors.toList());
-            ++i;
-        }*/
-
         if (output != null) {
             final float w = highBound.x - lowBound.x;
             highBound = lowBound;
@@ -445,23 +430,6 @@ public class Bucket implements LogicalLocation, Drawable {
         }
 
         return points;
-
-
-        /*float zEpsilon = z + 1E-4f;
-
-        points = new ArrayList<>(Arrays.asList(
-            // Face 1
-            lowBound.x, lowBound.y, zEpsilon,
-            highBound.x, lowBound.y, zEpsilon,
-            highBound.x, highBound.y, zEpsilon,
-
-            // Face 2
-            lowBound.x, lowBound.y, zEpsilon,
-            lowBound.x, highBound.y, zEpsilon,
-            highBound.x, highBound.y, zEpsilon
-        ));
-
-        return points;*/
     }
 
     @Override
@@ -490,25 +458,6 @@ public class Bucket implements LogicalLocation, Drawable {
             UVs.add(bottom);
             UVs.add(right);
         }
-
-        /*List<Float> UVs = new ArrayList<>(Arrays.asList(
-            // face 1
-            top, left,
-            bottom, left,
-            bottom, right,
-            // face 2
-            top, left,
-            top, right,
-            bottom, right,
-            // face 3
-            top, left,
-            bottom, left,
-            bottom, right,
-            // face 4
-            top, left,
-            top, right,
-            bottom, right
-        ));*/
 
         if (output != null) {
             UVs.addAll(List.of(
