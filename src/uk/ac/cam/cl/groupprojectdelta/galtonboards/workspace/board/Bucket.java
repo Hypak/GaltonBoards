@@ -312,11 +312,13 @@ public class Bucket implements LogicalLocation, Drawable {
     @Override
     public void setGivenTags(List<String> newTagList) {
         ballsTaggedWith = newTagList;
+        board.getColumnTop(getStartColumn()).setGivenTags(newTagList);
     }
 
     @Override
     public void clearGivenTags() {
         ballsTaggedWith = new ArrayList<>();
+        board.getColumnTop(getStartColumn()).clearGivenTags();
     }
 
     public Map<String, Integer> liquifiedBallsByTag() {
