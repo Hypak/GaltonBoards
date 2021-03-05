@@ -30,9 +30,9 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
   public Vector2f getPosition() {
     float width = bucket.getBottomRight().x - bucket.getTopLeft().x;
     return new Vector2f()
-            .add(deltaDrag)
-            .add(bucket.getBottomRight())
-            .add(-width/2 - size/2, size/2);
+        .add(deltaDrag)
+        .add(bucket.getBottomRight())
+        .add(-width / 2 - size / 2, size / 2);
   }
 
   @Override
@@ -51,15 +51,15 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     float z = 0.25f;
 
     return new ArrayList<>(Arrays.asList(
-            // Face 1
-            position.x, position.y, z,
-            bound.x, position.y, z,
-            bound.x, bound.y, z,
+        // Face 1
+        position.x, position.y, z,
+        bound.x, position.y, z,
+        bound.x, bound.y, z,
 
-            // Face 2
-            position.x, position.y, z,
-            position.x, bound.y, z,
-            bound.x, bound.y, z
+        // Face 2
+        position.x, position.y, z,
+        position.x, bound.y, z,
+        bound.x, bound.y, z
     ));
   }
 
@@ -71,14 +71,14 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     final float right = 0.25f;
 
     return List.of(
-            // face 1
-            top,left,
-            bottom,left,
-            bottom,right,
-            // face 2
-            top,left,
-            top,right,
-            bottom,right
+        // face 1
+        top, left,
+        bottom, left,
+        bottom, right,
+        // face 2
+        top, left,
+        top, right,
+        bottom, right
     );
   }
 

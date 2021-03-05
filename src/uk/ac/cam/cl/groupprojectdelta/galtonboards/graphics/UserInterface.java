@@ -58,7 +58,8 @@ public class UserInterface {
     final int topPanelHeight = 48;
 
     // Panels for boards and UI sections
-    windowBoards.addComponent(getEditPanel(editPanelWidth));
+    editPanel = getEditPanel(editPanelWidth);
+    windowBoards.addComponent(editPanel);
     windowBoards.addComponent(new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6));
     windowBoards.addComponent(new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
                                             windowBoards.getHeight() - topPanelHeight, 24, 4));

@@ -13,14 +13,14 @@ import org.liquidengine.legui.style.color.ColorConstants;
 import org.liquidengine.legui.style.font.FontRegistry;
 
 public class SimpleButton extends Button {
-    public SimpleButton(int size, int xPos, int yPos, int iconCode, MouseClickEventListener cb) {
-        super("", xPos, yPos, size, size);
-        Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
-                (char) iconCode, ColorConstants.black());
-        iconRun.setHorizontalAlign(HorizontalAlign.CENTER);
-        iconRun.setVerticalAlign(VerticalAlign.MIDDLE);
-        getStyle().getBackground().setIcon(iconRun);
-        getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-        getListenerMap().addListener(MouseClickEvent.class, cb);
-    }
+  public SimpleButton(int size, int xPos, int yPos, int iconCode, MouseClickEventListener cb) {
+    super("", xPos, yPos, size, size);
+    Icon iconRun = new CharIcon(new Vector2f(size, size), FontRegistry.MATERIAL_DESIGN_ICONS,
+        (char) iconCode, ColorConstants.black());
+    iconRun.setHorizontalAlign(HorizontalAlign.CENTER);
+    iconRun.setVerticalAlign(VerticalAlign.MIDDLE);
+    getStyle().getBackground().setIcon(iconRun);
+    getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    getListenerMap().addListener(MouseClickEvent.class, cb);
+  }
 }
