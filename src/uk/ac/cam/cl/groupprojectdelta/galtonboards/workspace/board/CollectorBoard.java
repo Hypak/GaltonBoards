@@ -32,6 +32,11 @@ public class CollectorBoard extends Board {
         return singlePeg;
     }
 
+    @Override
+    void setPegPositions() {
+        singlePeg.setPosition();
+    }
+
 
     /**
      * Check whether the user has edited any of the buckets.

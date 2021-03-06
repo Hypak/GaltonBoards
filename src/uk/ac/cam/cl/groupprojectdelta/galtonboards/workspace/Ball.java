@@ -7,6 +7,8 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.CollectorPeg;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ColumnBottom;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ColumnTop;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
@@ -27,6 +29,11 @@ public class Ball implements Drawable {
         logLocI = 0;
         position = startingPoint.getWorldPos();
         setLogicalPath(startingPoint);
+    }
+
+    public void delete() {
+        simulation.deleteBall(this);
+        getLogLoc().removeBall(this);
     }
 
     public String getTag() {
@@ -66,6 +73,13 @@ public class Ball implements Drawable {
                 ColumnBottom cb = (ColumnBottom) logLocs.get(i);
                 // System.out.println(b + ", " + b.getWorldPos());
                 if (cb.getBucket().getOutput() == null) { // this is the final bucket
+                    /*for (LogicalLocation l : logLocs) {
+                        if (l instanceof CollectorPeg) {
+                            System.out.println("PATH:");
+                            System.out.println(logLocs);
+                            for (LogicalLocation ll : logLocs) System.out.println(ll.getWorldPos());
+                        }
+                    }*/
                     //System.out.println("PATH FOUND");
                     return; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
                 } else {

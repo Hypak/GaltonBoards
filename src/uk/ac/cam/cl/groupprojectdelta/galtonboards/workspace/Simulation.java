@@ -86,6 +86,10 @@ public class Simulation implements Drawable {
         spawnBall(getRootBoard().getRootPeg());
     }
 
+    public void deleteBall(Ball ball) {
+        this.balls.remove(ball);
+    }
+
     public Board getRootBoard() {
         return configuration.getStartBoard();
     }

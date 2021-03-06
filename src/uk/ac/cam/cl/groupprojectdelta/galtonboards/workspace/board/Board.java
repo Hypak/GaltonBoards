@@ -193,7 +193,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     /**
      * Recalculate the world position of the pegs whenever the board position is moved.
      */
-    private void setPegPositions() {
+    void setPegPositions() {
         for(Peg p : pegs) {
             p.setPosition();
         }

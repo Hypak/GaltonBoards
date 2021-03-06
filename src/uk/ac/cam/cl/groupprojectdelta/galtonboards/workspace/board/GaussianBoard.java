@@ -67,7 +67,7 @@ public class GaussianBoard extends Board {
     }
 
     /**
-     * Update the mean value of the Guassian distribution (this updates the bucket labels).
+     * Update the mean value of the Gaussian distribution (this updates the bucket labels).
      * @param meanValue : float - The new mean value for the distribution.
      */
     public void setMeanValue(float meanValue) {

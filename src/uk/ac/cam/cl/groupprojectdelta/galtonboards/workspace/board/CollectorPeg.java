@@ -3,6 +3,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 public class CollectorPeg extends Peg {
     CollectorPeg(Board board) {
         super(board);
+        setPosition();
     }
 
     @Override
