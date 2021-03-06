@@ -1,14 +1,17 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 import org.liquidengine.legui.component.*;
+import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEventListener;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.CallbackI.S;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.MainPanel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.TopPanel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
@@ -154,17 +157,25 @@ public class UserInterface {
 
         current_y += 100;
       } else if (panelOption instanceof PanelTagOption) {
-        Label label = new Label(100, current_y, 200, 100);
-        label.setTextState(new TextState("TODO: ADD TAG EDITING UI"));
-        // todo: Add tag editing UI
-        /*
-        The interfaces allow for a list of tags, but I think in reality, we'll only want to
-        be able to have the list contain one tag or zero tags if it's not tagging, thus we
-        can probably just look at the first element of the lists.
+        List<String> tags = ((PanelTagOption) panelOption).getTags();
 
-        To get all of the current tags we can use the methods in Simulation.
-         */
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState(panelOption.getName()));
         editPanel.add(label);
+
+        SelectBox<String> selectBox = new SelectBox<>(100, current_y + 80, 200, 15);
+        for (String tag : Workspace.workspace.getSimulation().tagColours.keySet()) {
+          selectBox.addElement(tag);
+        }
+
+        selectBox.addSelectBoxChangeSelectionEventListener(
+            event -> {
+              ((PanelTagOption) panelOption).setTags(List.of(event.getNewValue()));
+            }
+        );
+        editPanel.add(selectBox);
+
+        current_y += 100;
       }
     }
   }

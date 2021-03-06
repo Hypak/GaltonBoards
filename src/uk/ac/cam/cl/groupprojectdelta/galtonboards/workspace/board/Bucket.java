@@ -538,10 +538,17 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     public boolean containsPoint(Vector2f point) {
         Vector2f topleft = getTopLeft();
         Vector2f bottomright = getBottomRight();
+        System.out.println(point.x > topleft.x
+            && point.x < bottomright.x
+            && point.y < topleft.y
+            && point.y > bottomright.y);
+        System.out.println(topleft);
+        System.out.println(bottomright);
+        System.out.println(point);
         return point.x > topleft.x
             && point.x < bottomright.x
-            && point.y > topleft.y
-            && point.y < bottomright.y;
+            && point.y < topleft.y
+            && point.y > bottomright.y;
     }
 
     @Override
@@ -549,9 +556,9 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
         Vector2f topleft = getTopLeft();
         Vector2f bottomright = getBottomRight();
         return from.x < bottomright.x
-            && from.y < bottomright.y
+            && from.y < topleft.y
             && to.x > topleft.x
-            && to.y > topleft.y;
+            && to.y > bottomright.y;
     }
 
     @Override
