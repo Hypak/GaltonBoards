@@ -244,6 +244,25 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         simulation = sim;
     }
 
+    public void toRelativeScale() {
+        for (Bucket bucket : buckets) {
+            bucket.relativeScale = true;
+        }
+    }
+
+    public void toAbsoluteScale() {
+        for (Bucket bucket : buckets) {
+            bucket.relativeScale = false;
+            while (bucket.balls().size() > bucket.getSize()) {
+                /*
+                If a bucket is in relative scale, adding balls to it doesn't scale it up even if bucket size exceeded.
+                So if converting back to absolute scale, need to do this:
+                 */
+                bucket.getSimulation().enlargeBuckets();
+            }
+        }
+    }
+
     /*
     =====================================================================
                                 UI METHODS

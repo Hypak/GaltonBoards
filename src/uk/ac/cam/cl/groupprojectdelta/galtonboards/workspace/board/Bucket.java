@@ -51,6 +51,8 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
 
     private static final float zEpsilon = z + 5E-3f;
 
+    public boolean relativeScale = false;
+
     /*
     =====================================================================
                              CONSTRUCTORS
@@ -305,7 +307,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     @Override
     public void addBall(Ball ball) {
         ballsInBucket.add(ball);
-        if (ballsInBucket.size() > getSimulation().getBucketScale()) {
+        if (ballsInBucket.size() > getSimulation().getBucketScale() && relativeScale == false) {
             getSimulation().enlargeBuckets();
         }
     }
@@ -358,17 +360,43 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
            updated copy.
         */
         List<Vector4f> nrgbs = new ArrayList<>();
+        /*
+        For a vector in nrgbs, the .w is the number of balls, and .x/.y/.z corresponds to Red/Green/Blue
+        (In any sensible language, there would be a built-in pair type that I would've used instead, but I didn't want
+        to import things / create a new class just to have a pair type).
+         */
         Map<String, Integer> numByTag = liquifiedBallsByTag();
-        // white space sufficient to fill the part of the bar that isn't covered by liquified balls:
-        nrgbs.add(new Vector4f(1f, 1f, 1f, 1 - ballsInBucket.size() / getSize()));
-        for (String tag : numByTag.keySet()) {
-            Vector4f nrgb = new Vector4f();
-            nrgb.w = numByTag.get(tag) / getSize();
-            Vector3f colour = getSimulation().getTagColour(tag);
-            nrgb.x = colour.x;
-            nrgb.y = colour.y;
-            nrgb.z = colour.z;
-            nrgbs.add(nrgb);
+        if (relativeScale) {
+            /*
+            This is an option to make the bucket always display at full height, coloured in proportion to the balls
+            inside it. Good for e.g. the second Bayes demo, where the number of healthy is much higher than the number
+            of sick people.
+             */
+            if (ballsInBucket.size() == 0) {
+                nrgbs.add(new Vector4f(0f, 0f, 0f, 1));
+            } else {
+                for (String tag : numByTag.keySet()) {
+                    Vector4f nrgb = new Vector4f();
+                    nrgb.w = numByTag.get(tag) / (float)ballsInBucket.size();
+                    Vector3f colour = getSimulation().getTagColour(tag);
+                    nrgb.x = colour.x;
+                    nrgb.y = colour.y;
+                    nrgb.z = colour.z;
+                    nrgbs.add(nrgb);
+                }
+            }
+        } else { // -> NORMAL NON-RELATIVE SCALE
+            // white space sufficient to fill the part of the bar that isn't covered by liquified balls:
+            nrgbs.add(new Vector4f(1f, 1f, 1f, 1 - ballsInBucket.size() / getSize()));
+            for (String tag : numByTag.keySet()) {
+                Vector4f nrgb = new Vector4f();
+                nrgb.w = numByTag.get(tag) / getSize(); // getSize is the number of balls that fills a bucket
+                Vector3f colour = getSimulation().getTagColour(tag);
+                nrgb.x = colour.x;
+                nrgb.y = colour.y;
+                nrgb.z = colour.z;
+                nrgbs.add(nrgb);
+            }
         }
         //System.out.println(nrgbs);
         return nrgbs;

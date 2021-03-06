@@ -110,6 +110,10 @@ public class Configuration implements Drawable, ClickableMap {
 
     bayes2.boards.get(0).getRootPeg().setGivenTags(List.of("healthy", "sick"));
 
+    // convert buckets to show relative, not absolute scales
+    bayes2.boards.get(3).toRelativeScale();
+    bayes2.boards.get(4).toRelativeScale();
+
     savedConfigurations.put("Bayes - disease", bayes2);
 
   }
