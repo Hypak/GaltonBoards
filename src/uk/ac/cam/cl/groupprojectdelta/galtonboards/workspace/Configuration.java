@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import java.util.*;
+import java.util.stream.Collector;
 
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
@@ -57,8 +58,10 @@ public class Configuration implements Drawable, ClickableMap {
     bayes.boards.add(new BinomialBoard(1, 0.5f)); // which factory?
     bayes.boards.add(new GeometricBoard(0.5f, k)); // factory 1
     bayes.boards.add(new GeometricBoard(0.2f, k)); // factory 2
-    bayes.boards.add(new BinomialBoard(1, 1f)); // broken
-    bayes.boards.add(new BinomialBoard(1, 0f)); // working
+    //bayes.boards.add(new BinomialBoard(1, 1f)); // broken
+    //bayes.boards.add(new BinomialBoard(1, 0f)); // working
+    bayes.boards.add(new CollectorBoard()); // broken lightbulbs
+    bayes.boards.add(new CollectorBoard()); // working lightbulbs
 
     bayes.boards.get(0).getBucket(0).setOutput(bayes.boards.get(1));
     bayes.boards.get(0).getBucket(1).setOutput(bayes.boards.get(2));

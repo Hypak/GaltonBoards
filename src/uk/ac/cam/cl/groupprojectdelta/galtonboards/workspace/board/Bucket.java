@@ -76,7 +76,6 @@ public class Bucket implements LogicalLocation, Drawable {
         this.board = board;
         this.output = null;
         this.width = width;
-        this.tag = null;
         setOutputPosition();
         this.ballsInBucket = new HashSet<>();
         this.pipeEditHandle = new PipeEditHandle(this);
@@ -105,6 +104,12 @@ public class Bucket implements LogicalLocation, Drawable {
      */
     public void setTag(String tag) {
         this.tag = tag;
+        // To actually change the tag, do:
+        // setGivenTags(List.of(tag));
+        /* However, currently this function is being used in a very different way
+        *  from the rest of the tag system (e.g. in ficAllBucketTags in geometric/binomial/uniform
+        *  board functions; if this function interacts with the rest of the tagging system,
+        *  things will break (in particular tag colours will not be defined in the Simulation object.*/
     }
 
     /**
@@ -171,7 +176,7 @@ public class Bucket implements LogicalLocation, Drawable {
      * @return The tag that this bucket gives to any balls that are collected by it.
      */
     public String getTag() {
-        return tag;
+        return getGivenTags().get(0);
     }
 
     /**
@@ -333,6 +338,7 @@ public class Bucket implements LogicalLocation, Drawable {
                 nByTag.put(ball.getTag(), 1);
             }
         }
+        //System.out.println("Seeing tags: " + nByTag.keySet());
         return nByTag;
     }
 

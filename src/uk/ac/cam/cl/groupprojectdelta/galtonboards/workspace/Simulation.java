@@ -13,7 +13,8 @@ public class Simulation implements Drawable {
     public static Simulation simulation;
 
     private Configuration configuration;
-    private enum SimulationState {Running, Paused, Stopped};
+    //private enum SimulationState {Running, Rewind, Paused, Stopped};
+    private enum SimulationState {Running, Rewind, Paused, Stopped};
 
     public float speed = 4f;
     private List<Ball> balls;
@@ -25,7 +26,15 @@ public class Simulation implements Drawable {
     public Map<String, Vector3f> tagColours = new HashMap<>();
 
     public void run() {
+        /*if (simulationState == SimulationState.Running) {
+            simulationState = SimulationState.Rewind;
+        } else simulationState = SimulationState.Running;*/
         simulationState = SimulationState.Running;
+    }
+
+    public boolean rewinding() {
+        //if (simulationState == SimulationState.Rewind) return true;
+        return false;
     }
 
     public void pause() {
@@ -90,6 +99,19 @@ public class Simulation implements Drawable {
     }
 
     public void update(float deltaTime) {
+        /*if (simulationState == SimulationState.Running || simulationState == SimulationState.Rewind) {
+            if (simulationState == SimulationState.Rewind) deltaTime *= -1;
+            for (Ball ball : balls) {
+                ball.update(deltaTime);
+            }
+            if (simulationState == SimulationState.Running) {
+                timeTillNextBall -= deltaTime;
+                while (timeTillNextBall < 0) {
+                    spawnBallAtRoot();
+                    timeTillNextBall += timeBetweenBalls;
+                }
+            }
+        }*/
         if (simulationState == SimulationState.Running) {
             for (Ball ball : balls) {
                 ball.update(deltaTime);
