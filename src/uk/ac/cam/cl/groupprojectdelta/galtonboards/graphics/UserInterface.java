@@ -164,13 +164,24 @@ public class UserInterface {
         editPanel.add(label);
 
         SelectBox<String> selectBox = new SelectBox<>(100, current_y + 80, 200, 15);
+        selectBox.addElement(" - ");
         for (String tag : Workspace.workspace.getSimulation().tagColours.keySet()) {
           selectBox.addElement(tag);
         }
 
+        if (((PanelTagOption) panelOption).getTags().isEmpty()) {
+          selectBox.setSelected(" - ", true);
+        } else {
+          selectBox.setSelected(((PanelTagOption) panelOption).getTags().get(0), true);
+        }
+
         selectBox.addSelectBoxChangeSelectionEventListener(
             event -> {
-              ((PanelTagOption) panelOption).setTags(List.of(event.getNewValue()));
+              if (event.getNewValue().equals(" - ")) {
+                ((PanelTagOption) panelOption).setTags(new LinkedList<>());
+              } else {
+                ((PanelTagOption) panelOption).setTags(List.of(event.getNewValue()));
+              }
             }
         );
         editPanel.add(selectBox);

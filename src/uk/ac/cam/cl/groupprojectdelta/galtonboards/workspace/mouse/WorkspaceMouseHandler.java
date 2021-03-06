@@ -103,7 +103,7 @@ public class WorkspaceMouseHandler implements Drawable {
             ((WorkspaceDraggable) currentClickable).startDrag();
             ((WorkspaceDraggable) currentClickable).moveDrag(new Vector2f().set(pos).sub(currentPos));
             break;
-          } else if (currentClickable == null) {
+          } else if (currentClickable == null || currentClickable instanceof WorkspaceSelectable) {
             state = State.REGION;
             break;
           }
