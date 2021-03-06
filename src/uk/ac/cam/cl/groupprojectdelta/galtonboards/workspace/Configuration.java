@@ -50,7 +50,7 @@ public class Configuration implements Drawable, ClickableMap {
     savedConfigurations.put("Test", test);
 
 
-    // BAYES DEMONSTRATION CONFIGURATION
+    // BAYES DEMONSTRATION CONFIGURATION 1 - LIGHT BULBS
     Configuration bayes = new Configuration();
 
     int k = 4;
@@ -81,7 +81,36 @@ public class Configuration implements Drawable, ClickableMap {
 
     bayes.boards.get(0).getRootPeg().setGivenTags(List.of("factory1", "factory2"));
 
-    savedConfigurations.put("Bayes", bayes);
+    savedConfigurations.put("Bayes - lightbulbs", bayes);
+
+    // BAYES DEMONSTRATION CONFIGURATION 2 - MEDICAL TEST "PARADOX" THING
+    Configuration bayes2 = new Configuration();
+
+    bayes2.boards.add(new BinomialBoard(1, 0.05f)); // do you have the disease or not?
+    bayes2.boards.add(new BinomialBoard(1, 0.1f)); // probability of positive test if you don't
+    bayes2.boards.add(new BinomialBoard(1, 0.9f)); // probability of positive test if you do
+    bayes2.boards.add(new CollectorBoard()); // negative tests - board 3
+    bayes2.boards.add(new CollectorBoard()); // positive tests - board 4
+
+    bayes2.boards.get(0).getBucket(0).setOutput(bayes2.boards.get(1));
+    bayes2.boards.get(0).getBucket(1).setOutput(bayes2.boards.get(2));
+
+    // Link negative tests to negative bucket:
+    bayes2.boards.get(1).getBucket(0).setOutput(bayes2.boards.get(3));
+    bayes2.boards.get(2).getBucket(0).setOutput(bayes2.boards.get(3));
+
+    // Link positive tests to positive bucket:
+    bayes2.boards.get(1).getBucket(1).setOutput(bayes2.boards.get(4));
+    bayes2.boards.get(2).getBucket(1).setOutput(bayes2.boards.get(4));
+
+    bayes2.boards.get(1).updateBoardPosition(new Vector2f(-3, -8));
+    bayes2.boards.get(2).updateBoardPosition(new Vector2f(3, -8));
+    bayes2.boards.get(3).updateBoardPosition(new Vector2f(-4, -16));
+    bayes2.boards.get(4).updateBoardPosition(new Vector2f(4, -16));
+
+    bayes2.boards.get(0).getRootPeg().setGivenTags(List.of("healthy", "sick"));
+
+    savedConfigurations.put("Bayes - disease", bayes2);
 
   }
   static Configuration defaultConfig = savedConfigurations.get("Normal");

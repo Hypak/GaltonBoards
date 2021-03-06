@@ -59,6 +59,8 @@ public class Simulation implements Drawable {
         tagColours.put("testtag2", new Vector3f(0f, 1f, 0f));
         tagColours.put("factory1", new Vector3f(0f, 0f, 1f));
         tagColours.put("factory2", new Vector3f(1f, 0.5f, 0f));
+        tagColours.put("healthy", new Vector3f(0f, 0.75f, 0.2f));
+        tagColours.put("sick", new Vector3f(0.8f, 0.1f, 0.1f));
     }
 
     public void addBallTag(String tag, Vector3f colour) {
