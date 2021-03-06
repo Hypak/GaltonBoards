@@ -49,7 +49,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     // UI elements for this bucket
     private final PipeEditHandle pipeEditHandle;
 
-    private static final float zEpsilon = z + 5E-4f;
+    private static final float zEpsilon = z + 5E-3f;
 
     /*
     =====================================================================
@@ -77,7 +77,6 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
         this.board = board;
         this.output = null;
         this.width = width;
-        this.tag = null;
         setOutputPosition();
         this.ballsInBucket = new HashSet<>();
         this.pipeEditHandle = new PipeEditHandle(this);
@@ -106,6 +105,12 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
      */
     public void setTag(String tag) {
         this.tag = tag;
+        // To actually change the tag, do:
+        // setGivenTags(List.of(tag));
+        /* However, currently this function is being used in a very different way
+        *  from the rest of the tag system (e.g. in ficAllBucketTags in geometric/binomial/uniform
+        *  board functions; if this function interacts with the rest of the tagging system,
+        *  things will break (in particular tag colours will not be defined in the Simulation object.*/
     }
 
     /**
@@ -172,7 +177,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
      * @return The tag that this bucket gives to any balls that are collected by it.
      */
     public String getTag() {
-        return tag;
+        return getGivenTags().get(0);
     }
 
     /**
@@ -313,11 +318,13 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     @Override
     public void setGivenTags(List<String> newTagList) {
         ballsTaggedWith = newTagList;
+        board.getColumnTop(getStartColumn()).setGivenTags(newTagList);
     }
 
     @Override
     public void clearGivenTags() {
         ballsTaggedWith = new ArrayList<>();
+        board.getColumnTop(getStartColumn()).clearGivenTags();
     }
 
     public Map<String, Integer> liquifiedBallsByTag() {
@@ -332,6 +339,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
                 nByTag.put(ball.getTag(), 1);
             }
         }
+        //System.out.println("Seeing tags: " + nByTag.keySet());
         return nByTag;
     }
 
@@ -410,21 +418,6 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
             ++i;
         }
 
-        /*Float ballLevel = balls().size() / getSize();
-        Float yLevel = (highBound.y - lowBound.y) * ballLevel + lowBound.y;
-
-        List<Float> levels = new ArrayList<>(Arrays.asList(highBound.y, yLevel, lowBound.y));
-
-        int i = 0;
-        while (i + 1 < levels.size()) {
-            Float y0 = levels.get(i);
-            Float y1 = levels.get(i+1);
-            Vector2f bottomRight = new Vector2f(lowBound.x, y1);
-            Vector2f topLeft = new Vector2f(highBound.x, y0);
-            points = Stream.concat(points.stream(), getRectMesh(bottomRight, topLeft).stream()).collect(Collectors.toList());
-            ++i;
-        }*/
-
         if (output != null) {
             final float w = highBound.x - lowBound.x;
             highBound = lowBound;
@@ -444,23 +437,6 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
         }
 
         return points;
-
-
-        /*float zEpsilon = z + 1E-4f;
-
-        points = new ArrayList<>(Arrays.asList(
-            // Face 1
-            lowBound.x, lowBound.y, zEpsilon,
-            highBound.x, lowBound.y, zEpsilon,
-            highBound.x, highBound.y, zEpsilon,
-
-            // Face 2
-            lowBound.x, lowBound.y, zEpsilon,
-            lowBound.x, highBound.y, zEpsilon,
-            highBound.x, highBound.y, zEpsilon
-        ));
-
-        return points;*/
     }
 
     @Override
@@ -489,25 +465,6 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
             UVs.add(bottom);
             UVs.add(right);
         }
-
-        /*List<Float> UVs = new ArrayList<>(Arrays.asList(
-            // face 1
-            top, left,
-            bottom, left,
-            bottom, right,
-            // face 2
-            top, left,
-            top, right,
-            bottom, right,
-            // face 3
-            top, left,
-            bottom, left,
-            bottom, right,
-            // face 4
-            top, left,
-            top, right,
-            bottom, right
-        ));*/
 
         if (output != null) {
             UVs.addAll(List.of(

@@ -43,7 +43,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-class WindowBoards extends Window {
+public class WindowBoards extends Window {
 
   private final Camera camera = new Camera();
   private UserInput userInput;
@@ -92,17 +92,17 @@ class WindowBoards extends Window {
     }
   }
 
-  Configuration getConfiguration() {
+  public Configuration getConfiguration() {
     return workspace.getConfiguration();
   }
 
-  Simulation getSimulation() {
+  public Simulation getSimulation() {
     return workspace.getSimulation();
   }
 
   WorkspaceSelectionHandler getSelectionHandler() {return workspace.mouseHandler.getSelectionHandler();}
 
-  Camera getCamera() {
+  public Camera getCamera() {
     return camera;
   }
 

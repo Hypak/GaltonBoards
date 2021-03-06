@@ -787,7 +787,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
         //  | / 2|
         //  +----+
 
-        float zEpsilon = z + 1E-3f;
+        float zEpsilon = z + 1E-2f;
 
         points = new ArrayList<>(Arrays.asList(
                 // Face 1

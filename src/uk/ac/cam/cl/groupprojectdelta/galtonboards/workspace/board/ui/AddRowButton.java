@@ -26,42 +26,11 @@ public class AddRowButton extends WorkspaceButton {
   }
 
   @Override
-  public List<Float> getMesh(float time) {
-    List<Float> points;
-    Vector2f bound = new Vector2f();
-    Vector2f position = getPosition();
-
-    Vector2f dimensions = new Vector2f(size);
-    position.add(dimensions, bound);
-
-    //  +----+
-    //  |1 / |
-    //  | / 2|
-    //  +----+
-
-    float z = 0.25f;
-
-    points = new ArrayList<>(Arrays.asList(
-            // Face 1
-            position.x, position.y, z,
-            bound.x, position.y, z,
-            bound.x, bound.y, z,
-
-            // Face 2
-            position.x, position.y, z,
-            position.x, bound.y, z,
-            bound.x, bound.y, z
-    ));
-
-    return points;
-  }
-
-  @Override
   public List<Float> getUV() {
-    final float top = 0.75f;
-    final float bottom = 1f;
-    final float left = 0.75f;
-    final float right = 1f;
+    final float top = 0.0f;
+    final float bottom = 0.25f;
+    final float left = 0.0f;
+    final float right = 0.25f;
 
     List<Float> UVs = List.of(
             // face 1

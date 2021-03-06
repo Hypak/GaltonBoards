@@ -170,9 +170,9 @@ public class WorkspaceMouseHandler implements Drawable {
       //todo: fix the graphics for this region selection
 
       final float top = 0.5f;
-      final float bottom = 1f;
-      final float left = 0.5f;
-      final float right = 1f;
+      final float bottom = 0.75f;
+      final float left = 0.0f;
+      final float right = 0.25f;
 
       list = new ArrayList<>(Arrays.asList(
           // face 1
@@ -195,13 +195,13 @@ public class WorkspaceMouseHandler implements Drawable {
     List<Float> list;
     if (state == State.REGION) {
       list = new ArrayList<>(Arrays.asList(
-          1f, 1f, 1f,
-          1f, 1f, 1f,
-          1f, 1f, 1f,
+          0.5f, 0.7f, 1f,
+          0.5f, 0.7f, 1f,
+          0.5f, 0.7f, 1f,
 
-          1f, 1f, 1f,
-          1f, 1f, 1f,
-          1f, 1f, 1f
+          0.5f, 0.7f, 1f,
+          0.5f, 0.7f, 1f,
+          0.5f, 0.7f, 1f
       ));
     } else {
       list = new ArrayList<>();

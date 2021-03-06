@@ -55,6 +55,7 @@ public class Ball implements Drawable {
     }
 
     void setLogicalPath(LogicalLocation start) {
+        //System.out.println("Starting path calculation ... ");
         logLocs = new ArrayList<>();
         logLocs.add(start);
         int i = 0;
@@ -65,6 +66,7 @@ public class Ball implements Drawable {
                 ColumnBottom cb = (ColumnBottom) logLocs.get(i);
                 // System.out.println(b + ", " + b.getWorldPos());
                 if (cb.getBucket().getOutput() == null) { // this is the final bucket
+                    //System.out.println("PATH FOUND");
                     return; // ONLY EXIT CONDITION - code doesn't get here, you have an infinite loop
                 } else {
                     logLocs.add((LogicalLocation)cb.getBucket().getOutput().getRootPeg());
@@ -121,6 +123,13 @@ public class Ball implements Drawable {
     }
 
     private void switchToNextLogLoc() {
+        /*if (simulation.rewinding()) {
+            logLocs.get(logLocI + 1).removeBall(this);
+            logLocs.get(logLocI).addBall(this);
+            updateTag();
+            logLocI -= 1;
+            return;
+        }*/
         logLocs.get(logLocI).removeBall(this);
         logLocs.get(logLocI + 1).addBall(this);
         updateTag();
@@ -129,9 +138,18 @@ public class Ball implements Drawable {
 
     void moveTowardsNextLoc(float f) {
         // f is the fraction of the distance between the current and next logical location to move now.
+        //if (!simulation.rewinding() && logLocI == logLocs.size() - 1) return; // already in its final bucket
+        //if (simulation.rewinding() && logLocI == 0) return;
         if (logLocI == logLocs.size() - 1) return; // already in its final bucket
-        LogicalLocation currentLoc = logLocs.get(logLocI);
-        LogicalLocation nextLoc = logLocs.get(logLocI + 1);
+        int currI = logLocI;
+        int nextI = logLocI + 1;
+        /*if (simulation.rewinding()) {
+            nextI = logLocI;
+            currI = logLocI - 1;
+        }
+        if (nextI < 0) return;*/
+        LogicalLocation currentLoc = logLocs.get(currI);
+        LogicalLocation nextLoc = logLocs.get(nextI);
 
         Vector2f toMove = new Vector2f(0,0);
         toMove.add(nextLoc.getWorldPos());
