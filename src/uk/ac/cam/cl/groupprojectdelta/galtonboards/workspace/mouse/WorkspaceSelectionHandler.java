@@ -10,8 +10,11 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelTagOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.BinomialBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Bucket;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
 
 public class WorkspaceSelectionHandler {
@@ -151,10 +154,47 @@ public class WorkspaceSelectionHandler {
       });
 
       panelOptions.add(new PanelLabel("BOARD PROPERTIES"));
+    } else if (Bucket.class.isAssignableFrom(selectionType)) {
+      panelOptions.add(new PanelLabel("BUCKET PROPERTIES"));
+      panelOptions.add(new PanelTagOption() {
+        @Override
+        public String getName() {
+          return "Bucket tag";
+        }
+
+        @Override
+        public List<String> getTags() {
+          List<String> returnTags = ((LogicalLocation) currentSelection.get(0)).getGivenTags();
+          for (WorkspaceSelectable bucket : currentSelection) {
+            List<String> bucketTags = ((Bucket) bucket).getGivenTags();
+            if (!bucketTags.containsAll(returnTags) || !returnTags.containsAll(bucketTags)) {
+              returnTags = new LinkedList<>();
+            }
+          }
+          return returnTags;
+        }
+
+        @Override
+        public void setTags(List<String> tags) {
+          for (WorkspaceSelectable bucket : currentSelection) {
+            ((Bucket) bucket).clearGivenTags();
+            ((Bucket) bucket).setGivenTags(tags);
+          }
+        }
+
+        @Override
+        public void clearTags() {
+          for (WorkspaceSelectable bucket : currentSelection) {
+            ((Bucket) bucket).clearGivenTags();
+          }
+        }
+      });
+    } else {
+      panelOptions.add(new PanelLabel(selectionType.getSimpleName()));
     }
 
-    UserInterface.userInterface.updateEditPanel(panelOptions);
+    System.out.println(currentSelection.toString());
 
-    //((Label) UserInterface.userInterface.editPanel.getChildComponents().get(0)).getTextState().setText(description);
+    UserInterface.userInterface.updateEditPanel(panelOptions);
   }
 }

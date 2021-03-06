@@ -1,19 +1,23 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 import org.liquidengine.legui.component.*;
+import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEventListener;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.CallbackI.S;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.MainPanel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.TopPanel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelTagOption;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
@@ -150,6 +154,37 @@ public class UserInterface {
               label.getTextState().setText(panelOption.getName() + " ( " + sliderChangeValueEvent.getNewValue() + ")");
             });
         editPanel.add(newSlider);
+
+        current_y += 100;
+      } else if (panelOption instanceof PanelTagOption) {
+        List<String> tags = ((PanelTagOption) panelOption).getTags();
+
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState(panelOption.getName()));
+        editPanel.add(label);
+
+        SelectBox<String> selectBox = new SelectBox<>(100, current_y + 80, 200, 15);
+        selectBox.addElement(" - ");
+        for (String tag : Workspace.workspace.getSimulation().tagColours.keySet()) {
+          selectBox.addElement(tag);
+        }
+
+        if (((PanelTagOption) panelOption).getTags().isEmpty()) {
+          selectBox.setSelected(" - ", true);
+        } else {
+          selectBox.setSelected(((PanelTagOption) panelOption).getTags().get(0), true);
+        }
+
+        selectBox.addSelectBoxChangeSelectionEventListener(
+            event -> {
+              if (event.getNewValue().equals(" - ")) {
+                ((PanelTagOption) panelOption).setTags(new LinkedList<>());
+              } else {
+                ((PanelTagOption) panelOption).setTags(List.of(event.getNewValue()));
+              }
+            }
+        );
+        editPanel.add(selectBox);
 
         current_y += 100;
       }

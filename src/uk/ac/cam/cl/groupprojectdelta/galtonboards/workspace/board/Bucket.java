@@ -20,8 +20,9 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.PipeEditHandle;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 
-public class Bucket implements LogicalLocation, Drawable {
+public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
 
     // The index of the first implicit board column that feeds into this bucket
     private int startColumn;
@@ -531,5 +532,41 @@ public class Bucket implements LogicalLocation, Drawable {
 
     PipeEditHandle getPipeEditHandle() {
         return pipeEditHandle;
+    }
+
+    @Override
+    public boolean containsPoint(Vector2f point) {
+        Vector2f topleft = getTopLeft();
+        Vector2f bottomright = getBottomRight();
+        System.out.println(point.x > topleft.x
+            && point.x < bottomright.x
+            && point.y < topleft.y
+            && point.y > bottomright.y);
+        System.out.println(topleft);
+        System.out.println(bottomright);
+        System.out.println(point);
+        return point.x > topleft.x
+            && point.x < bottomright.x
+            && point.y < topleft.y
+            && point.y > bottomright.y;
+    }
+
+    @Override
+    public boolean intersectsRegion(Vector2f from, Vector2f to) {
+        Vector2f topleft = getTopLeft();
+        Vector2f bottomright = getBottomRight();
+        return from.x < bottomright.x
+            && from.y < topleft.y
+            && to.x > topleft.x
+            && to.y > bottomright.y;
+    }
+
+    @Override
+    public void select() {
+        //TODO: start drawing highlight around board to show that it's selected.
+    }
+
+    public void deselect() {
+        //TODO: stop drawing highlight around board to show that it's not selected.
     }
 }
