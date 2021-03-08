@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import com.google.common.collect.Iterables;
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
@@ -184,6 +185,21 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      * @param newWorldPos : Vector2f - The new position of the board.
      */
     public void updateBoardPosition(Vector2f newWorldPos) {
+        Vector2f diff = new Vector2f(newWorldPos);
+        diff.sub(worldPos);
+        if (Workspace.workspace != null) {
+            for (Ball ball : Workspace.workspace.getConfiguration().getSimulation().getBalls()) {
+                if (ball.getLogLoc().getBoard() == this) {
+                    if (ball.getNextLogLoc().getBoard() == this) {
+                        ball.getPosition().add(diff);
+                    } else {
+                        Vector2f move = new Vector2f(diff);
+                        move.mul(1 - ball.getTravelledProportion());
+                        ball.getPosition().add(move);
+                    }
+                }
+            }
+        }
         this.worldPos = new Vector2f(newWorldPos);
         setPegPositions();
         setBucketOutputPositions();

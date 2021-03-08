@@ -52,6 +52,21 @@ public class Ball implements Drawable {
         return logLocs.get(logLocI);
     }
 
+    public LogicalLocation getNextLogLoc() {
+        if (logLocI + 1 < logLocs.size()) {
+            return logLocs.get(logLocI + 1);
+        }
+        return logLocs.get(logLocI);
+    }
+
+    public float getTravelledProportion() {
+        Vector2f lastPos = getLogLoc().getWorldPos();
+        Vector2f nextPos = getNextLogLoc().getWorldPos();
+        float lastDist = lastPos.sub(position).length();
+        float nextDist = nextPos.sub(position).length();
+        return lastDist / (lastDist + nextDist);
+    }
+
     public boolean isLiquified() {
         //if (logLocs.get(logLocI) instanceof ColumnBottom) return true; // probably not an ideal heuristic
         if (logLocs.get(logLocI) instanceof ColumnBottom) {
