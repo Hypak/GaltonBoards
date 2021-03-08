@@ -648,7 +648,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             newBoard.updateBoardPosition(getWorldPos());
 
             // For all of the buckets that feed into this board, update their output to the new board
-            for (Bucket b : inputs) {
+            List<Bucket> existingInputs = new ArrayList<>(inputs);
+            for (Bucket b : existingInputs) {
                 b.setOutput(newBoard);
             }
 
