@@ -13,7 +13,10 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import static java.lang.Math.max;
@@ -125,8 +128,9 @@ public class TopPanel extends Panel {
       ConfigurationsSelectBox(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
         getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-        for (String label : Configuration.savedConfigurations.keySet()) {
-          addElement(label);
+        ArrayList<String> names = new ArrayList<String>(Configuration.savedConfigurations.keySet());
+        for (int i = names.size() - 1; i >= 0; --i) {
+          addElement(names.get(i));
         }
         addSelectBoxChangeSelectionEventListener(event -> {
           if (event.getNewValue().equals(event.getOldValue())) {
