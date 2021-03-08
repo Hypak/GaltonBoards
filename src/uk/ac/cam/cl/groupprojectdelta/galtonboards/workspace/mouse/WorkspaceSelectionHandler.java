@@ -172,6 +172,25 @@ public class WorkspaceSelectionHandler {
         }
       });
 
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Mark Board as Root";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          Workspace.workspace.getConfiguration().setStartBoard(firstBoard);
+        }
+
+        @Override
+        public String getName() {
+          return "Mark Board as Root";
+        }
+      });
+
       panelOptions.add(new PanelLabel("BOARD PROPERTIES"));
     } else if (Bucket.class.isAssignableFrom(selectionType)) {
       panelOptions.add(new PanelLabel("BUCKET PROPERTIES"));

@@ -137,6 +137,13 @@ public class Configuration implements Drawable, ClickableMap {
     return null;
   }
 
+  public void setStartBoard(Board board) {
+    if (boards.contains(board)) {
+      boards.remove(board);
+      boards.add(0, board);
+    }
+  }
+
   public void addBoard(Board board) {
     boards.add(board);
     board.setSimulation(simulation);
