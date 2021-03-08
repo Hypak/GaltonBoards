@@ -1,9 +1,10 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.*;
+import org.liquidengine.legui.input.Mouse;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
+
+import java.lang.Math;
 
 public class Camera {
 
@@ -24,9 +25,14 @@ public class Camera {
   }
 
   public void zoom(float offset) {
-    Matrix3f m = new Matrix3f();
-    m.m22 = (float)Math.exp(offset);
-    r.mul(m);
+    Vector3f target = new Vector3f(
+            Workspace.workspace.mouseHandler.getCurrentPos().x,
+            Workspace.workspace.mouseHandler.getCurrentPos().y, 0);
+    Vector3f fromTarget = new Vector3f(r).sub(target);
+    fromTarget.mul((float) Math.exp(offset));
+    r = new Vector3f();
+    r.add(target);
+    r.add(fromTarget);
   }
 
   public Vector3f getPosition() {
@@ -49,6 +55,7 @@ public class Camera {
             up
     ).reflect(new Vector3f(1,0,0), new Vector3f(0,0,0));
   }
+
 
   public void toWorldSpace(Vector2f normalisedScreenSpace) {
     normalisedScreenSpace.set(-normalisedScreenSpace.x, normalisedScreenSpace.y);

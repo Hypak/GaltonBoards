@@ -7,6 +7,7 @@ import org.liquidengine.legui.event.ScrollEvent;
 import org.liquidengine.legui.listener.ScrollEventListener;
 import org.lwjgl.glfw.GLFW;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Camera;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceMouseHandler;
 
 
 public class UserInput {
