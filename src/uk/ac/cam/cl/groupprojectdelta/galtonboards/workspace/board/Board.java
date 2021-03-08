@@ -650,7 +650,6 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             // For all of the buckets that feed into this board, update their output to the new board
             for (Bucket b : inputs) {
                 b.setOutput(newBoard);
-                b.destroy();
             }
 
             // remove board from configuration
