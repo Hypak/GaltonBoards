@@ -593,6 +593,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public void destroy() {
         for (Bucket b : getInputs()) {
             b.clearOutput();
+            b.destroy();
         }
         for (Bucket b : getBuckets()) {
             b.destroy();
