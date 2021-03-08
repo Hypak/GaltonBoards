@@ -26,7 +26,7 @@ public class Camera {
 
   public void zoom(float offset) {
     Vector3f target = new Vector3f(
-            Workspace.workspace.mouseHandler.getCurrentPos().x,
+            -Workspace.workspace.mouseHandler.getCurrentPos().x,
             Workspace.workspace.mouseHandler.getCurrentPos().y, 0);
     Vector3f fromTarget = new Vector3f(r).sub(target);
     fromTarget.mul((float) Math.exp(offset));
