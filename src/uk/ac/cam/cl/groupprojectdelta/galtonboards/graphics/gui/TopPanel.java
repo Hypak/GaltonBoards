@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui;
 
 
 import org.liquidengine.legui.component.*;
+import org.liquidengine.legui.component.event.textinput.TextInputContentChangeEvent;
 import org.liquidengine.legui.component.optional.TextState;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
@@ -29,6 +30,7 @@ public class TopPanel extends Panel {
     add(new SetSpawnRate(285, 0, 200, height, size, spacing));
     add(new InsertBoards(425, 0, 200, height, size, spacing));
     add(new SelectConfiguration(650, 0, 200, height, size, spacing));
+    add(new SavePanel(900, 0, 200, height, size, spacing));
   }
 
   // Buttons for play/pause/stop
@@ -181,6 +183,44 @@ public class TopPanel extends Panel {
           simulationSpeedLabelValue.setTextState(new TextState(values.get(currentIndex) + "x"));
         }
       }));
+    }
+  }
+
+  static class SavePanel extends Panel {
+    SavePanel(int xPos, int yPos, int width, int height, int size, int spacing) {
+      super(xPos, yPos, width, height);
+      final int textWidth = 100;
+      getStyle().getBackground().setColor(ColorConstants.transparent());
+      getStyle().getBorder().setEnabled(false);
+      getStyle().getShadow().setColor(ColorConstants.transparent());
+      add(new SaveButton(0, spacing, size, size, "Save"));
+      add(new SaveTextInput(width - 2 * spacing - textWidth, spacing, textWidth, size));
+    }
+
+    static class SaveButton extends Button {
+      public static String saveName = "untitled";
+      SaveButton(int xPos, int yPos, int width, int height, String shortName) {
+        super(shortName, xPos, yPos, width, height);
+        getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+        getListenerMap().addListener(MouseClickEvent.class, event -> {
+          if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+            try {
+              Configuration.savedConfigurations.put(saveName, Workspace.workspace.getConfiguration());
+              UserInterface.userInterface.reloadPanels();
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          }
+        });
+      }
+    }
+    static class SaveTextInput extends TextInput {
+      SaveTextInput(int xPos, int yPos, int width, int height) {
+        super(xPos, yPos, width, height);
+        getListenerMap().addListener(TextInputContentChangeEvent.class, event -> {
+          SaveButton.saveName = event.getNewValue();
+        });
+      }
     }
   }
 
