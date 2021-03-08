@@ -192,7 +192,10 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
      * @return The tag that this bucket gives to any balls that are collected by it.
      */
     public String getTag() {
-        return getGivenTags().get(0);
+        if (getGivenTags().size() > 0) {
+            return getGivenTags().get(0);
+        }
+        else { return null; }
     }
 
     /**

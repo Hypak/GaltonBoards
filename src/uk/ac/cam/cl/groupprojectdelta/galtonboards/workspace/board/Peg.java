@@ -94,14 +94,7 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * @param probability : float - The new probability of the ball falling left.
      */
     public void setProbability(float probability) {
-        try {
-            if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
-                this.probability = probability;
-            }
-        }
-        catch (NullPointerException e) {
-            this.probability = probability;
-        }
+        this.probability = probability;
     }
 
     /*
