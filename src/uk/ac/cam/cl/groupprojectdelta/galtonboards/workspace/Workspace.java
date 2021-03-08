@@ -2,6 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace;
 
 import java.util.List;
 import org.joml.Vector2f;
+import org.liquidengine.legui.event.MouseClickEvent;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.Cursor;
@@ -29,12 +30,12 @@ public class Workspace implements Drawable {
     simulation.update(deltaTime);
   }
 
-  public void mouseDown(float time) {
-    mouseHandler.mouseDown(time);
+  public void mouseDown(float time, MouseClickEvent event) {
+    mouseHandler.mouseDown(time, event);
   }
 
-  public void mouseUp(float time) {
-    mouseHandler.mouseUp(time);
+  public void mouseUp(float time, MouseClickEvent event) {
+    mouseHandler.mouseUp(time, event);
   }
 
   public void setClickableMap(ClickableMap clickableMap) {
@@ -49,8 +50,8 @@ public class Workspace implements Drawable {
     return mouseHandler.getCurrentClickableMap();
   }
 
-  public void mouseMove(Vector2f pos) {
-    mouseHandler.mouseMove(pos);
+  public void mouseMove(Vector2f pos, Vector2f screenPos) {
+    mouseHandler.mouseMove(pos, screenPos);
     cursor.setPosition(pos);
   }
 

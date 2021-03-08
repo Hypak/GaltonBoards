@@ -6,7 +6,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.liquidengine.legui.component.Label;
+import org.liquidengine.legui.event.MouseClickEvent;
+import org.liquidengine.legui.input.Mouse;
+import org.lwjgl.system.CallbackI;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Camera;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
@@ -16,7 +21,7 @@ public class WorkspaceMouseHandler implements Drawable {
   private ClickableMap currentClickableMap;
 
   private enum State {
-    NONE, DOWN1, DOWN2, DRAG, UP1, REGION
+    NONE, DOWN1, DOWN2, DRAG, UP1, REGION, PAN
   }
 
   private static final float DOUBLE_CLICK = 0.5f;
@@ -25,6 +30,7 @@ public class WorkspaceMouseHandler implements Drawable {
   private State state = State.NONE;
   private WorkspaceClickable currentClickable;
   private Vector2f currentPos = new Vector2f();
+  private Vector2f currentScreenPos = new Vector2f();
   private final WorkspaceSelectionHandler selectionHandler = new WorkspaceSelectionHandler();
 
   public WorkspaceMouseHandler(ClickableMap clickableMap) {
@@ -33,7 +39,13 @@ public class WorkspaceMouseHandler implements Drawable {
 
   public WorkspaceSelectionHandler getSelectionHandler() {return selectionHandler;}
 
-  public void mouseDown(float time) {
+  public void mouseDown(float time, MouseClickEvent event) {
+    if (event.getButton() == Mouse.MouseButton.MOUSE_BUTTON_2) {
+      if (state == State.NONE) {
+        state = State.PAN;
+      }
+      return;
+    }
     switch (state) {
       case NONE:
         lastClickTime = time;
@@ -68,7 +80,7 @@ public class WorkspaceMouseHandler implements Drawable {
     }
   }
 
-  public void mouseUp(float time) {
+  public void mouseUp(float time, MouseClickEvent event) {
     switch (state) {
       case DOWN1:
         state = State.UP1;
@@ -87,13 +99,15 @@ public class WorkspaceMouseHandler implements Drawable {
         selectionHandler.clearSelection();
         selectionHandler.addToSelection(currentClickableMap.getSelectablesInRegion(dragStart, currentPos));
         state = State.NONE;
+      case PAN:
+        state = State.NONE;
       case NONE:
       case UP1:
         break;
     }
   }
 
-  public void mouseMove(Vector2f pos) {
+  public void mouseMove(Vector2f pos, Vector2f screenPos) {
     if (!pos.equals(currentPos)) {
       switch (state) {
         case DOWN1:
@@ -115,10 +129,17 @@ public class WorkspaceMouseHandler implements Drawable {
         case DRAG:
           ((WorkspaceDraggable) currentClickable).moveDrag(new Vector2f().set(pos).sub(currentPos));
           break;
+        case PAN:
+          float adjust = 1;
+          Vector2f move = new Vector2f().set(screenPos).sub(currentScreenPos);
+          System.out.println(move);
+          float z = Camera.camera.getPosition().z;
+          Camera.camera.getPosition().sub(new Vector3f(adjust * move.x * z, adjust * move.y * z, 0));
         case REGION:
           break;
       }
       currentPos = pos;
+      currentScreenPos = screenPos;
     }
   }
 

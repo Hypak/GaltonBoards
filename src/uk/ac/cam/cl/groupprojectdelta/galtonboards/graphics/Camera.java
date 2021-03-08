@@ -7,11 +7,13 @@ import org.joml.Vector3f;
 
 public class Camera {
 
-  private Vector3f r;
-
-  public Camera() {
-    Reset();
+  public static Camera camera;
+  static {
+    camera = new Camera();
+    camera.Reset();
   }
+
+  private Vector3f r;
 
   public void Reset() {
     r = new Vector3f(0, 0, -15);

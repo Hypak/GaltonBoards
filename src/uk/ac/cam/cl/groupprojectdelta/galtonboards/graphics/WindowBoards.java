@@ -45,7 +45,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class WindowBoards extends Window {
 
-  private final Camera camera = new Camera();
   private UserInput userInput;
   private final Workspace workspace = Workspace.workspace;
   private float currentTime;
@@ -103,12 +102,12 @@ public class WindowBoards extends Window {
   WorkspaceSelectionHandler getSelectionHandler() {return workspace.mouseHandler.getSelectionHandler();}
 
   public Camera getCamera() {
-    return camera;
+    return Camera.camera;
   }
 
   @Override
   void initialize(long window) {
-    userInput = new UserInput(window, camera);
+    userInput = new UserInput(window, Camera.camera);
     programID = glCreateProgram();
 
     // Load, compile and attach shaders
@@ -190,7 +189,7 @@ public class WindowBoards extends Window {
         (float) windowWidth[0] / (float) windowHeight[0],
         0.1f,
         100.0f);
-    projection.mul(camera.viewMatrix(), MVP);
+    projection.mul(Camera.camera.viewMatrix(), MVP);
 
     glUniformMatrix4fv(mvpShaderLocation, false, MVP.get(new float[16]));
 
@@ -198,8 +197,9 @@ public class WindowBoards extends Window {
     mousePos.mul(1 / (float)windowWidth[0], 1 / (float)windowHeight[0]);
     mousePos.sub(.5f, .5f);
     mousePos.mul(1.565f, 0.885f);
-    camera.toWorldSpace(mousePos);
-    workspace.mouseMove(mousePos);
+    Vector2f screenPos = new Vector2f(mousePos);
+    Camera.camera.toWorldSpace(mousePos);
+    workspace.mouseMove(mousePos, screenPos);
 
     int vao = glGenVertexArrays();
     glBindVertexArray(vao);
@@ -328,9 +328,9 @@ public class WindowBoards extends Window {
 
   public void mouseClickEvent(MouseClickEvent event) {
     if (event.getAction() == MouseClickAction.PRESS) {
-      workspace.mouseDown(currentTime);
+      workspace.mouseDown(currentTime, event);
     } else if (event.getAction() == MouseClickAction.RELEASE) {
-      workspace.mouseUp(currentTime);
+      workspace.mouseUp(currentTime, event);
     }
   }
 }
