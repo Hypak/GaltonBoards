@@ -8,6 +8,7 @@ import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelection
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
+import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
@@ -190,7 +191,10 @@ public class UserInterface {
         current_y += 100;
       } else if (panelOption instanceof PanelButtonOption) {
         PanelButtonOption buttonOption = (PanelButtonOption)panelOption;
-        MouseClickEventListener clickEvent = (MouseClickEventListener)event -> buttonOption.click();
+        MouseClickEventListener clickEvent = (MouseClickEventListener) event -> {
+          if (event.getAction() == MouseClickEvent.MouseClickAction.RELEASE)
+          buttonOption.click();
+        };
         Button button = new SimpleButton(buttonOption.getLabel(), 100, current_y, 200, 30, clickEvent);
         editPanel.add(button);
 
