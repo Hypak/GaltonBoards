@@ -82,12 +82,17 @@ public class WindowBoards extends Window {
 
   /**
    * Add legui component to the window
-   * Can only be called before starting the main loop
    */
   void addComponent(Component component) {
-    // todo: this should throw an exception instead of failing silently
-    if (!initialized) {
-      components.add(component);
+    components.add(component);
+    if (initialized) {
+      frame.getContainer().add(component);
+    }
+  }
+
+  void removeComponents() {
+    if (initialized) {
+      frame.getContainer().removeAll(components);
     }
   }
 
