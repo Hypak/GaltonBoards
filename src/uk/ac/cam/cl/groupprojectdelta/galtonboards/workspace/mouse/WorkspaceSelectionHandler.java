@@ -119,7 +119,7 @@ public class WorkspaceSelectionHandler {
         }
       });
     } else if (Board.class.isAssignableFrom(selectionType)) {
-      panelOptions.add(new PanelLabel("PEG PROPERTIES"));
+      panelOptions.add(new PanelLabel("PEG PROPERTIES:"));
 
       panelOptions.add(new PanelFloatSliderOption() {
         @Override
@@ -191,7 +191,8 @@ public class WorkspaceSelectionHandler {
         }
       });
 
-      panelOptions.add(new PanelLabel("BOARD PROPERTIES"));
+      panelOptions.add(new PanelLabel("BOARD PROPERTIES:"));
+      panelOptions.add(new PanelLabel(((Board)currentSelection.get(0)).toString()));
     } else if (Bucket.class.isAssignableFrom(selectionType)) {
       panelOptions.add(new PanelLabel("BUCKET PROPERTIES"));
       panelOptions.add(new PanelTagOption() {
