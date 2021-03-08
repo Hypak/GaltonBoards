@@ -197,6 +197,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                         move.mul(1 - ball.getTravelledProportion());
                         ball.getPosition().add(move);
                     }
+                } else if (ball.getNextLogLoc().getBoard() == this) {
+                    Vector2f move = new Vector2f(diff);
+                    move.mul(ball.getTravelledProportion());
+                    ball.getPosition().add(move);
                 }
             }
         }
