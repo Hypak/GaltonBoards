@@ -1016,9 +1016,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
     @Override
     public void moveDrag(Vector2f delta) {
-        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
-            updateBoardPosition(getWorldPos().add(delta));
-        }
+        updateBoardPosition(getWorldPos().add(delta));
     }
 
     @Override
