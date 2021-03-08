@@ -170,7 +170,7 @@ public class Ball implements Drawable {
         toMove.sub(currentLoc.getWorldPos());
         Vector2f currentToNext = copyVec(toMove);
         float currentToNextDistance = toMove.length();
-        toMove.mul(f);
+        toMove.mul(f / currentToNextDistance);
         Vector2f remainingTrip = new Vector2f(0,0); // vector from ball position to next log loc
         remainingTrip.add(nextLoc.getWorldPos());
         remainingTrip.sub(position);
