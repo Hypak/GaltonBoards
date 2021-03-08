@@ -205,7 +205,20 @@ public class TopPanel extends Panel {
         getListenerMap().addListener(MouseClickEvent.class, event -> {
           if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
             try {
-              Configuration.savedConfigurations.put(saveName, Workspace.workspace.getConfiguration());
+              String finalName = "";
+              if (Configuration.savedConfigurations.containsKey(saveName)) {
+                for (Integer i = 1; i < 100000; ++i) {
+                  finalName = saveName + i.toString();
+                  if (!Configuration.savedConfigurations.containsKey(finalName)) {
+                    Configuration.savedConfigurations.put(saveName, Workspace.workspace.getConfiguration());
+                    UserInterface.userInterface.reloadPanels();
+                    break;
+                  }
+                }
+              } else {
+                finalName = saveName;
+              }
+              Configuration.savedConfigurations.put(finalName, Workspace.workspace.getConfiguration());
               UserInterface.userInterface.reloadPanels();
             } catch (Exception e) {
               e.printStackTrace();
