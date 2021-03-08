@@ -640,7 +640,9 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
             // Copy bucket outputs
             for (Bucket b : buckets) {
-                newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
+                if (b.getOutput() != null) {
+                    newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
+                }
             }
 
             newBoard.updateBoardPosition(getWorldPos());
@@ -653,6 +655,9 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
             // remove board from configuration
             Workspace.workspace.getConfiguration().addBoard(newBoard);
+            if (Workspace.workspace.getConfiguration().getStartBoard() == this) {
+                Workspace.workspace.getConfiguration().setStartBoard(newBoard);
+            }
             Workspace.workspace.getConfiguration().removeBoard(this);
         }
 
