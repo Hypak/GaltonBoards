@@ -207,6 +207,9 @@ public class BinomialBoard extends Board {
     }
 
     @Override
+    public Distribution getDistribution() {return Distribution.Binomial;}
+
+    @Override
     public String toString() {
         return "Binomial board of width " + super.isoGridWidth;
     }

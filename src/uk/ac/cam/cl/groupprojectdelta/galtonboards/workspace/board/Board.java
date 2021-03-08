@@ -22,14 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-enum Distribution {
-    Gaussian,
-    Uniform,
-    Binomial,
-    Geometric,
-    Custom
-}
-
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
     public static final float unitDistance = 1f;
@@ -609,7 +601,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                     this instanceof UniformBoard && d == Distribution.Uniform ||
                     this instanceof BinomialBoard && d == Distribution.Binomial ||
                     this instanceof GeometricBoard && d == Distribution.Geometric ||
-                    this.getClass() == Board.class) {
+                    this.getClass() == Board.class && d == Distribution.Custom) {
                 return;
             }
 
@@ -811,6 +803,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Simulation getSimulation() {
         return simulation;
     }
+
+    public Distribution getDistribution() {return Distribution.Custom;}
 
     /*
     =====================================================================

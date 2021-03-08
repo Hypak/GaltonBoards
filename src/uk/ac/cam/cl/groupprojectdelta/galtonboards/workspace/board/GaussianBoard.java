@@ -191,6 +191,9 @@ public class GaussianBoard extends Board {
     }
 
     @Override
+    public Distribution getDistribution() {return Distribution.Gaussian;}
+
+    @Override
     public String toString() {
         return "Gaussian board of width " + super.isoGridWidth;
     }

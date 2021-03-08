@@ -15,6 +15,9 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.BinomialBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Bucket;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Distribution;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.GaussianBoard;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.GeometricBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Peg;
 
 public class WorkspaceSelectionHandler {
@@ -193,6 +196,99 @@ public class WorkspaceSelectionHandler {
 
       panelOptions.add(new PanelLabel("BOARD PROPERTIES:"));
       panelOptions.add(new PanelLabel(((Board)currentSelection.get(0)).toString()));
+      panelOptions.add(new PanelBoardTypeOption() {
+        @Override
+        public Distribution getDistribution() {
+          Distribution firstDistribution = ((Board) currentSelection.get(0)).getDistribution();
+          for (WorkspaceSelectable board : currentSelection) {
+            if (((Board) board).getDistribution() != firstDistribution) {
+              firstDistribution = Distribution.Custom;
+              break;
+            }
+          }
+          return firstDistribution;
+        }
+
+        @Override
+        public void setDistribution(Distribution distribution) {
+          System.out.println(distribution);
+          if (distribution == Distribution.Custom) {
+            for (WorkspaceSelectable board : currentSelection) {
+              ((Board) board).reset();
+            }
+          } else {
+            for (WorkspaceSelectable board : currentSelection) {
+              ((Board) board).changeBoard(distribution);
+            }
+          }
+        }
+
+        @Override
+        public String getName() {
+          return "Use a preset distribution";
+        }
+      });
+
+      if (BinomialBoard.class.isAssignableFrom(selectionType)) {
+        panelOptions.add(new PanelLabel("BINOMIAL BOARD PROPERTIES"));
+        panelOptions.add(new PanelFloatSliderOption() {
+          @Override
+          public Float getValue() {
+            Float probability = ((BinomialBoard) currentSelection.get(0)).getProbPerTrial();
+            for (WorkspaceSelectable board : currentSelection) {
+              if (((BinomialBoard) board).getProbPerTrial() != probability) {
+                probability = null;
+                break;
+              }
+            }
+            return probability;
+          }
+
+          @Override
+          public void setValue(float value) {
+            for (WorkspaceSelectable board : currentSelection) {
+              ((BinomialBoard) board).setProbPerTrial(value);
+            }
+          }
+
+          @Override
+          public String getName() {
+            return "Probability";
+          }
+        });
+      } else if (GaussianBoard.class.isAssignableFrom(selectionType)) {
+
+      } else if (GeometricBoard.class.isAssignableFrom(selectionType)) {
+        panelOptions.add(new PanelLabel("GEOMETRIC BOARD PROPERTIES"));
+        panelOptions.add(new PanelFloatSliderOption() {
+          @Override
+          public Float getValue() {
+            Float probability = ((GeometricBoard) currentSelection.get(0)).getProbPerTrial();
+            for (WorkspaceSelectable board : currentSelection) {
+              if (((GeometricBoard) board).getProbPerTrial() != probability) {
+                probability = null;
+                break;
+              }
+            }
+            return probability;
+          }
+
+          @Override
+          public void setValue(float value) {
+            for (WorkspaceSelectable board : currentSelection) {
+              ((GeometricBoard) board).setProbPerTrial(value);
+            }
+          }
+
+          @Override
+          public String getName() {
+            return "Probability";
+          }
+        });
+      } else if (GeometricBoard.class.isAssignableFrom(selectionType)) {
+
+      }
+
     } else if (Bucket.class.isAssignableFrom(selectionType)) {
       panelOptions.add(new PanelLabel("BUCKET PROPERTIES"));
       panelOptions.add(new PanelTagOption() {

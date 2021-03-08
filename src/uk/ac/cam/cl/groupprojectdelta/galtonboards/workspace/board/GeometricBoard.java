@@ -225,6 +225,9 @@ public class GeometricBoard extends Board {
     }
 
     @Override
+    public Distribution getDistribution() {return Distribution.Geometric;}
+
+    @Override
     public String toString() {
         return "Geometric board of width " + super.isoGridWidth;
     }
