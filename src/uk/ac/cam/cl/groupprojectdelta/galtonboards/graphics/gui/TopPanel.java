@@ -103,7 +103,6 @@ public class TopPanel extends Panel {
     }
   }
 
-  // Buttons for play/pause/stop
   static class SelectConfiguration extends Panel {
     SelectConfiguration(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);

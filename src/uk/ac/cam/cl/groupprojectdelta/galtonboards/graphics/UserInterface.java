@@ -36,6 +36,17 @@ public class UserInterface {
   public Panel editPanel;
   public Slider probabilitySlider;
 
+  final int editPanelWidth = 400;
+  final int topPanelHeight = 48;
+  TopPanel topPanel;
+  MainPanel mainPanel;
+
+  public void reloadPanels () {
+    userInterface.topPanel = new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6);
+    userInterface.mainPanel = new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
+                                            windowBoards.getHeight() - topPanelHeight, 24, 4);
+  }
+
   private final WindowBoards windowBoards;
 
   public Configuration getConfiguration() {
@@ -59,15 +70,14 @@ public class UserInterface {
    * Then, run the main loop
    */
   public void start() {
-    final int editPanelWidth = 400;
-    final int topPanelHeight = 48;
+
+    reloadPanels();
 
     // Panels for boards and UI sections
     editPanel = getEditPanel(editPanelWidth);
     windowBoards.addComponent(editPanel);
-    windowBoards.addComponent(new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6));
-    windowBoards.addComponent(new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
-                                            windowBoards.getHeight() - topPanelHeight, 24, 4));
+    windowBoards.addComponent(topPanel);
+    windowBoards.addComponent(mainPanel);
 
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
