@@ -8,22 +8,22 @@ import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelection
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
+import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.CallbackI.S;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.MainPanel;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.SimpleButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.TopPanel;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelTagOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.*;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
 import java.util.List;
 
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.WorkspaceButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectionHandler;
 
@@ -123,6 +123,7 @@ public class UserInterface {
     probabilitySlider.getListenerMap().addListener(SliderChangeValueEvent.class, this::sliderChangeEvent);
     editPanel.add(probabilitySlider);
 
+
     return editPanel;
   }
 
@@ -185,6 +186,13 @@ public class UserInterface {
             }
         );
         editPanel.add(selectBox);
+
+        current_y += 100;
+      } else if (panelOption instanceof PanelButtonOption) {
+        PanelButtonOption buttonOption = (PanelButtonOption)panelOption;
+        MouseClickEventListener clickEvent = (MouseClickEventListener)event -> buttonOption.click();
+        Button button = new SimpleButton(buttonOption.getLabel(), 100, current_y, 200, 30, clickEvent);
+        editPanel.add(button);
 
         current_y += 100;
       }

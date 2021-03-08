@@ -23,4 +23,12 @@ public class SimpleButton extends Button {
     getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
     getListenerMap().addListener(MouseClickEvent.class, cb);
   }
+
+  public SimpleButton(String label, int xPos, int yPos, int width, int height, MouseClickEventListener cb) {
+    super(label, xPos, yPos, width, height);
+    getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+    getListenerMap().addListener(MouseClickEvent.class, cb);
+  }
+
+
 }

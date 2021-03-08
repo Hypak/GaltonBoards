@@ -7,11 +7,11 @@ import java.util.List;
 import org.liquidengine.legui.component.Label;
 import org.liquidengine.legui.component.Panel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelFloatSliderOption;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelLabel;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelOption;
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.PanelTagOption;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.panel.*;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.BinomialBoard;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Board;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.Bucket;
@@ -150,6 +150,25 @@ public class WorkspaceSelectionHandler {
         @Override
         public String getName() {
           return "Peg probability";
+        }
+      });
+
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Delete Board";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          Workspace.workspace.getConfiguration().removeBoard(firstBoard);
+        }
+
+        @Override
+        public String getName() {
+          return "Delete Board";
         }
       });
 
