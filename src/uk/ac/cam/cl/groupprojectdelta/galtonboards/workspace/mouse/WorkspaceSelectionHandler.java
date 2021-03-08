@@ -229,6 +229,25 @@ public class WorkspaceSelectionHandler {
         }
       });
 
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Reset Board";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.reset();
+        }
+
+        @Override
+        public String getName() {
+          return "Reset Board";
+        }
+      });
+
       panelOptions.add(new PanelLabel("BOARD PROPERTIES:"));
       panelOptions.add(new PanelLabel(((Board)currentSelection.get(0)).toString()));
     } else if (Bucket.class.isAssignableFrom(selectionType)) {
