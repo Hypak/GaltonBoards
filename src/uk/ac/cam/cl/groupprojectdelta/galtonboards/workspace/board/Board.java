@@ -62,6 +62,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     private final RemoveRowButton removeRowButton = new RemoveRowButton(this);
     private final OutsideBoardRegion outsideBoardRegion = new OutsideBoardRegion(this);
 
+    private boolean selected = false;
      /*
     =====================================================================
                              CONSTRUCTORS
@@ -882,22 +883,47 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
     @Override
     public List<Float> getColourTemplate() {
-        List<Float> ct = new ArrayList<>(Arrays.asList(
-                1f, 1f, 1f,
-                1f, 1f, 1f,
-                1f, 1f, 1f,
+        List<Float> ct;
+        if (Workspace.workspace.mouseHandler.getSelectionHandler().isSelected(this)) {
+             ct = new ArrayList<>(Arrays.asList(
+                    0.5f, 0.5f, 1f,
+                    0.5f, 0.5f, 1f,
+                    0.5f, 0.5f, 1f,
 
-                1f, 1f, 1f,
-                1f, 1f, 1f,
-                1f, 1f, 1f
-        ));
+                    0.5f, 0.5f, 1f,
+                    0.5f, 0.5f, 1f,
+                    0.5f, 0.5f, 1f
+            ));
+        } else if (Workspace.workspace.mouseHandler.getCurrentClickable() ==  this) {
+            ct = new ArrayList<>(Arrays.asList(
+                    0.8f, 0.8f, 0.8f,
+                    0.8f, 0.8f, 0.8f,
+                    0.8f, 0.8f, 0.8f,
+
+                    0.8f, 0.8f, 0.8f,
+                    0.8f, 0.8f, 0.8f,
+                    0.8f, 0.8f, 0.8f
+            ));
+        } else {
+            ct = new ArrayList<>(Arrays.asList(
+                    1f, 1f, 1f,
+                    1f, 1f, 1f,
+                    1f, 1f, 1f,
+
+                    1f, 1f, 1f,
+                    1f, 1f, 1f,
+                    1f, 1f, 1f
+            ));
+        }
 
         for (Peg peg : pegs) {
             ct.addAll(peg.getColourTemplate());
         }
+
         for (Bucket bucket : buckets) {
             ct.addAll(bucket.getColourTemplate());
         }
+
         if (Workspace.workspace.getClickableMap() == this) {
             ct.addAll(addRowButton.getColourTemplate());
             if (isoGridWidth > 1) {

@@ -43,6 +43,10 @@ public class WorkspaceMouseHandler implements Drawable {
     return currentPos;
   }
 
+  public WorkspaceClickable getCurrentClickable() {
+    return currentClickable;
+  }
+
   public void mouseDown(float time, MouseClickEvent event) {
     if (event.getButton() == Mouse.MouseButton.MOUSE_BUTTON_2) {
       if (state == State.NONE) {

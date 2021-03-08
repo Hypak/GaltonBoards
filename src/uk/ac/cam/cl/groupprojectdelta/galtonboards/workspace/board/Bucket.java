@@ -555,7 +555,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
             ));
         }
 
-        return colours  ;
+        return colours;
     }
 
     PipeEditHandle getPipeEditHandle() {
