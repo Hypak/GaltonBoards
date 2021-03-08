@@ -197,7 +197,7 @@ public class WindowBoards extends Window {
     mousePos = Mouse.getCursorPosition();
     mousePos.mul(1 / (float)windowWidth[0], 1 / (float)windowHeight[0]);
     mousePos.sub(.5f, .5f);
-    mousePos.mul(1.6f, 0.885f);
+    mousePos.mul(1.565f, 0.885f);
     camera.toWorldSpace(mousePos);
     workspace.mouseMove(mousePos);
 
