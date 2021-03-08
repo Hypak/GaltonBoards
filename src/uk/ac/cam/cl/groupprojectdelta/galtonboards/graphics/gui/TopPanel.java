@@ -100,8 +100,8 @@ public class TopPanel extends Panel {
   static class SetSpawnRate extends SliderButtons {
     public SetSpawnRate(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height, size, spacing, "Spawn rate:",
-          List.of(0.5f, 1f, 2f, 5f, 10f, 20f), value -> {
-            Workspace.workspace.getSimulation().timeBetweenBalls = 1 / value / value;
+          List.of(0.5f, 1f, 2f, 5f, 10f, 20f, 50f, 100f, 200f, 500f, 1000f, 2000f, 5000f), value -> {
+            Workspace.workspace.getSimulation().timeBetweenBalls = 1 / value;
             Workspace.workspace.getSimulation().timeTillNextBall = 0;
             return null;
           });
