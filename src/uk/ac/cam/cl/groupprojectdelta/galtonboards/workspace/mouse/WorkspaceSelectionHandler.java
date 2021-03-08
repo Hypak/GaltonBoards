@@ -266,6 +266,31 @@ public class WorkspaceSelectionHandler {
           }
         }
       });
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Clear Output";
+        }
+
+        @Override
+        public void click() {
+          for (WorkspaceSelectable wss : currentSelection) {
+            try {
+              Bucket b = (Bucket) wss;
+              b.clearOutput();
+            }
+            catch (Exception ignored) {
+
+            }
+          }
+        }
+
+        @Override
+        public String getName() {
+          return "Clear Output";
+        }
+      });
     } else {
       panelOptions.add(new PanelLabel(selectionType.getSimpleName()));
     }
