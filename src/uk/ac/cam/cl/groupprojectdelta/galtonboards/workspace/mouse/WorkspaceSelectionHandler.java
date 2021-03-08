@@ -191,6 +191,44 @@ public class WorkspaceSelectionHandler {
         }
       });
 
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Add Row";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.addRow();
+        }
+
+        @Override
+        public String getName() {
+          return "Add Row";
+        }
+      });
+
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Remove Row";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.removeRow();
+        }
+
+        @Override
+        public String getName() {
+          return "Remove Row";
+        }
+      });
+
       panelOptions.add(new PanelLabel("BOARD PROPERTIES:"));
       panelOptions.add(new PanelLabel(((Board)currentSelection.get(0)).toString()));
     } else if (Bucket.class.isAssignableFrom(selectionType)) {
