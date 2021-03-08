@@ -38,7 +38,8 @@ public class UserInterface {
 
   public void reloadPanels () {
     windowBoards.removeComponents();
-    windowBoards.addComponent(getEditPanel(editPanelWidth));
+    editPanel = getEditPanel(editPanelWidth);
+    windowBoards.addComponent(editPanel);
     windowBoards.addComponent(new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6));
     windowBoards.addComponent(new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
                               windowBoards.getHeight() - topPanelHeight, 24, 4));
