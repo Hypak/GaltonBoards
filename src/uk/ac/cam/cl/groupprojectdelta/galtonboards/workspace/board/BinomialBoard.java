@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.util.List;
 
@@ -113,16 +115,18 @@ public class BinomialBoard extends Board {
      */
     @Override
     public void addRow() {
-        super.addRow();
-        numTrials++;
-        // Correct the probability values of the new pegs
-        List<Peg> pegs = getPegs();
-        for (int i = pegs.size() - getIsoGridWidth(); i < pegs.size(); i++) {
-            pegs.get(i).setProbability(1-probPerTrial);
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.addRow();
+            numTrials++;
+            // Correct the probability values of the new pegs
+            List<Peg> pegs = getPegs();
+            for (int i = pegs.size() - getIsoGridWidth(); i < pegs.size(); i++) {
+                pegs.get(i).setProbability(1 - probPerTrial);
+            }
+            // Add tag to the new bucket
+            Bucket newB = getBucket(getIsoGridWidth());
+            newB.setTag("n=" + numTrials);
         }
-        // Add tag to the new bucket
-        Bucket newB = getBucket(getIsoGridWidth());
-        newB.setTag("n=" + numTrials);
     }
 
     /**
@@ -130,8 +134,10 @@ public class BinomialBoard extends Board {
      */
     @Override
     public void removeRow() {
-        super.removeRow();
-        numTrials--;
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.removeRow();
+            numTrials--;
+        }
     }
 
     /**

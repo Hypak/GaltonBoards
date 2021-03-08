@@ -14,7 +14,7 @@ public class Simulation implements Drawable {
 
     private Configuration configuration;
     //private enum SimulationState {Running, Rewind, Paused, Stopped};
-    private enum SimulationState {Running, Rewind, Paused, Stopped}
+    public enum SimulationState {Running, Rewind, Paused, Stopped}
 
     public float speed = 4f;
     private List<Ball> balls;
@@ -61,6 +61,7 @@ public class Simulation implements Drawable {
         tagColours.put("factory2", new Vector3f(1f, 0.5f, 0f));
         tagColours.put("healthy", new Vector3f(0f, 0.75f, 0.2f));
         tagColours.put("sick", new Vector3f(0.8f, 0.1f, 0.1f));
+        simulationState = SimulationState.Stopped;
     }
 
     public void addBallTag(String tag, Vector3f colour) {
@@ -107,6 +108,10 @@ public class Simulation implements Drawable {
 
     public void enlargeBuckets() {
         bucketScale *= 2; // what to do to all bucket scales in the simulation when a bucket fills up
+    }
+
+    public SimulationState getSimulationState() {
+        return simulationState;
     }
 
     public void update(float deltaTime) {

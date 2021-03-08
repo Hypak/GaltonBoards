@@ -4,6 +4,8 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Ball;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.LogicalLocation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 
@@ -92,7 +94,14 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
      * @param probability : float - The new probability of the ball falling left.
      */
     public void setProbability(float probability) {
-        this.probability = probability;
+        try {
+            if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+                this.probability = probability;
+            }
+        }
+        catch (NullPointerException e) {
+            this.probability = probability;
+        }
     }
 
     /*
@@ -190,6 +199,9 @@ public class Peg implements WorkspaceSelectable, LogicalLocation, Drawable {
     public int getLeftColumnIndex() {
         if (gridPos.x == board.getIsoGridWidth() - 1) {
             return (gridPos.y);
+        }
+        if (board.getIsoGridWidth() == 0) {
+            return 0;
         }
         // This peg is not on the last row so don't return a valid bucket
         return -1;

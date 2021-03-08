@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.util.List;
 
@@ -103,11 +105,13 @@ public class GaussianBoard extends Board {
      */
     @Override
     public void addRow() {
-        super.addRow();
-        numColumns++;
-        // Add tag to the new bucket and correct previous tag if still default
-        Bucket newB = getBucket(getIsoGridWidth());
-        fixAllBucketTags();
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.addRow();
+            numColumns++;
+            // Add tag to the new bucket and correct previous tag if still default
+            Bucket newB = getBucket(getIsoGridWidth());
+            fixAllBucketTags();
+        }
     }
 
     /**

@@ -71,10 +71,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      */
 
     /**
-     * Default constructor for an empty board with a single output bucket.
+     * Default constructor for a board with a single peg and two output buckets.
      */
     public Board() {
-        this(0);
+        this(1);
     }
 
     /**
@@ -294,80 +294,83 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      * Add a new row of pegs when editing the board. This method should be called from the UI "plus" button.
      */
     public void addRow() {
-        Vector2f oldDimensions = new Vector2f(dimensions);
-        this.isoGridWidth ++;
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            Vector2f oldDimensions = new Vector2f(dimensions);
+            this.isoGridWidth++;
 
-        // Add the new row of pegs
-        int newNumberOfPegs = pegs.size() + isoGridWidth;
-        for (int i = pegs.size(); i < newNumberOfPegs; i++) {
-            pegs.add(new Peg(0.5f, i, this));
+            // Add the new row of pegs
+            int newNumberOfPegs = pegs.size() + isoGridWidth;
+            for (int i = pegs.size(); i < newNumberOfPegs; i++) {
+                pegs.add(new Peg(0.5f, i, this));
+            }
+
+            // Add a new unit bucket
+            bucketWidths.add(1);
+            buckets.add(new Bucket(1, isoGridWidth, this));
+
+            ColumnBottom cb = new ColumnBottom(isoGridWidth, buckets.get(buckets.size() - 1), this);
+            ColumnTop ct = new ColumnTop(isoGridWidth, buckets.get(buckets.size() - 1), this, cb);
+            columns.add(ct);
+
+            // Update the bucket and column positions
+            for (Bucket b : buckets) {
+                b.setOutputPosition();
+            }
+            for (Column c : columns) {
+                c.setPosition();
+            }
+
+            // Update the boards position so that the ball input point remains constant
+            updateYPos(oldDimensions);
         }
-
-        // Add a new unit bucket
-        bucketWidths.add(1);
-        buckets.add(new Bucket(1, isoGridWidth, this));
-
-        ColumnBottom cb = new ColumnBottom(isoGridWidth, buckets.get(buckets.size() - 1), this);
-        ColumnTop ct = new ColumnTop(isoGridWidth, buckets.get(buckets.size() - 1), this, cb);
-        columns.add(ct);
-
-        // Update the bucket and column positions
-        for (Bucket b : buckets) {
-            b.setOutputPosition();
-        }
-        for (Column c : columns) {
-            c.setPosition();
-        }
-
-        // Update the boards position so that the ball input point remains constant
-        updateYPos(oldDimensions);
     }
 
     /**
      * Remove a row of pegs when editing the board. This method should be called from the UI "minus" button.
      */
     public void removeRow() {
-        // Only attempt to remove row if there is actually a row to remove
-        if(isoGridWidth < 1) {
-            System.err.println("No row to remove.");
-            return;
-        }
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            // Only attempt to remove row if there is actually a row to remove
+            if (isoGridWidth < 2) {
+                System.err.println("Can't remove last row.");
+                return;
+            }
 
-        Vector2f oldDimensions = new Vector2f(dimensions);
-        this.isoGridWidth --;
+            Vector2f oldDimensions = new Vector2f(dimensions);
+            this.isoGridWidth--;
 
-        // Remove the bottom row of pegs
-        for (int i = 0; i < isoGridWidth + 1; i++) {
-            pegs.remove(pegs.size() - 1);
-        }
+            // Remove the bottom row of pegs
+            for (int i = 0; i < isoGridWidth + 1; i++) {
+                pegs.remove(pegs.size() - 1);
+            }
 
-        // If the rightmost bucket has a width > 1, reduce its size, else delete it
-        int oldWidth = bucketWidths.get(bucketWidths.size() - 1);
-        if(oldWidth > 1) {
-            // Reduce the width of the last bucket by 1
-            int newWidth = oldWidth - 1;
-            bucketWidths.set(bucketWidths.size() - 1, newWidth);
-            buckets.get(buckets.size() - 1).setWidth(newWidth);
-        }
-        else {
-            // Delete the last bucket
-            bucketWidths.remove(bucketWidths.size() - 1);
-            buckets.get(buckets.size() - 1).destroy();
-            buckets.remove(buckets.size() - 1);
-        }
+            // If the rightmost bucket has a width > 1, reduce its size, else delete it
+            int oldWidth = bucketWidths.get(bucketWidths.size() - 1);
+            if (oldWidth > 1) {
+                // Reduce the width of the last bucket by 1
+                int newWidth = oldWidth - 1;
+                bucketWidths.set(bucketWidths.size() - 1, newWidth);
+                buckets.get(buckets.size() - 1).setWidth(newWidth);
+            } else {
+                // Delete the last bucket
+                bucketWidths.remove(bucketWidths.size() - 1);
+                buckets.get(buckets.size() - 1).destroy();
+                buckets.remove(buckets.size() - 1);
+            }
 
-        columns.remove(columns.size() - 1);
+            columns.remove(columns.size() - 1);
 
-        // Update the bucket and column positions
-        for (Bucket b : buckets) {
-            b.setOutputPosition();
-        }
-        for (Column c : columns) {
-            c.setPosition();
-        }
+            // Update the bucket and column positions
+            for (Bucket b : buckets) {
+                b.setOutputPosition();
+            }
+            for (Column c : columns) {
+                c.setPosition();
+            }
 
-        // Update the boards position so that the ball input point remains constant
-        updateYPos(oldDimensions);
+            // Update the boards position so that the ball input point remains constant
+            updateYPos(oldDimensions);
+        }
     }
 
     /**
@@ -469,7 +472,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             else {
                 leftPos = columnBoundaries.get(leftInd);
             }
-            if (rightInd > columnBoundaries.size()) {
+            if (rightInd >= columnBoundaries.size()) {
                 rightPos = Float.POSITIVE_INFINITY;
             }
             else {
@@ -501,7 +504,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                 else {
                     // Delete bucket to the left as was of unit width
                     leftBucket.destroy();
-                    buckets.remove(buckets.indexOf(beingEdited) - 1);
+                    buckets.remove(leftBucket);
+                    bucketWidths.remove(buckets.indexOf(beingEdited));
                 }
 
                 // Change the bucket for the column to the left
@@ -518,6 +522,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                 getColumnTop(beingEdited.getStartColumn() + beingEdited.getWidth()).setBucket(newBucket);
 
             }
+            bucketWidths.set(buckets.indexOf(beingEdited), beingEdited.getWidth());
             return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
         }
         // The board isn't aware of the layout being changed, or invalid bucket being extended left
@@ -531,7 +536,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      * @return The new neighbouring column positions of the edge being moved.
      */
     public Vector2f edgeExtendedRight(boolean leftEdge) {
-        if(updatingBucketLayout && buckets.indexOf(beingEdited) > 0) {
+        if(updatingBucketLayout && buckets.indexOf(beingEdited) < buckets.size() - 1) {
             if (leftEdge) {
                 // if left edge has been stretched right, decrease bucket width, increment startColumn, and spawn new unit bucket to the left
                 beingEdited.setWidth(beingEdited.getWidth() - 1);
@@ -545,7 +550,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
             }
             else {
                 // if right edge has been stretched right, increase width and reduce bucket to the right
-                beingEdited.setWidth(beingEdited.getWidth() - 1);
+                beingEdited.setWidth(beingEdited.getWidth() + 1);
 
                 Bucket rightBucket = buckets.get(buckets.indexOf(beingEdited) + 1);
                 if (rightBucket.getWidth() > 1) {
@@ -557,12 +562,14 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                     // Delete bucket to the right as was of unit width
                     rightBucket.destroy();
                     buckets.remove(buckets.indexOf(beingEdited) + 1);
+                    bucketWidths.remove(buckets.indexOf(beingEdited) + 1);
                 }
 
                 // Change the bucket for the column to the right
                 getColumnTop(beingEdited.getStartColumn() + beingEdited.getWidth() - 1).setBucket(beingEdited);
 
             }
+            bucketWidths.set(buckets.indexOf(beingEdited), beingEdited.getWidth());
             return leftEdge ? getNeighbouringLeftSideBoundaries() : getNeighbouringRightSideBoundaries();
         }
         // The board isn't aware of the layout being changed, or invalid bucket being extended right
@@ -597,63 +604,65 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
      * @param d : Distribution - The new type for this board/
      */
     public void changeBoard(Distribution d) {
-        if (this instanceof GaussianBoard && d == Distribution.Gaussian ||
-            this instanceof UniformBoard && d == Distribution.Uniform ||
-            this instanceof BinomialBoard && d == Distribution.Binomial ||
-            this instanceof GeometricBoard && d == Distribution.Geometric ||
-            this.getClass() == Board.class) {
-            return;
-        }
-
-        // We are changing the board to a new type, so instantiate new board (trying to maintain layout) and delete this
-        Board newBoard;
-        switch(d) {
-            case Gaussian:
-                newBoard = new GaussianBoard(0,isoGridWidth+1);
-                break;
-            case Uniform:
-                newBoard = new UniformBoard(0,1,isoGridWidth+1);
-                break;
-            case Binomial:
-                newBoard = new BinomialBoard(isoGridWidth, 0.5f);
-                break;
-            case Geometric:
-                newBoard = new GeometricBoard(0.5f, isoGridWidth);
-                break;
-            default:
-                newBoard = new Board(isoGridWidth);
-                break;
-        }
-
-        if (buckets.size() != columns.size()) {
-            // Buckets have been edited, copy over existing bucket layout
-            int[] widths = new int[buckets.size()];
-            for (int i = 0; i < buckets.size(); i++) {
-                widths[i] = buckets.get(i).getWidth();
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            if (this instanceof GaussianBoard && d == Distribution.Gaussian ||
+                    this instanceof UniformBoard && d == Distribution.Uniform ||
+                    this instanceof BinomialBoard && d == Distribution.Binomial ||
+                    this instanceof GeometricBoard && d == Distribution.Geometric ||
+                    this.getClass() == Board.class) {
+                return;
             }
-            newBoard.generateBuckets(widths);
-            // Copy over tags
+
+            // We are changing the board to a new type, so instantiate new board (trying to maintain layout) and delete this
+            Board newBoard;
+            switch (d) {
+                case Gaussian:
+                    newBoard = new GaussianBoard(0, isoGridWidth + 1);
+                    break;
+                case Uniform:
+                    newBoard = new UniformBoard(0, 1, isoGridWidth + 1);
+                    break;
+                case Binomial:
+                    newBoard = new BinomialBoard(isoGridWidth, 0.5f);
+                    break;
+                case Geometric:
+                    newBoard = new GeometricBoard(0.5f, isoGridWidth);
+                    break;
+                default:
+                    newBoard = new Board(isoGridWidth);
+                    break;
+            }
+
+            if (buckets.size() != columns.size()) {
+                // Buckets have been edited, copy over existing bucket layout
+                int[] widths = new int[buckets.size()];
+                for (int i = 0; i < buckets.size(); i++) {
+                    widths[i] = buckets.get(i).getWidth();
+                }
+                newBoard.generateBuckets(widths);
+                // Copy over tags
+                for (Bucket b : buckets) {
+                    newBoard.getBucket(b.getStartColumn()).setTag(b.getTag());
+                }
+            }
+
+            // Copy bucket outputs
             for (Bucket b : buckets) {
-                newBoard.getBucket(b.getStartColumn()).setTag(b.getTag());
+                newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
             }
+
+            newBoard.updateBoardPosition(getWorldPos());
+
+            // For all of the buckets that feed into this board, update their output to the new board
+            for (Bucket b : inputs) {
+                b.setOutput(newBoard);
+                b.destroy();
+            }
+
+            // remove board from configuration
+            Workspace.workspace.getConfiguration().addBoard(newBoard);
+            Workspace.workspace.getConfiguration().removeBoard(this);
         }
-
-        // Copy bucket outputs
-        for (Bucket b : buckets) {
-            newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
-        }
-
-        newBoard.updateBoardPosition(getWorldPos());
-
-        // For all of the buckets that feed into this board, update their output to the new board
-        for (Bucket b : inputs) {
-            b.setOutput(newBoard);
-            b.destroy();
-        }
-
-        // remove board from configuration
-        Workspace.workspace.getConfiguration().addBoard(newBoard);
-        Workspace.workspace.getConfiguration().removeBoard(this);
 
     }
 
@@ -1013,10 +1022,10 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     @Override
     public Iterable<? extends WorkspaceClickable> getClickables() {
         return Iterables.concat(
-            List.of(addRowButton, removeRowButton, outsideBoardRegion),
-            getPipeEditHandles(),
-            pegs,
-            buckets
+                List.of(addRowButton, removeRowButton, outsideBoardRegion),
+                getPipeEditHandles(),
+                pegs,
+                buckets
         );
         //TODO: Add other board UI elements
     }

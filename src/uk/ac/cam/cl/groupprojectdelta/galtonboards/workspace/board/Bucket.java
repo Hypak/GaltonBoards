@@ -2,6 +2,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.joml.Vector2f;
 
 import java.util.HashSet;
@@ -41,6 +43,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     private String tag;
 
     private Set<Ball> ballsInBucket; // need this for visualisation
+    private long totalBalls;
 
     List<String> ballsTaggedWith;
 
@@ -81,6 +84,7 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
         this.width = width;
         setOutputPosition();
         this.ballsInBucket = new HashSet<>();
+        this.totalBalls = 0;
         this.pipeEditHandle = new PipeEditHandle(this);
         this.ballsTaggedWith = new ArrayList<>();
     }
@@ -144,9 +148,18 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
      * @param board : Board - the board balls fall into from this bucket
      */
     public void setOutput(Board board) {
-        clearOutput();
-        output = board;
-        board.updateInputs(this);
+        try {
+            if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+                clearOutput();
+                output = board;
+                board.updateInputs(this);
+            }
+        }
+        catch (NullPointerException e) {
+            clearOutput();
+            output = board;
+            board.updateInputs(this);
+        }
     }
 
     /**
@@ -280,6 +293,16 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
         return board;
     }
 
+    public List<String> getBallData() {
+        List<String> data = new ArrayList<>();
+        Map<String, Integer> tags = liquifiedBallsByTag();
+        data.add("Total balls: " + totalBalls);
+        for (String tag : tags.keySet()) {
+            data.add(tag + ": " + tags.get(tag) + "/" + totalBalls);
+        }
+        return data;
+    }
+
     public Simulation getSimulation() {
         return Workspace.workspace.getSimulation();
     }
@@ -302,11 +325,14 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
     @Override
     public void removeBall(Ball ball) {
         ballsInBucket.remove(ball);
+        totalBalls--;
     }
 
     @Override
     public void addBall(Ball ball) {
+        //if (tag != null) {ball.setTag(tag);}
         ballsInBucket.add(ball);
+        totalBalls++;
         if (ballsInBucket.size() > getSimulation().getBucketScale() && relativeScale == false) {
             getSimulation().enlargeBuckets();
         }
@@ -319,8 +345,13 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
 
     @Override
     public void setGivenTags(List<String> newTagList) {
-        ballsTaggedWith = newTagList;
-        board.getColumnTop(getStartColumn()).setGivenTags(newTagList);
+        //ballsTaggedWith = newTagList;
+        for (int i = getStartColumn(); i<getStartColumn()+getWidth(); i++) {
+            //board.getColumnTop(i).setGivenTags(newTagList);
+            // Only give the ball the tag once it leaves the bottom of the bucket
+            board.getColumnTop(i).getColumnBottom().setTag(newTagList.get(0));
+        }
+        //board.getColumnTop(getStartColumn()).setGivenTags(newTagList);
     }
 
     @Override
@@ -341,7 +372,6 @@ public class Bucket implements LogicalLocation, Drawable, WorkspaceSelectable {
                 nByTag.put(ball.getTag(), 1);
             }
         }
-        //System.out.println("Seeing tags: " + nByTag.keySet());
         return nByTag;
     }
 

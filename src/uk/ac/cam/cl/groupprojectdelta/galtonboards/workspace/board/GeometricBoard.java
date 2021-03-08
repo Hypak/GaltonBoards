@@ -2,6 +2,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.util.List;
 
@@ -117,19 +119,26 @@ public class GeometricBoard extends Board {
      */
     @Override
     public void addRow() {
-        super.addRow();
-        numUniqueTrials++;
-        // Correct the probability values of the new pegs
-        List<Peg> pegs = getPegs();
-        for (int i = pegs.size() - getIsoGridWidth(); i < pegs.size(); i++) {
-            if (i == pegs.size() - 1) { pegs.get(i).setProbability(probPerTrial); }
-            else { pegs.get(i).setProbability(1f); }
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.addRow();
+            numUniqueTrials++;
+            // Correct the probability values of the new pegs
+            List<Peg> pegs = getPegs();
+            for (int i = pegs.size() - getIsoGridWidth(); i < pegs.size(); i++) {
+                if (i == pegs.size() - 1) {
+                    pegs.get(i).setProbability(probPerTrial);
+                } else {
+                    pegs.get(i).setProbability(1f);
+                }
+            }
+            // Add tag to the new bucket and correct previous tag if still default
+            Bucket newB = getBucket(getIsoGridWidth());
+            newB.setTag("k>" + numUniqueTrials);
+            Bucket prevB = getBucket(getIsoGridWidth() - 1);
+            if (prevB.getTag() == ("k>" + (numUniqueTrials - 1))) {
+                prevB.setTag("k=" + (numUniqueTrials));
+            }
         }
-        // Add tag to the new bucket and correct previous tag if still default
-        Bucket newB = getBucket(getIsoGridWidth());
-        newB.setTag("k>" + numUniqueTrials);
-        Bucket prevB = getBucket(getIsoGridWidth() - 1);
-        if (prevB.getTag() == ("k>" + (numUniqueTrials-1))) {prevB.setTag("k=" + (numUniqueTrials)); }
     }
 
     /**
@@ -137,11 +146,15 @@ public class GeometricBoard extends Board {
      */
     @Override
     public void removeRow() {
-        super.removeRow();
-        numUniqueTrials--;
-        // Change the tag of the last bucket if it is still default
-        Bucket last = getBucket(getIsoGridWidth());
-        if (last.getTag() == ("k=" + (numUniqueTrials+1))) {last.setTag("k>" + (numUniqueTrials)); }
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.removeRow();
+            numUniqueTrials--;
+            // Change the tag of the last bucket if it is still default
+            Bucket last = getBucket(getIsoGridWidth());
+            if (last.getTag() == ("k=" + (numUniqueTrials + 1))) {
+                last.setTag("k>" + (numUniqueTrials));
+            }
+        }
     }
 
     /**
