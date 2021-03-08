@@ -133,7 +133,7 @@ public class TopPanel extends Panel {
           }
           UserInterface.userInterface.getWindowBoards().getSimulation().stop();
           UserInterface.userInterface.getWindowBoards().getConfiguration().setConfiguration(event.getNewValue());
-          UserInterface.userInterface.getWindowBoards().getSimulation().run();
+          //UserInterface.userInterface.getWindowBoards().getSimulation().run();
         });
       }
     }

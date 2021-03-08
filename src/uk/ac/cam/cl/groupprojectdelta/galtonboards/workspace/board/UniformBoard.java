@@ -2,6 +2,8 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board;
 
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Simulation;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 
 import java.util.List;
 
@@ -132,12 +134,14 @@ public class UniformBoard extends Board{
      */
     @Override
     public void addRow() {
-        super.addRow();
-        steps++;
-        // Correct the probability values of the pegs
-        fixAllPegs();
-        // Add tag to the new bucket
-        fixAllBucketTags();
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.addRow();
+            steps++;
+            // Correct the probability values of the pegs
+            fixAllPegs();
+            // Add tag to the new bucket
+            fixAllBucketTags();
+        }
     }
 
     /**
@@ -145,10 +149,12 @@ public class UniformBoard extends Board{
      */
     @Override
     public void removeRow() {
-        super.removeRow();
-        steps--;
-        fixAllPegs();
-        fixAllBucketTags();
+        if (Workspace.workspace.getSimulation().getSimulationState() == Simulation.SimulationState.Stopped) {
+            super.removeRow();
+            steps--;
+            fixAllPegs();
+            fixAllBucketTags();
+        }
     }
 
     /**

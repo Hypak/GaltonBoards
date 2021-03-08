@@ -20,6 +20,8 @@ public class ColumnBottom extends Column implements LogicalLocation {
 
     private Bucket bucket;
 
+    private String tag;
+
     // The index of this column
     private int columnIndex;
 
@@ -37,6 +39,14 @@ public class ColumnBottom extends Column implements LogicalLocation {
     }
 
     /**
+     * Update the bucket that this column feeds into.
+     */
+    public void setBucket(Bucket bucket) {
+        super.setBucket(bucket);
+        this.bucket = bucket;
+    }
+
+    /**
      * Update the world coordinates of this column bottom.
      */
     @Override
@@ -44,6 +54,11 @@ public class ColumnBottom extends Column implements LogicalLocation {
         float xPos = (super.columnIndex + 0.5f) * Board.unitDistance + getBoard().getWorldPos().x - getBoard().getDimensions().x / 2f;
         float yPos = getBoard().getWorldPos().y - getBoard().getDimensions().y / 2f;
         worldPos =  new Vector2f(xPos, yPos);
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+        System.out.println("SET TAG: " + tag);
     }
 
     @Override
@@ -66,6 +81,9 @@ public class ColumnBottom extends Column implements LogicalLocation {
     public void removeBall(Ball ball) {
         ballSet.remove(ball);
         bucket.removeBall(ball);
+        if (tag != null) {
+            ball.setTag(tag);
+        }
     }
 
     @Override

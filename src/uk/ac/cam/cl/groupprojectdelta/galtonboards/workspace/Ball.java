@@ -146,7 +146,9 @@ public class Ball implements Drawable {
                     tag = logLoc.getGivenTags().get(1);
                 }
             } else {
-                tag = logLoc.getGivenTags().get(0);
+                if (logLoc.getGivenTags().size() > 0) {
+                    tag = logLoc.getGivenTags().get(0);
+                }
             }
         }
     }

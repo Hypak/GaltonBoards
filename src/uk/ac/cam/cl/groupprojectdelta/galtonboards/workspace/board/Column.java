@@ -36,7 +36,7 @@ public class Column {
      * Update the bucket that this column feeds into.
      */
     public void setBucket(Bucket bucket) {
-        return;
+        this.bucket = bucket;
     }
 
     /**
