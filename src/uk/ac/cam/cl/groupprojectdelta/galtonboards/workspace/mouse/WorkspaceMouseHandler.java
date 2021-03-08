@@ -165,6 +165,7 @@ public class WorkspaceMouseHandler implements Drawable {
 
   public void setCurrentClickableMap(ClickableMap currentClickableMap) {
     this.currentClickableMap = currentClickableMap;
+    selectionHandler.clearSelection();
   }
 
   public ClickableMap getCurrentClickableMap() {
