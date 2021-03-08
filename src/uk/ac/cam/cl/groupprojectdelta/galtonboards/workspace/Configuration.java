@@ -131,7 +131,10 @@ public class Configuration implements Drawable, ClickableMap {
 
 
   public Board getStartBoard() {
-    return boards.get(0);
+    if (boards.size() > 0) {
+      return boards.get(0);
+    }
+    return null;
   }
 
   public void addBoard(Board board) {

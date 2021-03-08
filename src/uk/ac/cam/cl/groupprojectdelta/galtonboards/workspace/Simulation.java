@@ -14,7 +14,7 @@ public class Simulation implements Drawable {
 
     private Configuration configuration;
     //private enum SimulationState {Running, Rewind, Paused, Stopped};
-    private enum SimulationState {Running, Rewind, Paused, Stopped};
+    private enum SimulationState {Running, Rewind, Paused, Stopped}
 
     public float speed = 4f;
     private List<Ball> balls;
@@ -85,6 +85,11 @@ public class Simulation implements Drawable {
     }
 
     public void spawnBallAtRoot() {
+        Board rootBoard = getRootBoard();
+        if (rootBoard == null) {
+            // Failing silently shouldn't be too bad for this case
+            return;
+        }
         spawnBall(getRootBoard().getRootPeg());
     }
 
