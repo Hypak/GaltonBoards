@@ -193,7 +193,7 @@ public class TopPanel extends Panel {
       getStyle().getBackground().setColor(ColorConstants.transparent());
       getStyle().getBorder().setEnabled(false);
       getStyle().getShadow().setColor(ColorConstants.transparent());
-      add(new SaveButton(0, spacing, size, size, "Save"));
+      add(new SaveButton(spacing, spacing, size, size, "Save"));
       add(new SaveTextInput(width - 2 * spacing - textWidth, spacing, textWidth, size));
     }
 
@@ -212,11 +212,16 @@ public class TopPanel extends Panel {
             }
           }
         });
+        setTooltip(new Tooltip("Saves only work for the current session!"));
+        getTooltip().setPosition(0, height);
+        getTooltip().getSize().set(256, 32);
+        getTooltip().getStyle().setPadding(4f);
       }
     }
     static class SaveTextInput extends TextInput {
       SaveTextInput(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
+        getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
         getListenerMap().addListener(TextInputContentChangeEvent.class, event -> {
           SaveButton.saveName = event.getNewValue();
         });
