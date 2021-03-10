@@ -326,8 +326,6 @@ public class WorkspaceSelectionHandler {
           }
         }
       });
-    } else {
-      panelOptions.add(new PanelLabel(selectionType.getSimpleName()));
     }
 
     System.out.println(currentSelection.toString());
