@@ -190,7 +190,30 @@ public class UserInterface {
         editPanel.add(button);
 
         current_y += 100;
-      }
+      } else if (panelOption instanceof PanelBoardTypeOption) {
+        PanelBoardTypeOption boardTypeOption = (PanelBoardTypeOption) panelOption;
+
+        Label label = new Label(100, current_y, 200, 100);
+        label.setTextState(new TextState(boardTypeOption.getName()));
+        editPanel.add(label);
+
+        SelectBox<String> selectBox = new SelectBox<>(100, current_y + 80, 200, 15);
+        selectBox.addElement(" - ");
+        for (Distribution distribution : Distribution.values()) {
+          selectBox.addElement(distribution.toString());
+        }
+
+        selectBox.setSelected(boardTypeOption.getDistribution().toString(), true);
+
+        selectBox.addSelectBoxChangeSelectionEventListener(
+            event -> {
+              boardTypeOption.setDistribution(Distribution.valueOf(event.getNewValue()));
+            }
+        );
+        editPanel.add(selectBox);
+
+        current_y += 100;
+       }
     }
   }
 

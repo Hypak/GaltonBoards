@@ -22,14 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-enum Distribution {
-    Gaussian,
-    Uniform,
-    Binomial,
-    Geometric,
-    Custom
-}
-
 public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable, ClickableMap {
 
     public static final float unitDistance = 1f;
@@ -610,7 +602,7 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
                     this instanceof UniformBoard && d == Distribution.Uniform ||
                     this instanceof BinomialBoard && d == Distribution.Binomial ||
                     this instanceof GeometricBoard && d == Distribution.Geometric ||
-                    this.getClass() == Board.class) {
+                    this.getClass() == Board.class && d == Distribution.Custom) {
                 return;
             }
 
@@ -649,19 +641,24 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
 
             // Copy bucket outputs
             for (Bucket b : buckets) {
-                newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
+                if (b.getOutput() != null) {
+                    newBoard.getBucket(b.getStartColumn()).setOutput(b.getOutput());
+                }
             }
 
             newBoard.updateBoardPosition(getWorldPos());
 
             // For all of the buckets that feed into this board, update their output to the new board
-            for (Bucket b : inputs) {
+            List<Bucket> existingInputs = new ArrayList<>(inputs);
+            for (Bucket b : existingInputs) {
                 b.setOutput(newBoard);
-                b.destroy();
             }
 
             // remove board from configuration
             Workspace.workspace.getConfiguration().addBoard(newBoard);
+            if (Workspace.workspace.getConfiguration().getStartBoard() == this) {
+                Workspace.workspace.getConfiguration().setStartBoard(newBoard);
+            }
             Workspace.workspace.getConfiguration().removeBoard(this);
         }
 
@@ -812,6 +809,8 @@ public class Board implements Drawable, WorkspaceSelectable, WorkspaceDraggable,
     public Simulation getSimulation() {
         return simulation;
     }
+
+    public Distribution getDistribution() {return Distribution.Custom;}
 
     /*
     =====================================================================

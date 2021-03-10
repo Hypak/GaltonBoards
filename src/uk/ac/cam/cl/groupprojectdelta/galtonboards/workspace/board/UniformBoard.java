@@ -235,6 +235,9 @@ public class UniformBoard extends Board{
     }
 
     @Override
+    public Distribution getDistribution() {return Distribution.Uniform;}
+
+    @Override
     public String toString() {
         return "Uniform board of width " + super.isoGridWidth;
     }
