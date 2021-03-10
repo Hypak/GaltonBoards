@@ -22,6 +22,11 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
   private boolean selected = false;
   private final Bucket bucket;
 
+  /**
+   * Constructs the handle for a bucket.
+   *
+   * @param bucket The bucket controlled by this handle.
+   */
   public PipeEditHandle(Bucket bucket) {
     this.bucket = bucket;
   }
@@ -43,15 +48,10 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     Vector2f dimensions = new Vector2f(size);
     position.add(dimensions, bound);
 
-    //  +----+
-    //  |1 / |
-    //  | / 2|
-    //  +----+
-
     return new ArrayList<>(Arrays.asList(
-            (position.x + bound.x)/2, position.y, z,
-            position.x, bound.y, z,
-            bound.x, bound.y, z
+        (position.x + bound.x) / 2, position.y, z,
+        position.x, bound.y, z,
+        bound.x, bound.y, z
     ));
   }
 
@@ -63,15 +63,9 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     final float right = 0.25f;
 
     return List.of(
-        // face 1
         top, left,
         bottom, left,
         bottom, right
-        /* face 2
-        top, left,
-        top, right,
-        bottom, right
-         */
     );
   }
 
@@ -86,11 +80,11 @@ public class PipeEditHandle extends WorkspaceButton implements WorkspaceDraggabl
     }
   }
 
-  protected static List<Float> listFromColors(float red, float green, float blue) {
+  private static List<Float> listFromColors(float red, float green, float blue) {
     return List.of(
-            red, green, blue,
-            red, green, blue,
-            red, green, blue
+        red, green, blue,
+        red, green, blue,
+        red, green, blue
     );
   }
 

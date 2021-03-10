@@ -11,7 +11,22 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Camera;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.UserInterface;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.WindowBoards;
 
+/**
+ * Custom panel for the main section of the window, containing the boards.
+ * It is a transparent panel listening to user events and passing them on to the OpenGL code.
+ * It also includes some GUI elements, the navigation buttons and the zoom buttons
+ */
 public class MainPanel extends Panel {
+  /**
+   * Creates the MainPanel.
+   *
+   * @param xPos    The x coordinate of this panel's position.
+   * @param yPos    The y coordinate of this panel's position.
+   * @param width   The width of the panel.
+   * @param height  The height of the panel.
+   * @param size    The size of buttons in this panel.
+   * @param spacing The spacing between buttons in this panel.
+   */
   public MainPanel(int xPos, int yPos, int width, int height, int size, int spacing) {
     super(xPos, yPos, width, height);
     getStyle().getBackground().setColor(ColorConstants.transparent());
@@ -27,7 +42,10 @@ public class MainPanel extends Panel {
         2 * size + 3 * spacing, size, spacing));
   }
 
-  static class NavigationControls extends Panel {
+  /**
+   * Sub-panel of MainPanel, it contains the controls for Camera movements.
+   */
+  private static class NavigationControls extends Panel {
     NavigationControls(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
       getStyle().getBackground().setColor(ColorConstants.transparent());
@@ -37,18 +55,21 @@ public class MainPanel extends Panel {
       float movement = 1.0f;
       WindowBoards windowBoards = UserInterface.userInterface.getWindowBoards();
 
-      add(new SimpleButton(size, spacing, size + 2 * spacing, 0xF141,
+      add(new SimpleButton(spacing, size + 2 * spacing, size, 0xF141,
           makeMovementCallback(windowBoards.getCamera(), movement, 0)));
-      add(new SimpleButton(size, size + 2 * spacing, 2 * size + 3 * spacing, 0xF140,
+      add(new SimpleButton(size + 2 * spacing, 2 * size + 3 * spacing, size, 0xF140,
           makeMovementCallback(windowBoards.getCamera(), 0, -movement)));
-      add(new SimpleButton(size, size + 2 * spacing, size + 2 * spacing, 0xF44A,
+      add(new SimpleButton(size + 2 * spacing, size + 2 * spacing, size, 0xF44A,
           event -> windowBoards.getCamera().Reset()));
-      add(new SimpleButton(size, size + 2 * spacing, spacing, 0xF143,
+      add(new SimpleButton(size + 2 * spacing, spacing, size, 0xF143,
           makeMovementCallback(windowBoards.getCamera(), 0, movement)));
-      add(new SimpleButton(size, 2 * size + 3 * spacing, size + 2 * spacing, 0xF142,
+      add(new SimpleButton(2 * size + 3 * spacing, size + 2 * spacing, size, 0xF142,
           makeMovementCallback(windowBoards.getCamera(), -movement, 0)));
     }
 
+    /**
+     * Helper method creating a callback that moves camera by (dx,dy).
+     */
     private MouseClickEventListener makeMovementCallback(Camera camera, float dx, float dy) {
       return event -> {
         if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
@@ -59,7 +80,10 @@ public class MainPanel extends Panel {
 
   }
 
-  static class ZoomControls extends Panel {
+  /**
+   * Sub-panel of MainPanel, it contains the controls for zooming in and out.
+   */
+  private static class ZoomControls extends Panel {
     ZoomControls(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
       getStyle().getBackground().setColor(ColorConstants.transparent());
@@ -69,12 +93,15 @@ public class MainPanel extends Panel {
       float zoomOffset = 0.2f;
       WindowBoards windowBoards = UserInterface.userInterface.getWindowBoards();
 
-      add(new SimpleButton(size, spacing, size + 2 * spacing, 0xF374,
+      add(new SimpleButton(spacing, size + 2 * spacing, size, 0xF374,
           makeZoomCallback(windowBoards.getCamera(), zoomOffset)));
-      add(new SimpleButton(size, spacing, spacing, 0xF415,
+      add(new SimpleButton(spacing, spacing, size, 0xF415,
           makeZoomCallback(windowBoards.getCamera(), -zoomOffset)));
     }
 
+    /**
+     * Helper method creating a callback that changes the camera's zoom by dz.
+     */
     private static MouseClickEventListener makeZoomCallback(Camera camera, float dz) {
       return event -> {
         if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {

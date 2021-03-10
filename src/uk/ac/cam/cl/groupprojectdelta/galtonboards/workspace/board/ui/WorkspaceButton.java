@@ -92,7 +92,7 @@ public abstract class WorkspaceButton implements WorkspaceClickable, Drawable {
     return listFromColors(1, 0, 1);
   }
 
-  protected static List<Float> listFromColors(float red, float green, float blue) {
+  private static List<Float> listFromColors(float red, float green, float blue) {
     return List.of(
         // face 1
         red, green, blue,

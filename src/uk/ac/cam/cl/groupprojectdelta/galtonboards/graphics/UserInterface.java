@@ -103,16 +103,6 @@ public class UserInterface {
     windowBoards.destroy(windowBoardsID);
   }
 
-  public void speedSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    Workspace.workspace.getSimulation().speed = event.getNewValue();
-  }
-
-  public void spawnSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    Workspace.workspace.getSimulation().timeBetweenBalls = 1 / event.getNewValue() / event.getNewValue();
-    Workspace.workspace.getSimulation().timeTillNextBall *= (event.getOldValue() * event.getOldValue());
-    Workspace.workspace.getSimulation().timeTillNextBall /= (event.getNewValue() * event.getNewValue());
-  }
-
   private Panel getEditPanel(int editPanelWidth) {
     Panel editPanel = new Panel(windowBoards.getWidth() - editPanelWidth, 0, editPanelWidth, windowBoards.getHeight());
     editPanel.getStyle().getBackground().setColor(ColorConstants.lightGray());
@@ -162,8 +152,6 @@ public class UserInterface {
 
         current_y += 100;
       } else if (panelOption instanceof PanelTagOption) {
-        List<String> tags = ((PanelTagOption) panelOption).getTags();
-
         Label label = new Label(100, current_y, 200, 100);
         label.setTextState(new TextState(panelOption.getName()));
         editPanel.add(label);
@@ -194,11 +182,11 @@ public class UserInterface {
         current_y += 100;
       } else if (panelOption instanceof PanelButtonOption) {
         PanelButtonOption buttonOption = (PanelButtonOption)panelOption;
-        MouseClickEventListener clickEvent = (MouseClickEventListener) event -> {
+        MouseClickEventListener clickEvent = event -> {
           if (event.getAction() == MouseClickEvent.MouseClickAction.RELEASE)
           buttonOption.click();
         };
-        Button button = new SimpleButton(buttonOption.getLabel(), 100, current_y, 200, 30, clickEvent);
+        Button button = new SimpleButton(100, current_y, 200, 30, buttonOption.getLabel(), clickEvent);
         editPanel.add(button);
 
         current_y += 100;
