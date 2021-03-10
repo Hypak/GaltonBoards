@@ -2,7 +2,7 @@ package uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui;
 
 
 import org.liquidengine.legui.component.*;
-import org.liquidengine.legui.component.optional.TextState;
+import org.liquidengine.legui.component.event.textinput.TextInputContentChangeEvent;
 import org.liquidengine.legui.component.optional.align.HorizontalAlign;
 import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
@@ -12,13 +12,24 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Configuration;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.Workspace;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
+/**
+ * Custom panel for the toolbar at the top of the window.
+ * It includes multiple sub-panels, each providing a different functionality.
+ */
 public class TopPanel extends Panel {
+  /**
+   * Creates the TopPanel.
+   *
+   * @param xPos    The x coordinate of this panel's position.
+   * @param yPos    The y coordinate of this panel's position.
+   * @param width   The width of the panel.
+   * @param height  The height of the panel.
+   * @param size    The size of buttons in this panel.
+   * @param spacing The spacing between buttons in this panel.
+   */
   public TopPanel(int xPos, int yPos, int width, int height, int size, int spacing) {
     super(xPos, yPos, width, height);
     getStyle().getBackground().setColor(ColorConstants.gray());
@@ -29,38 +40,50 @@ public class TopPanel extends Panel {
     add(new SetSpawnRate(285, 0, 200, height, size, spacing));
     add(new InsertBoards(425, 0, 200, height, size, spacing));
     add(new SelectConfiguration(650, 0, 200, height, size, spacing));
+    add(new SavePanel(900, 0, 200, height, size, spacing));
   }
 
-  // Buttons for play/pause/stop
-  static class SimulationControls extends Panel {
+  /**
+   * Sub-panel containing the simulation control buttons (i.e. play, pause and stop).
+   */
+  private static class SimulationControls extends Panel {
     SimulationControls(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
       getStyle().getBackground().setColor(ColorConstants.transparent());
       getStyle().getBorder().setEnabled(false);
       getStyle().getShadow().setColor(ColorConstants.transparent());
-      add(new SimpleButton(size, spacing, spacing, 0xF40A,
+      add(new SimpleButton(spacing, spacing, size, 0xF40A,
           event -> UserInterface.userInterface.getWindowBoards().getSimulation().run()));
-      add(new SimpleButton(size, 2 * spacing + size, spacing, 0xF3E4,
+      add(new SimpleButton(2 * spacing + size, spacing, size, 0xF3E4,
           event -> UserInterface.userInterface.getWindowBoards().getSimulation().pause()));
-      add(new SimpleButton(size, 3 * spacing + 2 * size, spacing, 0xF4DB,
+      add(new SimpleButton(3 * spacing + 2 * size, spacing, size, 0xF4DB,
           event -> UserInterface.userInterface.getWindowBoards().getSimulation().stop()));
     }
   }
 
-  // Buttons for adding boards
-  static class InsertBoards extends Panel {
+  /**
+   * Sub-panel containing the buttons for the insertion of new boards in the workspace.
+   */
+  private static class InsertBoards extends Panel {
     InsertBoards(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
       getStyle().getBackground().setColor(ColorConstants.transparent());
       getStyle().getBorder().setEnabled(false);
       getStyle().getShadow().setColor(ColorConstants.transparent());
-      add(new InsertBoardButton(spacing, spacing, size, size, "Bin", "Binomial", BinomialBoard.class));
-      add(new InsertBoardButton(2 * spacing + size, spacing, size, size, "Gau", "Gaussian", GaussianBoard.class));
-      add(new InsertBoardButton(3 * spacing + 2 * size, spacing, size, size, "Geo", "Geometric", GeometricBoard.class));
-      add(new InsertBoardButton(4 * spacing + 3 * size, spacing, size, size, "Uni", "Uniform", UniformBoard.class));
+      add(new InsertBoardButton(spacing, spacing, size, size,
+          "Bin", "Binomial", BinomialBoard.class));
+      add(new InsertBoardButton(2 * spacing + size, spacing, size, size,
+          "Gau", "Gaussian", GaussianBoard.class));
+      add(new InsertBoardButton(3 * spacing + 2 * size, spacing, size, size,
+          "Geo", "Geometric", GeometricBoard.class));
+      add(new InsertBoardButton(4 * spacing + 3 * size, spacing, size, size,
+          "Uni", "Uniform", UniformBoard.class));
     }
 
-    static class InsertBoardButton extends Button {
+    /**
+     * Helper class creating a button used for the addition of new classes
+     */
+    private static class InsertBoardButton extends Button {
       InsertBoardButton(int xPos, int yPos, int width, int height, String shortName, String longName,
                         Class<? extends Board> boardClass) {
         super(shortName, xPos, yPos, width, height);
@@ -82,7 +105,10 @@ public class TopPanel extends Panel {
     }
   }
 
-  static class SetSimulationSpeed extends SliderButtons {
+  /**
+   * Sub-panel containing the slider changing the simulation speed.
+   */
+  private static class SetSimulationSpeed extends SliderButtonsPanel {
     public SetSimulationSpeed(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height, size, spacing, "Simulation speed:",
           List.of(0.05f, 0.1f, 0.2f, 0.5f, 1f, 2f, 5f, 10f, 20f), value -> {
@@ -92,19 +118,24 @@ public class TopPanel extends Panel {
     }
   }
 
-  static class SetSpawnRate extends SliderButtons {
+  /**
+   * Sub-panel containing the slider changing the balls' spawn rate.
+   */
+  private static class SetSpawnRate extends SliderButtonsPanel {
     public SetSpawnRate(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height, size, spacing, "Spawn rate:",
-          List.of(0.5f, 1f, 2f, 5f, 10f, 20f), value -> {
-            Workspace.workspace.getSimulation().timeBetweenBalls = 1 / value / value;
+          List.of(0.5f, 1f, 2f, 5f, 10f, 20f, 50f, 100f, 200f, 500f, 1000f, 2000f, 5000f), value -> {
+            Workspace.workspace.getSimulation().timeBetweenBalls = 1 / value;
             Workspace.workspace.getSimulation().timeTillNextBall = 0;
             return null;
           });
     }
   }
 
-  // Buttons for play/pause/stop
-  static class SelectConfiguration extends Panel {
+  /**
+   * Sub-panel containing the buttons for the choice of a new configuration.
+   */
+  private static class SelectConfiguration extends Panel {
     SelectConfiguration(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
       getStyle().getBackground().setColor(ColorConstants.transparent());
@@ -120,12 +151,16 @@ public class TopPanel extends Panel {
       add(new ConfigurationsSelectBox(spacing, spacing + halfSize, width - 2 * spacing, halfSize));
     }
 
-    static class ConfigurationsSelectBox extends SelectBox<String> {
+    /**
+     * Helper class creating a custom SelectBox.
+     */
+    private static class ConfigurationsSelectBox extends SelectBox<String> {
       ConfigurationsSelectBox(int xPos, int yPos, int width, int height) {
         super(xPos, yPos, width, height);
         getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
-        for (String label : Configuration.savedConfigurations.keySet()) {
-          addElement(label);
+        ArrayList<String> names = new ArrayList<>(Configuration.savedConfigurations.keySet());
+        for (int i = names.size() - 1; i >= 0; --i) {
+          addElement(names.get(i));
         }
         addSelectBoxChangeSelectionEventListener(event -> {
           if (event.getNewValue().equals(event.getOldValue())) {
@@ -133,55 +168,68 @@ public class TopPanel extends Panel {
           }
           UserInterface.userInterface.getWindowBoards().getSimulation().stop();
           UserInterface.userInterface.getWindowBoards().getConfiguration().setConfiguration(event.getNewValue());
-          //UserInterface.userInterface.getWindowBoards().getSimulation().run();
+          Workspace.workspace.mouseHandler.getSelectionHandler().clearSelection();
         });
       }
     }
   }
 
-  private static class SliderButtons extends Panel {
-
-    private int currentIndex;
-    List<Float> values;
-    Function<Float, Void> setCallback;
-    Label simulationSpeedLabelValue;
-
-    public SliderButtons(int xPos, int yPos, int width, int height, int size, int spacing, String label,
-                         List<Float> values, Function<Float, Void> setCallback) {
+  /**
+   * Sub-panel containing the buttons for saving the current boards configuration.
+   */
+  static class SavePanel extends Panel {
+    SavePanel(int xPos, int yPos, int width, int height, int size, int spacing) {
       super(xPos, yPos, width, height);
+      final int textWidth = 100;
       getStyle().getBackground().setColor(ColorConstants.transparent());
       getStyle().getBorder().setEnabled(false);
       getStyle().getShadow().setColor(ColorConstants.transparent());
+      add(new SaveButton(spacing, spacing, size, size, "Save"));
+      add(new SaveTextInput(width - 2 * spacing - textWidth, spacing, textWidth, size));
+    }
 
-      this.values = values;
-      this.currentIndex = values.size() / 2;
-      this.setCallback = setCallback;
-
-      int halfSize = size / 2;
-
-      Label simulationSpeedLabel = new Label(label, spacing, spacing, halfSize * 5, halfSize);
-      simulationSpeedLabel.getStyle().setHorizontalAlign(HorizontalAlign.CENTER);
-      add(simulationSpeedLabel);
-
-      simulationSpeedLabelValue = new Label(values.get(currentIndex) + "x", spacing + 2 * halfSize,
-          spacing + halfSize, halfSize, halfSize);
-      simulationSpeedLabelValue.getStyle().setHorizontalAlign(HorizontalAlign.CENTER);
-      add(simulationSpeedLabelValue);
-
-      add(new SimpleButton(halfSize, spacing, spacing + halfSize, 0xF374, mouseClickEvent -> {
-        if (mouseClickEvent.getAction().equals(MouseClickEvent.MouseClickAction.RELEASE)) {
-          currentIndex = max(currentIndex - 1, 0);
-          setCallback.apply(values.get(currentIndex));
-          simulationSpeedLabelValue.setTextState(new TextState(values.get(currentIndex) + "x"));
-        }
-      }));
-      add(new SimpleButton(halfSize, spacing + 4 * halfSize, spacing + halfSize, 0xF415, mouseClickEvent -> {
-        if (mouseClickEvent.getAction().equals(MouseClickEvent.MouseClickAction.RELEASE)) {
-          currentIndex = min(currentIndex + 1, values.size() - 1);
-          setCallback.apply(values.get(currentIndex));
-          simulationSpeedLabelValue.setTextState(new TextState(values.get(currentIndex) + "x"));
-        }
-      }));
+    static class SaveButton extends Button {
+      public static String saveName = "untitled";
+      SaveButton(int xPos, int yPos, int width, int height, String shortName) {
+        super(shortName, xPos, yPos, width, height);
+        getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+        getListenerMap().addListener(MouseClickEvent.class, event -> {
+          if (event.getAction().equals(MouseClickEvent.MouseClickAction.CLICK)) {
+            try {
+              String finalName = "";
+              if (Configuration.savedConfigurations.containsKey(saveName)) {
+                for (Integer i = 1; i < 100000; ++i) {
+                  finalName = saveName + i.toString();
+                  if (!Configuration.savedConfigurations.containsKey(finalName)) {
+                    Configuration.savedConfigurations.put(saveName, Workspace.workspace.getConfiguration());
+                    UserInterface.userInterface.reloadPanels();
+                    break;
+                  }
+                }
+              } else {
+                finalName = saveName;
+              }
+              Configuration.savedConfigurations.put(finalName, Workspace.workspace.getConfiguration());
+              UserInterface.userInterface.reloadPanels();
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          }
+        });
+        setTooltip(new Tooltip("Saves only work for the current session!"));
+        getTooltip().setPosition(0, height);
+        getTooltip().getSize().set(256, 32);
+        getTooltip().getStyle().setPadding(4f);
+      }
+    }
+    static class SaveTextInput extends TextInput {
+      SaveTextInput(int xPos, int yPos, int width, int height) {
+        super(xPos, yPos, width, height);
+        getStyle().setBorder(new SimpleLineBorder(ColorConstants.black(), 1));
+        getListenerMap().addListener(TextInputContentChangeEvent.class, event -> {
+          SaveButton.saveName = event.getNewValue();
+        });
+      }
     }
   }
 

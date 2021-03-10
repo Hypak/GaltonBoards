@@ -4,15 +4,14 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 import org.liquidengine.legui.component.*;
-import org.liquidengine.legui.component.event.selectbox.SelectBoxChangeSelectionEventListener;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEvent;
 import org.liquidengine.legui.component.event.slider.SliderChangeValueEventListener;
 import org.liquidengine.legui.component.optional.TextState;
+import org.liquidengine.legui.event.MouseClickEvent;
 import org.liquidengine.legui.listener.MouseClickEventListener;
 import org.liquidengine.legui.style.border.SimpleLineBorder;
 import org.liquidengine.legui.style.color.ColorConstants;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.CallbackI.S;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.MainPanel;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.SimpleButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.gui.TopPanel;
@@ -23,7 +22,6 @@ import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
 
 import java.util.List;
 
-import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.WorkspaceButton;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceSelectionHandler;
 
@@ -34,6 +32,19 @@ public class UserInterface {
   public static UserInterface userInterface;
   public Panel editPanel;
   public Slider probabilitySlider;
+
+  final int editPanelWidth = 400;
+  final int topPanelHeight = 48;
+
+  public void reloadPanels () {
+    windowBoards.removeComponents();
+    editPanel = getEditPanel(editPanelWidth);
+    windowBoards.addComponent(editPanel);
+    windowBoards.addComponent(new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6));
+    windowBoards.addComponent(new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
+                              windowBoards.getHeight() - topPanelHeight, 24, 4));
+
+  }
 
   private final WindowBoards windowBoards;
 
@@ -58,15 +69,8 @@ public class UserInterface {
    * Then, run the main loop
    */
   public void start() {
-    final int editPanelWidth = 400;
-    final int topPanelHeight = 48;
-
-    // Panels for boards and UI sections
-    editPanel = getEditPanel(editPanelWidth);
-    windowBoards.addComponent(editPanel);
-    windowBoards.addComponent(new TopPanel(0, 0, windowBoards.getWidth(), topPanelHeight, 36, 6));
-    windowBoards.addComponent(new MainPanel(0, topPanelHeight, windowBoards.getWidth() - editPanelWidth,
-                                            windowBoards.getHeight() - topPanelHeight, 24, 4));
+    // Load panels for boards and UI sections
+    reloadPanels();
 
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
@@ -97,16 +101,6 @@ public class UserInterface {
 
     // Destroy windows
     windowBoards.destroy(windowBoardsID);
-  }
-
-  public void speedSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    Workspace.workspace.getSimulation().speed = event.getNewValue();
-  }
-
-  public void spawnSliderChangeEvent(SliderChangeValueEvent<Slider> event) {
-    Workspace.workspace.getSimulation().timeBetweenBalls = 1 / event.getNewValue() / event.getNewValue();
-    Workspace.workspace.getSimulation().timeTillNextBall *= (event.getOldValue() * event.getOldValue());
-    Workspace.workspace.getSimulation().timeTillNextBall /= (event.getNewValue() * event.getNewValue());
   }
 
   private Panel getEditPanel(int editPanelWidth) {
@@ -158,8 +152,6 @@ public class UserInterface {
 
         current_y += 100;
       } else if (panelOption instanceof PanelTagOption) {
-        List<String> tags = ((PanelTagOption) panelOption).getTags();
-
         Label label = new Label(100, current_y, 200, 100);
         label.setTextState(new TextState(panelOption.getName()));
         editPanel.add(label);
@@ -190,8 +182,11 @@ public class UserInterface {
         current_y += 100;
       } else if (panelOption instanceof PanelButtonOption) {
         PanelButtonOption buttonOption = (PanelButtonOption)panelOption;
-        MouseClickEventListener clickEvent = (MouseClickEventListener)event -> buttonOption.click();
-        Button button = new SimpleButton(buttonOption.getLabel(), 100, current_y, 200, 30, clickEvent);
+        MouseClickEventListener clickEvent = event -> {
+          if (event.getAction() == MouseClickEvent.MouseClickAction.RELEASE)
+          buttonOption.click();
+        };
+        Button button = new SimpleButton(100, current_y, 200, 30, buttonOption.getLabel(), clickEvent);
         editPanel.add(button);
 
         current_y += 100;

@@ -6,6 +6,7 @@ import java.util.stream.Collector;
 import org.joml.Vector2f;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.graphics.Drawable;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.*;
+import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.board.ui.PipeEditHandle;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.ClickableMap;
 import uk.ac.cam.cl.groupprojectdelta.galtonboards.workspace.mouse.WorkspaceClickable;
 
@@ -150,6 +151,7 @@ public class Configuration implements Drawable, ClickableMap {
   }
 
   public void removeBoard(Board board) {
+    board.destroy();
     boards.remove(board);
   }
 

@@ -196,6 +196,63 @@ public class WorkspaceSelectionHandler {
         }
       });
 
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Add Row";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.addRow();
+        }
+
+        @Override
+        public String getName() {
+          return "Add Row";
+        }
+      });
+
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Remove Row";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.removeRow();
+        }
+
+        @Override
+        public String getName() {
+          return "Remove Row";
+        }
+      });
+
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Reset Board";
+        }
+
+        @Override
+        public void click() {
+          Board firstBoard = (Board) currentSelection.get(0);
+          firstBoard.reset();
+        }
+
+        @Override
+        public String getName() {
+          return "Reset Board";
+        }
+      });
+
       panelOptions.add(new PanelLabel("BOARD PROPERTIES:"));
       panelOptions.add(new PanelLabel(((Board)currentSelection.get(0)).toString()));
       panelOptions.add(new PanelBoardTypeOption() {
@@ -324,6 +381,31 @@ public class WorkspaceSelectionHandler {
           for (WorkspaceSelectable bucket : currentSelection) {
             ((Bucket) bucket).clearGivenTags();
           }
+        }
+      });
+      panelOptions.add(new PanelButtonOption() {
+
+        @Override
+        public String getLabel() {
+          return "Clear Output";
+        }
+
+        @Override
+        public void click() {
+          for (WorkspaceSelectable wss : currentSelection) {
+            try {
+              Bucket b = (Bucket) wss;
+              b.clearOutput();
+            }
+            catch (Exception ignored) {
+
+            }
+          }
+        }
+
+        @Override
+        public String getName() {
+          return "Clear Output";
         }
       });
     }
