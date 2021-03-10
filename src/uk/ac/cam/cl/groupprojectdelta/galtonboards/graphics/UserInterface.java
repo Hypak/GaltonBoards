@@ -131,7 +131,7 @@ public class UserInterface {
         label.setTextState(new TextState(panelOption.getName()));
         editPanel.add(label);
 
-        current_y += 50;
+        current_y += 30;
       } else if (panelOption instanceof PanelFloatSliderOption) {
         Float value = ((PanelFloatSliderOption) panelOption).getValue();
 
@@ -179,7 +179,7 @@ public class UserInterface {
         );
         editPanel.add(selectBox);
 
-        current_y += 100;
+        current_y += 150;
       } else if (panelOption instanceof PanelButtonOption) {
         PanelButtonOption buttonOption = (PanelButtonOption)panelOption;
         MouseClickEventListener clickEvent = event -> {
@@ -189,7 +189,7 @@ public class UserInterface {
         Button button = new SimpleButton(100, current_y, 200, 30, buttonOption.getLabel(), clickEvent);
         editPanel.add(button);
 
-        current_y += 100;
+        current_y += 50;
       } else if (panelOption instanceof PanelBoardTypeOption) {
         PanelBoardTypeOption boardTypeOption = (PanelBoardTypeOption) panelOption;
 
