@@ -132,9 +132,11 @@ public class WorkspaceSelectionHandler {
 
            for (WorkspaceSelectable board : currentSelection) {
              for (Peg peg : ((Board) board).getPegs()) {
-               if (peg.rightProb() != probability) {
-                 probability = null;
-                 break;
+               if (probability != null) {
+                 if (peg.rightProb() != probability) {
+                   probability = null;
+                   break;
+                 }
                }
              }
            }
